@@ -1,0 +1,725 @@
+<div class="autodrape-car-selector">
+
+  <!-- STEP HEADER -->
+  <div class="autodrape-car-selector__steps">
+
+    <div class="autodrape-car-selector__step is-active">
+      <span class="autodrape-car-selector__number">1</span>
+      <span>Select Brand</span>
+    </div>
+
+    <div class="autodrape-car-selector__divider"></div>
+
+    <div class="autodrape-car-selector__step">
+      <span class="autodrape-car-selector__number">2</span>
+      <span>Select Model</span>
+    </div>
+
+    <div class="autodrape-car-selector__divider"></div>
+
+    <div class="autodrape-car-selector__step">
+      <span class="autodrape-car-selector__number">3</span>
+      <span>Select Year</span>
+    </div>
+
+  </div>
+
+
+  <!-- SELECT FIELDS -->
+  <div class="autodrape-car-selector__fields">
+
+    <!-- BRAND -->
+    <div class="autodrape-car-selector__field">
+
+      <label for="autodrape-brand">
+        Select Brand
+      </label>
+
+      <div class="autodrape-car-selector__select-wrap">
+
+        <select id="autodrape-brand" name="brand">
+          <option value="">Select Brand</option>
+
+          {% assign car_brands = metaobjects.car_brand.values %}
+
+          {% for brand in car_brands %}
+            {% if brand.brand_name.value != blank %}
+              <option
+                value="{{ brand.system.handle }}"
+                data-brand-id="{{ brand.system.id }}"
+              >
+                {{ brand.brand_name.value }}
+              </option>
+            {% endif %}
+          {% endfor %}
+
+        </select>
+
+        <span class="autodrape-car-selector__arrow">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MODEL -->
+    <div class="autodrape-car-selector__field">
+
+      <label for="autodrape-model">
+        Select Model
+      </label>
+
+      <div class="autodrape-car-selector__select-wrap">
+
+        <select id="autodrape-model" name="model" disabled>
+          <option value="">Select Model</option>
+        </select>
+
+        <span class="autodrape-car-selector__arrow">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- YEAR -->
+    <div class="autodrape-car-selector__field">
+
+      <label for="autodrape-year">
+        Select Year
+      </label>
+
+      <div class="autodrape-car-selector__select-wrap">
+
+        <select id="autodrape-year" name="year" disabled>
+          <option value="">Select Year</option>
+        </select>
+
+        <span class="autodrape-car-selector__arrow">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FIND BUTTON -->
+  <button
+    type="button"
+    class="autodrape-car-selector__button"
+    id="autodrape-find-products"
+  >
+    FIND PRODUCTS
+  </button>
+
+</div>
+
+
+<style>
+
+  .autodrape-car-selector {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+
+    padding: 20px 22px 20px;
+
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+
+    box-shadow:
+      0 18px 45px rgba(0, 0, 0, 0.12),
+      0 4px 12px rgba(0, 0, 0, 0.05);
+
+    backdrop-filter: blur(10px);
+
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+  }
+
+
+  /* STEP HEADER */
+
+  .autodrape-car-selector__steps {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 8px;
+    margin-bottom: 17px;
+  }
+
+
+  .autodrape-car-selector__step {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #888;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+
+  .autodrape-car-selector__step.is-active {
+    color: #9f0000;
+  }
+
+
+  .autodrape-car-selector__number {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #dedede;
+    color: #666;
+
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+
+  .autodrape-car-selector__step.is-active
+  .autodrape-car-selector__number {
+    background: #a50000;
+    color: #fff;
+  }
+
+
+  .autodrape-car-selector__divider {
+    flex: 0 1 38px;
+    height: 1px;
+
+    margin: 0 3px;
+
+    background: #e5e5e5;
+  }
+
+
+  /* FIELDS */
+
+  .autodrape-car-selector__fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+
+  .autodrape-car-selector__field {
+    min-width: 0;
+  }
+
+
+  .autodrape-car-selector__field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #666;
+
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+
+  .autodrape-car-selector__select-wrap {
+    position: relative;
+  }
+
+
+  .autodrape-car-selector__select-wrap select {
+    width: 100%;
+    height: 52px;
+
+    padding: 0 42px 0 16px;
+
+    appearance: none;
+
+    border: 1px solid #dedede;
+    border-radius: 9px;
+
+    background: #fff;
+    color: #222;
+
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+
+    outline: none;
+    cursor: pointer;
+
+    transition:
+      border-color .2s ease,
+      box-shadow .2s ease;
+  }
+
+
+  .autodrape-car-selector__select-wrap select:hover {
+    border-color: #b7b7b7;
+  }
+
+
+  .autodrape-car-selector__select-wrap select:focus {
+    border-color: #a50000;
+
+    box-shadow:
+      0 0 0 3px rgba(165, 0, 0, 0.08);
+  }
+
+
+  .autodrape-car-selector__select-wrap select:disabled {
+    background: #f7f7f7;
+    color: #999;
+    cursor: not-allowed;
+  }
+
+
+  .autodrape-car-selector__arrow {
+    position: absolute;
+
+    top: 50%;
+    right: 15px;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+  }
+
+
+  .autodrape-car-selector__arrow svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+    stroke: #555;
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+
+  /* BUTTON */
+
+  .autodrape-car-selector__button {
+    width: 100%;
+    height: 46px;
+
+    margin-top: 13px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #a50000;
+    color: #fff;
+
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: .01em;
+
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+
+
+  .autodrape-car-selector__button:hover {
+    background: #8c0000;
+  }
+
+
+  /* TABLET */
+
+  @media (max-width: 900px) {
+
+    .autodrape-car-selector {
+      max-width: 660px;
+    }
+
+    .autodrape-car-selector__step {
+      font-size: 11px;
+    }
+
+  }
+
+
+  /* MOBILE */
+
+  @media (max-width: 749px) {
+
+    .autodrape-car-selector {
+      padding: 20px;
+      border-radius: 14px;
+    }
+
+
+    .autodrape-car-selector__steps {
+      gap: 7px;
+    }
+
+
+    .autodrape-car-selector__divider {
+      margin: 0 5px;
+    }
+
+
+    .autodrape-car-selector__step {
+      gap: 5px;
+      font-size: 9px;
+    }
+
+
+    .autodrape-car-selector__number {
+      width: 25px;
+      height: 25px;
+      font-size: 10px;
+    }
+
+
+    .autodrape-car-selector__fields {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+
+    .autodrape-car-selector__button {
+      margin-top: 14px;
+    }
+
+  }
+
+</style>
+
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+
+    const brandSelect =
+      document.getElementById('autodrape-brand');
+
+    const modelSelect =
+      document.getElementById('autodrape-model');
+
+    const yearSelect =
+      document.getElementById('autodrape-year');
+
+    const findButton =
+      document.getElementById('autodrape-find-products');
+
+
+    /*
+     * Shopify Metaobject data
+     *
+     * We expose all Car Model entries from Liquid.
+     * Each model contains:
+     * - model_name
+     * - brand reference
+     * - year_range
+     */
+
+    const carModels = [
+
+      {% assign car_models = metaobjects.car_model.values %}
+
+      {% for model in car_models %}
+
+        {
+          id: {{ model.system.id | json }},
+          handle: {{ model.system.handle | json }},
+          name: {{ model.model_name.value | json }},
+          yearRange: {{ model.year_range.value | json }},
+          brandId: {% if model.brand.value %}{{ model.brand.value.system.id | json }}{% else %}null{% endif %},
+          brandHandle: {% if model.brand.value %}{{ model.brand.value.system.handle | json }}{% else %}null{% endif %}
+        }
+
+        {% unless forloop.last %},{% endunless %}
+
+      {% endfor %}
+
+    ];
+
+
+    /*
+     * BRAND → MODEL
+     */
+
+    brandSelect.addEventListener('change', function () {
+
+      const brandId =
+        this.options[this.selectedIndex].dataset.brandId;
+
+      modelSelect.innerHTML =
+        '<option value="">Select Model</option>';
+
+      yearSelect.innerHTML =
+        '<option value="">Select Year</option>';
+
+      modelSelect.disabled = true;
+      yearSelect.disabled = true;
+
+
+      if (!brandId) {
+        return;
+      }
+
+
+      const filteredModels =
+        carModels.filter(function (model) {
+
+          return String(model.brandId) === String(brandId);
+
+        });
+
+
+      filteredModels.forEach(function (model) {
+
+        const option =
+          document.createElement('option');
+
+        option.value =
+          model.handle;
+
+        option.textContent =
+          model.name;
+
+        option.dataset.modelId =
+          model.id;
+
+        option.dataset.yearRange =
+          model.yearRange || '';
+
+        modelSelect.appendChild(option);
+
+      });
+
+
+      modelSelect.disabled =
+        filteredModels.length === 0;
+
+    });
+
+
+    /*
+     * MODEL → YEAR RANGE
+     *
+     * Your backend stores the range as:
+     * 2015–2021
+     */
+
+    modelSelect.addEventListener('change', function () {
+
+      const selectedOption =
+        this.options[this.selectedIndex];
+
+      const yearRange =
+        selectedOption.dataset.yearRange || '';
+
+      yearSelect.innerHTML =
+        '<option value="">Select Year</option>';
+
+      yearSelect.disabled = true;
+
+
+      if (!yearRange) {
+        return;
+      }
+
+
+      /*
+       * Convert:
+       * 2015–2021
+       * 2015-2021
+       *
+       * into individual years.
+       */
+
+      const normalizedRange =
+        yearRange.replace(/[–—]/g, '-');
+
+      const parts =
+        normalizedRange.split('-');
+
+
+      if (parts.length === 2) {
+
+        const startYear =
+          parseInt(parts[0].trim(), 10);
+
+        const endYear =
+          parseInt(parts[1].trim(), 10);
+
+
+        if (
+          !isNaN(startYear) &&
+          !isNaN(endYear) &&
+          startYear <= endYear
+        ) {
+
+          for (
+            let year = startYear;
+            year <= endYear;
+            year++
+          ) {
+
+            const option =
+              document.createElement('option');
+
+            option.value =
+              year;
+
+            option.textContent =
+              year;
+
+            yearSelect.appendChild(option);
+
+          }
+
+        }
+
+      } else {
+
+        /*
+         * Also support a single year if ever needed.
+         */
+
+        const singleYear =
+          parseInt(normalizedRange.trim(), 10);
+
+        if (!isNaN(singleYear)) {
+
+          const option =
+            document.createElement('option');
+
+          option.value =
+            singleYear;
+
+          option.textContent =
+            singleYear;
+
+          yearSelect.appendChild(option);
+
+        }
+
+      }
+
+
+      yearSelect.disabled =
+        yearSelect.options.length <= 1;
+
+    });
+
+
+    /*
+     * FIND PRODUCTS
+     *
+     * For now we pass the selected data forward.
+     * Product filtering will be connected in the next step.
+     */
+
+    findButton.addEventListener('click', function () {
+
+  const brand = brandSelect.value;
+  const model = modelSelect.value;
+  const year = yearSelect.value;
+
+  if (!brand || !model || !year) {
+    alert('Please select your brand, model and year.');
+    return;
+  }
+
+  const params = new URLSearchParams({
+    brand: brand,
+    model: model,
+    year: year
+  });
+
+  window.location.href =
+    '/pages/car-results?' + params.toString();
+
+});
+
+
+    /*
+     * URL QUERY PARAM PRE-SELECTION
+     *
+     * Supports deep links like:
+     *   /pages/shop-by-car?brand=toyota
+     *   /pages/shop-by-car?brand=toyota&model=corolla
+     *   /pages/shop-by-car?brand=toyota&model=corolla&year=2021
+     *
+     * Each select is populated by dispatching the same "change" events
+     * used by the manual flow, so models/years populate automatically.
+     */
+
+    (function preselectFromUrl() {
+
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const urlBrand = urlParams.get('brand');
+      const urlModel = urlParams.get('model');
+      const urlYear = urlParams.get('year');
+
+      if (!urlBrand) {
+        return;
+      }
+
+      const brandOption = brandSelect.querySelector(
+        'option[value="' + urlBrand + '"]'
+      );
+
+      if (brandOption) {
+        brandSelect.value = urlBrand;
+        brandSelect.dispatchEvent(new Event('change'));
+      }
+
+      if (urlModel) {
+        const modelOption = modelSelect.querySelector(
+          'option[value="' + urlModel + '"]'
+        );
+
+        if (modelOption) {
+          modelSelect.value = urlModel;
+          modelSelect.dispatchEvent(new Event('change'));
+        }
+      }
+
+      if (urlYear) {
+        const yearOption = yearSelect.querySelector(
+          'option[value="' + urlYear + '"]'
+        );
+
+        if (yearOption) {
+          yearSelect.value = urlYear;
+        }
+      }
+
+    })();
+
+  });
+
+</script>

@@ -1,0 +1,419 @@
+<section class="ad-shades">
+
+  <div class="ad-shades__container">
+
+    <div class="ad-shades__heading">
+      <h2>SHADES TYPE WE OFFER</h2>
+    </div>
+
+    <div class="ad-shades__grid">
+
+      <!-- FULL SHADES -->
+      <article class="ad-shade-card">
+
+        <div class="ad-shade-card__image">
+
+          {% if section.settings.full_image != blank %}
+
+            {{
+              section.settings.full_image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'lazy',
+                alt: 'Full Shades'
+            }}
+
+          {% else %}
+
+            <img
+              src="{{ 'car.png' | asset_url }}"
+              alt="Full Shades"
+              loading="lazy"
+            >
+
+          {% endif %}
+
+        </div>
+
+        <div class="ad-shade-card__body">
+
+          <div class="ad-shade-card__icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M24 5L39 10V21C39 31 33 38 24 43C15 38 9 31 9 21V10L24 5Z"/>
+              <path d="M17 24L21.5 28.5L31 19"/>
+            </svg>
+          </div>
+
+          <div class="ad-shade-card__text">
+
+            <h3>FULL SHADES</h3>
+
+            <p>
+              Maximum coverage<br>
+              &amp; protection
+            </p>
+
+            <a href="{{ routes.all_products_collection_url }}">
+              SHOP FULL SHADES
+              <span>→</span>
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- HALF SHADES -->
+      <article class="ad-shade-card">
+
+        <div class="ad-shade-card__image">
+
+          {% if section.settings.half_image != blank %}
+
+            {{
+              section.settings.half_image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'lazy',
+                alt: 'Half Shades'
+            }}
+
+          {% else %}
+
+            <img
+              src="{{ 'car.png' | asset_url }}"
+              alt="Half Shades"
+              loading="lazy"
+            >
+
+          {% endif %}
+
+        </div>
+
+        <div class="ad-shade-card__body">
+
+          <div class="ad-shade-card__icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <rect x="14" y="8" width="20" height="32" rx="3"/>
+              <path d="M19 16H29"/>
+              <path d="M19 23H29"/>
+              <path d="M19 30H26"/>
+            </svg>
+          </div>
+
+          <div class="ad-shade-card__text">
+
+            <h3>HALF SHADES</h3>
+
+            <p>
+              Quick coverage for<br>
+              everyday use
+            </p>
+
+            <a href="{{ routes.all_products_collection_url }}">
+              SHOP HALF SHADES
+              <span>→</span>
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- FRONT + BACK -->
+      <article class="ad-shade-card">
+
+        <div class="ad-shade-card__image">
+
+          {% if section.settings.front_back_image != blank %}
+
+            {{
+              section.settings.front_back_image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'lazy',
+                alt: 'Front and Back Shades'
+            }}
+
+          {% else %}
+
+            <img
+              src="{{ 'car.png' | asset_url }}"
+              alt="Front and Back Shades"
+              loading="lazy"
+            >
+
+          {% endif %}
+
+        </div>
+
+        <div class="ad-shade-card__body">
+
+          <div class="ad-shade-card__icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <rect x="9" y="10" width="30" height="28" rx="4"/>
+              <path d="M15 18H33"/>
+              <path d="M18 25L24 31L30 25"/>
+            </svg>
+          </div>
+
+          <div class="ad-shade-card__text">
+
+            <h3>FRONT + BACK SHADES</h3>
+
+            <p>
+              Complete front &amp; rear<br>
+              protection
+            </p>
+
+            <a href="{{ routes.all_products_collection_url }}">
+              SHOP FRONT + BACK
+              <span>→</span>
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<style>
+  .ad-shades {
+    width: 100%;
+    padding: 4px 0 64px;
+    color: var(--ad-text);
+  }
+
+  .ad-shades__container {
+    width: min(100% - 48px, 1320px);
+    margin: 0 auto;
+  }
+
+  .ad-shades__heading {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .ad-shades__heading h2 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: clamp(28px, 2.5vw, 44px);
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .ad-shades__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .ad-shade-card {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82));
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    border-radius: var(--ad-radius-xl);
+    box-shadow: var(--ad-shadow-md);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .ad-shade-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(216, 31, 25, 0.24);
+    box-shadow: 0 24px 54px rgba(18, 16, 13, 0.16);
+  }
+
+  .ad-shade-card__image {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #efebe4, #e6e0d8);
+  }
+
+  .ad-shade-card__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+  }
+
+  .ad-shade-card:hover .ad-shade-card__image img {
+    transform: scale(1.04);
+  }
+
+  .ad-shade-card__body {
+    position: relative;
+    min-height: 164px;
+    padding: 28px 24px 24px;
+  }
+
+  .ad-shade-card__icon {
+    position: absolute;
+    top: -28px;
+    left: 24px;
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+    box-shadow: 0 14px 30px rgba(216, 31, 25, 0.24);
+  }
+
+  .ad-shade-card__icon svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ad-shade-card__text {
+    padding-left: 78px;
+  }
+
+  .ad-shade-card__text h3 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: 20px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    text-transform: none;
+  }
+
+  .ad-shade-card__text p {
+    margin: 10px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .ad-shade-card__text a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 16px;
+    color: var(--ad-accent);
+    font-size: 11px;
+    font-weight: 800;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: gap 0.2s ease;
+  }
+
+  .ad-shade-card__text a:hover {
+    gap: 11px;
+  }
+
+  .ad-shade-card__text a span {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  @media screen and (max-width: 900px) {
+    .ad-shades {
+      padding-bottom: 52px;
+    }
+
+    .ad-shades__grid {
+      gap: 16px;
+    }
+
+    .ad-shade-card__image {
+      height: 180px;
+    }
+
+    .ad-shade-card__text {
+      padding-left: 72px;
+    }
+  }
+
+  @media screen and (max-width: 650px) {
+    .ad-shades {
+      padding-bottom: 42px;
+    }
+
+    .ad-shades__container {
+      width: calc(100% - 28px);
+    }
+
+    .ad-shades__heading {
+      margin-bottom: 18px;
+    }
+
+    .ad-shades__heading h2 {
+      font-size: clamp(24px, 8vw, 34px);
+    }
+
+    .ad-shades__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .ad-shade-card__image {
+      height: 220px;
+    }
+
+    .ad-shade-card__body {
+      min-height: 148px;
+      padding: 28px 20px 20px;
+    }
+
+    .ad-shade-card__icon {
+      left: 20px;
+    }
+
+    .ad-shade-card__text {
+      padding-left: 74px;
+    }
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "AutoDrape Shade Types",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "full_image",
+      "label": "Full Shades Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "half_image",
+      "label": "Half Shades Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "front_back_image",
+      "label": "Front + Back Shades Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AutoDrape Shade Types"
+    }
+  ]
+}
+{% endschema %}

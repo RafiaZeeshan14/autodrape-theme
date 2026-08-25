@@ -1,0 +1,75 @@
+{% doc %}
+  Renders the full "Shop by car" selection experience.
+
+  Shows a page header and the Brand → Model → Year → Find Products
+  selector, backed by the existing `car_brand` and `car_model`
+  metaobjects via the autodrape-car-selector snippet.
+
+  Deep links such as `/pages/shop-by-car?brand=toyota&model=corolla&year=2021`
+  pre-select the relevant values through the selector snippet's URL
+  query-param handling.
+
+  @example
+  {% render 'shop-by-car-content' %}
+{% enddoc %}
+
+<div class="shop-by-car-page">
+
+  <!-- Generic selector — visible when no brand is selected -->
+  <div class="shop-by-car-page__selector" data-ad-sbc-selector>
+    <div class="shop-by-car-page__header">
+      <h1>SHOP BY CAR</h1>
+      <p>Select your car brand, model and year to find compatible products.</p>
+    </div>
+
+    {% render 'autodrape-car-selector' %}
+  </div>
+
+  <!-- Brand-specific models view — shown by JS when ?brand= is present -->
+  {% render 'shop-by-car-models' %}
+
+</div>
+
+<style>
+  .shop-by-car-page {
+    width: 100%;
+    padding: 60px 20px 80px;
+    background: #fff;
+    color: var(--ad-text);
+  }
+
+  .shop-by-car-page__header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .shop-by-car-page__header h1 {
+    margin: 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #111;
+  }
+
+  .shop-by-car-page__header p {
+    margin: 12px 0 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 15px;
+    color: #666;
+  }
+
+  .shop-by-car-page .autodrape-car-selector {
+    margin: 0 auto;
+  }
+
+  @media screen and (max-width: 640px) {
+    .shop-by-car-page {
+      padding: 40px 14px 60px;
+    }
+
+    .shop-by-car-page__header h1 {
+      font-size: 32px;
+    }
+  }
+</style>

@@ -1,0 +1,37 @@
+{% style %}
+  {% # Loads all font variantions with display: swap %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-body--family: 'Inter', {{ settings.type_primary_font.fallback_families }};
+    --font-display--family: 'Montserrat', {{ settings.type_primary_font.fallback_families }};
+    --page-width: {{ settings.max_page_width }};
+    --page-margin: {{ settings.min_page_margin }}px;
+    --color-background: {{ settings.background_color }};
+    --color-foreground: {{ settings.foreground_color }};
+    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    --ad-bg: #faf8f6;
+    --ad-surface: rgba(255, 255, 255, 0.88);
+    --ad-surface-strong: #ffffff;
+    --ad-surface-dark: #111111;
+    --ad-text: #111111;
+    --ad-text-soft: #5d5d5d;
+    --ad-text-muted: #7a7a7a;
+    --ad-border: rgba(17, 17, 17, 0.08);
+    --ad-border-strong: rgba(17, 17, 17, 0.14);
+    --ad-accent: #7d1515;
+    --ad-accent-strong: #5f1010;
+    --ad-accent-soft: rgba(125, 21, 21, 0.1);
+    --ad-shadow-lg: 0 28px 80px rgba(18, 16, 13, 0.12);
+    --ad-shadow-md: 0 16px 44px rgba(18, 16, 13, 0.08);
+    --ad-radius-xl: 28px;
+    --ad-radius-lg: 22px;
+    --ad-radius-md: 16px;
+  }
+{% endstyle %}

@@ -1,0 +1,79 @@
+<section class="autodrape-top-products">
+  <div class="autodrape-top-products__inner">
+    <div class="top-products__header">
+      <h2>SHOP OUR <span>TOP PRODUCTS</span></h2>
+      <a href="/collections/all" class="view-all">VIEW ALL PRODUCTS →</a>
+    </div>
+
+    <div class="products-grid">
+      {% comment %} Replace the static placeholders with a product loop or include when integrating {% endcomment %}
+      <div class="product-card">
+        <div class="img"><img src="{{ 'products/p1.jpg' | asset_url }}" alt="Product"></div>
+        <div class="meta">
+          <div class="name">Full Window Covered UV Sunshades (4-side)</div>
+          <a class="btn" href="#">SHOP NOW</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="img"><img src="{{ 'products/p2.jpg' | asset_url }}" alt="Product"></div>
+        <div class="meta">
+          <div class="name">Front Half + Back Window UV Sunshades (4-side)</div>
+          <a class="btn" href="#">SHOP NOW</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="img"><img src="{{ 'products/p3.jpg' | asset_url }}" alt="Product"></div>
+        <div class="meta">
+          <div class="name">Front Windshield UV Sunshade</div>
+          <a class="btn" href="#">SHOP NOW</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="img"><img src="{{ 'products/p4.jpg' | asset_url }}" alt="Product"></div>
+        <div class="meta">
+          <div class="name">Rear Window UV Sunshade</div>
+          <a class="btn" href="#">SHOP NOW</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="img"><img src="{{ 'products/p5.jpg' | asset_url }}" alt="Product"></div>
+        <div class="meta">
+          <div class="name">Car Top Cover - PVC + Cotton Dual-layer</div>
+          <a class="btn" href="#">SHOP NOW</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    .autodrape-top-products { padding: 36px 5%; background:#fff; }
+    .autodrape-top-products__inner { max-width:1200px; margin:0 auto; }
+    .top-products__header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .top-products__header h2 { font-family:'Barlow Condensed',sans-serif; font-size:22px; }
+    .top-products__header h2 span { color:#a90000; }
+    .top-products__header .view-all { color:#222; font-weight:700; text-decoration:none; }
+
+    .products-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:18px; }
+    .product-card { border:1px solid #eee; border-radius:8px; overflow:hidden; display:flex; flex-direction:column; background:#fff; }
+    .product-card .img { height:140px; background:#f6f6f6; display:flex; align-items:center; justify-content:center; }
+    .product-card .img img { max-width:100%; max-height:100%; object-fit:cover; }
+    .product-card .meta { padding:12px; display:flex; flex-direction:column; gap:10px; }
+    .product-card .name { font-size:13px; color:#222; font-weight:700; }
+    .product-card .btn { display:inline-block; background:#a90000; color:#fff; padding:8px 10px; border-radius:6px; text-decoration:none; font-weight:700; font-size:13px; }
+
+    @media screen and (max-width:1100px) { .products-grid { grid-template-columns: repeat(3,1fr); } }
+    @media screen and (max-width:749px) { .products-grid { grid-template-columns: repeat(2,1fr); } .top-products__header { flex-direction:column; gap:10px; align-items:flex-start; } }
+  </style>
+
+{% schema %}
+{
+  "name": "AutoDrape Top Products",
+  "settings": [],
+  "presets": [{ "name": "AutoDrape Top Products" }]
+}
+{% endschema %}

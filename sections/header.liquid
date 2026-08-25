@@ -1,0 +1,188 @@
+<header class="ad-header">
+  <div class="ad-header__inner">
+
+    <!-- LOGO -->
+    <a href="{{ routes.root_url }}" class="ad-header__logo" aria-label="{{ shop.name }}">
+      <img
+        src="{{ 'logo.png' | asset_url }}"
+        alt="{{ shop.name }}"
+        loading="eager"
+      >
+    </a>
+
+    <!-- DESKTOP NAVIGATION -->
+    <nav class="ad-header__nav" aria-label="Main navigation">
+
+      <!-- HOME -->
+      <a
+        href="{{ routes.root_url }}"
+        class="ad-header__link {% if request.page_type == 'index' %}ad-header__link--active{% endif %}"
+      >
+        HOME
+      </a>
+
+      <!-- SHOP BY CAR -->
+      <a
+        href="/pages/shop-by-car"
+        class="ad-header__link {% if request.path == '/pages/shop-by-car' %}ad-header__link--active{% endif %}"
+      >
+        SHOP BY CAR
+      </a>
+
+      <!-- ALL PRODUCTS -->
+      <a
+        href="{{ routes.all_products_collection_url }}"
+        class="ad-header__link {% if request.path == routes.all_products_collection_url %}ad-header__link--active{% endif %}"
+      >
+        ALL PRODUCTS
+      </a>
+
+      <!-- ABOUT -->
+      <a
+        href="/pages/about-us"
+        class="ad-header__link {% if request.path == '/pages/about-us' %}ad-header__link--active{% endif %}"
+      >
+        ABOUT US
+      </a>
+
+      <!-- CONTACT -->
+      <a
+        href="/pages/contact"
+        class="ad-header__link {% if request.path == '/pages/contact' %}ad-header__link--active{% endif %}"
+      >
+        CONTACT US
+      </a>
+
+    </nav>
+
+    <!-- HEADER ACTIONS -->
+    <div class="ad-header__actions">
+
+      <!-- SEARCH -->
+      <a
+        href="{{ routes.search_url }}"
+        class="ad-header__icon"
+        aria-label="Search"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16L21 21"></path>
+        </svg>
+      </a>
+
+      <!-- ACCOUNT -->
+      <a
+        href="{{ routes.account_url }}"
+        class="ad-header__icon"
+        aria-label="Account"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8.5" r="3.5"></circle>
+          <path d="M5.5 19.5c1.7-3 4-4.5 6.5-4.5s4.8 1.5 6.5 4.5"></path>
+        </svg>
+      </a>
+
+      <!-- CART -->
+      <a
+        href="{{ routes.cart_url }}"
+        class="ad-header__cart"
+        aria-label="Cart"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 4H5L7.2 15.2C7.4 16.2 8.3 17 9.4 17H17.5C18.5 17 19.3 16.3 19.6 15.4L21 8H6"></path>
+          <circle cx="9.5" cy="20" r="1.4"></circle>
+          <circle cx="17.5" cy="20" r="1.4"></circle>
+        </svg>
+
+        <span class="ad-header__cart-count">
+          {{ cart.item_count }}
+        </span>
+      </a>
+
+      <!-- MOBILE MENU -->
+      <button
+        type="button"
+        class="ad-header__menu"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MOBILE NAVIGATION -->
+  <div class="ad-header__mobile" aria-label="Mobile navigation">
+
+    <a
+      href="{{ routes.root_url }}"
+      class="{% if request.page_type == 'index' %}active{% endif %}"
+    >
+      HOME
+    </a>
+
+    <a
+      href="/pages/shop-by-car"
+      class="{% if request.path == '/pages/shop-by-car' %}active{% endif %}"
+    >
+      SHOP BY CAR
+    </a>
+
+    <a
+      href="{{ routes.all_products_collection_url }}"
+      class="{% if request.path == routes.all_products_collection_url %}active{% endif %}"
+    >
+      ALL PRODUCTS
+    </a>
+
+    <a
+      href="/pages/about-us"
+      class="{% if request.path == '/pages/about-us' %}active{% endif %}"
+    >
+      ABOUT US
+    </a>
+
+    <a
+      href="/pages/contact"
+      class="{% if request.path == '/pages/contact' %}active{% endif %}"
+    >
+      CONTACT US
+    </a>
+
+  </div>
+</header>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const menuButton = document.querySelector('.ad-header__menu');
+    const mobileMenu = document.querySelector('.ad-header__mobile');
+
+    if (!menuButton || !mobileMenu) return;
+
+    menuButton.addEventListener('click', function () {
+      const isOpen = mobileMenu.classList.toggle('is-open');
+
+      menuButton.setAttribute(
+        'aria-expanded',
+        isOpen ? 'true' : 'false'
+      );
+    });
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "AutoDrape Header",
+  "settings": [],
+  "presets": [
+    {
+      "name": "AutoDrape Header"
+    }
+  ]
+}
+{% endschema %}

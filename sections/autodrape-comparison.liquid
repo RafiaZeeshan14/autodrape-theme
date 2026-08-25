@@ -1,0 +1,360 @@
+<section class="ad-comparison">
+  <div class="ad-comparison__container">
+    <div class="ad-comparison__intro">
+      <div class="ad-comparison__eyebrow">Choose the right fit</div>
+      <h2>
+        Full Shades<br>
+        <span>vs</span><br>
+        Half Shades
+      </h2>
+      <p>Choose the shade that best fits your driving style and coverage needs.</p>
+      <a href="/collections/all" class="ad-comparison__button">
+        Choose Your Shade
+        <span>→</span>
+      </a>
+    </div>
+
+    <div class="ad-comparison__table-wrap">
+      <table class="ad-comparison__table">
+        <thead>
+          <tr>
+            <th>Features</th>
+            <th>Full Shades</th>
+            <th>Half Shades</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Coverage</td>
+            <td>Complete</td>
+            <td>Partial</td>
+          </tr>
+          <tr>
+            <td>Privacy</td>
+            <td>High</td>
+            <td>Moderate</td>
+          </tr>
+          <tr>
+            <td>UV Protection</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Heat Protection</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Best For</td>
+            <td>Maximum protection</td>
+            <td>Quick everyday use</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ad-comparison__promo">
+      {% if section.settings.promo_image != blank %}
+        <img
+          src="{{ section.settings.promo_image | image_url: width: 900 }}"
+          alt="AutoDrape sunshades"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="ad-comparison__promo-placeholder">
+          <div class="ad-comparison__promo-shade"></div>
+        </div>
+      {% endif %}
+
+      <div class="ad-comparison__promo-overlay">
+        <h3>Drive <span>cooler.</span><br>Drive <span>better.</span></h3>
+        <a href="/collections/all">
+          Choose Your Shade
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ad-comparison {
+    width: 100%;
+    padding: 24px 0 68px;
+    color: var(--ad-text);
+  }
+
+  .ad-comparison__container {
+    width: min(100% - 48px, 1320px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px minmax(420px, 1fr) 340px;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .ad-comparison__intro {
+    padding-left: 6px;
+  }
+
+  .ad-comparison__eyebrow {
+    margin-bottom: 12px;
+    color: var(--ad-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .ad-comparison__intro h2 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: clamp(30px, 3vw, 46px);
+    line-height: 0.98;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .ad-comparison__intro h2 span {
+    color: var(--ad-accent);
+  }
+
+  .ad-comparison__intro p {
+    margin: 18px 0 20px;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ad-comparison__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 18px 30px rgba(216, 31, 25, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .ad-comparison__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 34px rgba(216, 31, 25, 0.28);
+  }
+
+  .ad-comparison__table-wrap {
+    overflow: hidden;
+    border-radius: var(--ad-radius-xl);
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    box-shadow: var(--ad-shadow-md);
+  }
+
+  .ad-comparison__table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: var(--ad-text);
+  }
+
+  .ad-comparison__table th {
+    height: 48px;
+    padding: 10px 12px;
+    background: rgba(17, 17, 17, 0.95);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ad-comparison__table th:last-child,
+  .ad-comparison__table td:last-child {
+    border-right: 0;
+  }
+
+  .ad-comparison__table td {
+    height: 44px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-right: 1px solid rgba(17, 17, 17, 0.08);
+    border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+    color: var(--ad-text-soft);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .ad-comparison__table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .ad-comparison__table td:first-child {
+    text-align: left;
+    color: var(--ad-text);
+    font-weight: 700;
+  }
+
+  .ad-comparison__table .check {
+    color: var(--ad-accent);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .ad-comparison__promo {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
+    border-radius: var(--ad-radius-xl);
+    background: #111111;
+    box-shadow: var(--ad-shadow-md);
+  }
+
+  .ad-comparison__promo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ad-comparison__promo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at top right, rgba(216, 31, 25, 0.2), transparent 20%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.48) 46%, rgba(0, 0, 0, 0.14) 100%);
+  }
+
+  .ad-comparison__promo-placeholder {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 55%, #5a5147 0%, #2a2521 28%, #09090b 74%);
+  }
+
+  .ad-comparison__promo-shade {
+    position: absolute;
+    width: 75%;
+    height: 48%;
+    left: -10%;
+    top: 28%;
+    border-radius: 50%;
+    border: 12px solid rgba(255, 255, 255, 0.08);
+    transform: rotate(-8deg);
+    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.08);
+  }
+
+  .ad-comparison__promo-overlay {
+    position: relative;
+    z-index: 2;
+    min-height: 280px;
+    padding: 34px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .ad-comparison__promo-overlay h3 {
+    margin: 0 0 18px;
+    color: #ffffff;
+    font-size: 30px;
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .ad-comparison__promo-overlay h3 span {
+    color: #f15d56;
+  }
+
+  .ad-comparison__promo-overlay a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .ad-comparison__container {
+      width: calc(100% - 32px);
+      grid-template-columns: 220px minmax(320px, 1fr) 280px;
+      gap: 14px;
+    }
+
+    .ad-comparison__intro h2 {
+      font-size: clamp(28px, 3vw, 36px);
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .ad-comparison {
+      padding-bottom: 48px;
+    }
+
+    .ad-comparison__container {
+      width: calc(100% - 28px);
+      grid-template-columns: 1fr;
+    }
+
+    .ad-comparison__intro {
+      padding: 0;
+      text-align: center;
+    }
+
+    .ad-comparison__intro p {
+      margin: 12px 0 16px;
+    }
+
+    .ad-comparison__table-wrap {
+      overflow-x: auto;
+    }
+
+    .ad-comparison__table {
+      min-width: 560px;
+    }
+
+    .ad-comparison__promo {
+      min-height: 240px;
+    }
+
+    .ad-comparison__promo-overlay {
+      min-height: 240px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "AutoDrape Comparison",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Promo image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AutoDrape Comparison"
+    }
+  ]
+}
+{% endschema %}

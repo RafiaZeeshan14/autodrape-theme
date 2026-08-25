@@ -1,0 +1,263 @@
+<section class="ad-how">
+  <div class="ad-how__container">
+    <div class="ad-how__heading">
+      <h2>HOW IT WORKS</h2>
+      <p>Get the perfect sunshades for your car in 3 simple steps.</p>
+    </div>
+
+    <div class="ad-how__steps">
+      <div class="ad-how__step">
+        <div class="ad-how__number">01</div>
+        <div class="ad-how__icon">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M8 39L12 25C13 21 16 19 20 19H44C48 19 51 21 52 25L56 39"/>
+            <path d="M8 39H56V50H8Z"/>
+            <circle cx="17" cy="46" r="3"/>
+            <circle cx="47" cy="46" r="3"/>
+            <path d="M19 19L23 12H41L45 19"/>
+          </svg>
+        </div>
+        <h3>SELECT YOUR CAR</h3>
+        <p>Choose brand, model &amp; year.</p>
+      </div>
+
+      <div class="ad-how__arrow">
+        <svg viewBox="0 0 48 24" aria-hidden="true">
+          <path d="M2 12H40"/>
+          <path d="M31 4L40 12L31 20"/>
+        </svg>
+      </div>
+
+      <div class="ad-how__step">
+        <div class="ad-how__number">02</div>
+        <div class="ad-how__icon">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="8" y="15" width="48" height="34" rx="5"/>
+            <path d="M32 15V49"/>
+            <path d="M15 23H25"/>
+            <path d="M39 23H49"/>
+            <path d="M15 41H25"/>
+            <path d="M39 41H49"/>
+          </svg>
+        </div>
+        <h3>CHOOSE YOUR SHADES</h3>
+        <p>Select the shade type you need.</p>
+      </div>
+
+      <div class="ad-how__arrow">
+        <svg viewBox="0 0 48 24" aria-hidden="true">
+          <path d="M2 12H40"/>
+          <path d="M31 4L40 12L31 20"/>
+        </svg>
+      </div>
+
+      <div class="ad-how__step">
+        <div class="ad-how__number">03</div>
+        <div class="ad-how__icon">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M8 11H15L19 39H50L56 20H18"/>
+            <circle cx="24" cy="51" r="4"/>
+            <circle cx="45" cy="51" r="4"/>
+            <path d="M28 28L34 34L45 23"/>
+          </svg>
+        </div>
+        <h3>ORDER ONLINE</h3>
+        <p>Add to cart and checkout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ad-how {
+    width: 100%;
+    padding: 8px 0 64px;
+    color: var(--ad-text);
+  }
+
+  .ad-how__container {
+    width: min(100% - 48px, 1080px);
+    margin: 0 auto;
+  }
+
+  .ad-how__heading {
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .ad-how__heading h2 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: clamp(28px, 2.6vw, 44px);
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .ad-how__heading p {
+    margin: 10px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .ad-how__steps {
+    display: grid;
+    grid-template-columns: 1fr 64px 1fr 64px 1fr;
+    align-items: center;
+  }
+
+  .ad-how__step {
+    position: relative;
+    min-height: 190px;
+    padding: 30px 18px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: var(--ad-radius-xl);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82));
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    box-shadow: var(--ad-shadow-md);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .ad-how__step:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px rgba(18, 16, 13, 0.14);
+  }
+
+  .ad-how__number {
+    position: absolute;
+    top: -18px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 16px 30px rgba(216, 31, 25, 0.22);
+  }
+
+  .ad-how__icon {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(216, 31, 25, 0.08);
+  }
+
+  .ad-how__icon svg {
+    width: 42px;
+    height: 42px;
+    fill: none;
+    stroke: var(--ad-accent);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ad-how__step h3 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    text-transform: none;
+  }
+
+  .ad-how__step p {
+    margin: 10px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .ad-how__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-how__arrow svg {
+    width: 48px;
+    height: 24px;
+    fill: none;
+    stroke: rgba(17, 17, 17, 0.45);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media screen and (max-width: 850px) {
+    .ad-how__container {
+      width: calc(100% - 32px);
+    }
+
+    .ad-how__steps {
+      grid-template-columns: 1fr 44px 1fr 44px 1fr;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .ad-how {
+      padding-bottom: 44px;
+    }
+
+    .ad-how__container {
+      width: calc(100% - 28px);
+    }
+
+    .ad-how__heading {
+      margin-bottom: 22px;
+    }
+
+    .ad-how__heading h2 {
+      font-size: clamp(24px, 8vw, 34px);
+    }
+
+    .ad-how__heading p {
+      font-size: 12px;
+    }
+
+    .ad-how__steps {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .ad-how__step {
+      width: min(100%, 340px);
+      min-height: 178px;
+      margin: 0 auto;
+    }
+
+    .ad-how__arrow {
+      transform: rotate(90deg);
+    }
+
+    .ad-how__arrow svg {
+      width: 40px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "AutoDrape How It Works",
+  "settings": [],
+  "presets": [
+    {
+      "name": "AutoDrape How It Works"
+    }
+  ]
+}
+{% endschema %}

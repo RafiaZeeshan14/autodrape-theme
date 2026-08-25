@@ -1,0 +1,350 @@
+<footer class="ad-footer">
+  <div class="ad-footer__inner">
+    <div class="ad-footer__top">
+      <div class="ad-footer__brand">
+        {% if section.settings.logo != blank %}
+          {{
+            section.settings.logo
+            | image_url: width: 360
+            | image_tag:
+              loading: 'lazy',
+              class: 'ad-footer__logo',
+              alt: shop.name
+          }}
+        {% else %}
+          <img
+            src="{{ 'logo.png' | asset_url }}"
+            alt="{{ shop.name }}"
+            class="ad-footer__logo"
+            loading="lazy"
+          >
+        {% endif %}
+
+        <p class="ad-footer__lede">
+          Premium car sunshades and care accessories designed for protection, comfort, and style.
+        </p>
+
+        <div class="ad-footer__socials">
+          {% if section.settings.facebook != blank %}
+            <a href="{{ section.settings.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+          {% endif %}
+
+          {% if section.settings.instagram != blank %}
+            <a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">ig</a>
+          {% endif %}
+
+          {% if section.settings.youtube != blank %}
+            <a href="{{ section.settings.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">yt</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ad-footer__columns">
+        <div class="ad-footer__column">
+          <h3>Quick Links</h3>
+          <a href="/">Home</a>
+          <a href="/pages/shop-by-car">Shop by Car</a>
+          <a href="{{ routes.all_products_collection_url }}">All Products</a>
+          <a href="/pages/about-us">About Us</a>
+          <a href="/pages/contact">Contact Us</a>
+        </div>
+
+        <div class="ad-footer__column">
+          <h3>Customer Service</h3>
+          <a href="/pages/order-tracking">Track Order</a>
+          <a href="/policies/refund-policy">Returns &amp; Exchanges</a>
+          <a href="/policies/shipping-policy">Shipping Policy</a>
+          <a href="/policies/privacy-policy">Privacy Policy</a>
+          <a href="/policies/terms-of-service">Terms &amp; Conditions</a>
+        </div>
+
+        <div class="ad-footer__column ad-footer__contact">
+          <h3>Contact Us</h3>
+          <div class="ad-footer__contact-item">
+            <span>Call</span>
+            <a href="tel:+923001234567">+92 300 1234567</a>
+          </div>
+          <div class="ad-footer__contact-item">
+            <span>Email</span>
+            <a href="mailto:info@autodrapes.com">info@autodrapes.com</a>
+          </div>
+          <div class="ad-footer__contact-item">
+            <span>Visit</span>
+            <p>Lahore, Pakistan</p>
+          </div>
+        </div>
+
+        <div class="ad-footer__column ad-footer__newsletter">
+          <h3>Newsletter</h3>
+          <p>Subscribe for the latest offers and updates.</p>
+
+          {% form 'customer', class: 'ad-footer__form' %}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <label class="visually-hidden" for="FooterEmail">Email</label>
+            <input
+              id="FooterEmail"
+              type="email"
+              name="contact[email]"
+              placeholder="Enter your email"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              required
+            >
+            <button type="submit">Subscribe</button>
+          {% endform %}
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} AutoDrape. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ad-footer {
+    width: 100%;
+    color: var(--ad-text);
+    background: #ffffff;
+    border-top: 1px solid rgba(17, 17, 17, 0.08);
+  }
+
+  .ad-footer__inner {
+    width: min(100% - 32px, 1440px);
+    margin: 0 auto;
+    padding: 48px 0 18px;
+  }
+
+  .ad-footer__top {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.95fr) minmax(0, 2.05fr);
+    gap: 30px;
+    align-items: start;
+  }
+
+  .ad-footer__brand {
+    max-width: 320px;
+  }
+
+  .ad-footer__logo {
+    width: 148px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .ad-footer__lede {
+    margin: 14px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ad-footer__socials {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .ad-footer__socials a {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    color: var(--ad-text);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #ffffff;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .ad-footer__socials a:hover {
+    transform: translateY(-2px);
+    background: rgba(125, 21, 21, 0.08);
+    border-color: rgba(125, 21, 21, 0.18);
+    color: var(--ad-accent);
+  }
+
+  .ad-footer__columns {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .ad-footer__column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ad-footer__column h3 {
+    margin: 0 0 14px;
+    color: var(--ad-text);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .ad-footer__column a {
+    margin-bottom: 9px;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .ad-footer__column a:hover {
+    color: var(--ad-accent);
+    transform: translateX(3px);
+  }
+
+  .ad-footer__contact-item {
+    margin-bottom: 10px;
+  }
+
+  .ad-footer__contact-item span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ad-text);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .ad-footer__contact-item a,
+  .ad-footer__contact-item p {
+    margin: 0;
+    color: var(--ad-text-soft);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .ad-footer__newsletter p {
+    margin: 0 0 14px;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .ad-footer__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ad-footer__form input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(17, 17, 17, 0.14);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--ad-text);
+  }
+
+  .ad-footer__form input::placeholder {
+    color: rgba(17, 17, 17, 0.45);
+  }
+
+  .ad-footer__form button {
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #a21f1f, var(--ad-accent));
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 14px 26px rgba(125, 21, 21, 0.2);
+  }
+
+  .ad-footer__form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 30px rgba(125, 21, 21, 0.24);
+  }
+
+  .ad-footer__bottom {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(17, 17, 17, 0.08);
+  }
+
+  .ad-footer__bottom p {
+    margin: 0;
+    color: var(--ad-text-muted);
+    font-size: 12px;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .ad-footer__top {
+      grid-template-columns: 1fr;
+    }
+
+    .ad-footer__brand {
+      max-width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .ad-footer__inner {
+      width: min(100% - 28px, 1440px);
+      padding-top: 42px;
+    }
+
+    .ad-footer__columns {
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 18px;
+      margin-top: 14px;
+    }
+
+    .ad-footer__bottom {
+      margin-top: 22px;
+      text-align: center;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "AutoDrape Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo"
+    },
+    {
+      "type": "url",
+      "id": "facebook",
+      "label": "Facebook"
+    },
+    {
+      "type": "url",
+      "id": "instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "youtube",
+      "label": "YouTube"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AutoDrape Footer"
+    }
+  ]
+}
+{% endschema %}

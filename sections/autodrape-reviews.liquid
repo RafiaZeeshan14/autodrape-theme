@@ -1,0 +1,277 @@
+<section class="autodrape-reviews">
+  <div class="reviews-container">
+    <div class="reviews-heading">
+      <div class="reviews-eyebrow">Customer stories</div>
+      <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.subheading }}</p>
+    </div>
+
+    <div class="reviews-grid">
+      {% for block in section.blocks %}
+        <div class="review-card" {{ block.shopify_attributes }}>
+          <div class="review-stars" aria-label="5 out of 5 stars">
+            {% for i in (1..5) %}★{% endfor %}
+          </div>
+
+          <p class="review-text">"{{ block.settings.review }}"</p>
+
+          <div class="review-author">
+            {% if block.settings.image != blank %}
+              <img
+                src="{{ block.settings.image | image_url: width: 96 }}"
+                alt="{{ block.settings.name }}"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="review-avatar">{{ block.settings.name | slice: 0 }}</div>
+            {% endif %}
+
+            <div>
+              <strong>{{ block.settings.name }}</strong>
+              <span>{{ block.settings.car }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .autodrape-reviews {
+    width: 100%;
+    padding: 44px 0 52px;
+  }
+
+  .reviews-container {
+    width: min(100% - 48px, 1200px);
+    margin: 0 auto;
+  }
+
+  .reviews-heading {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .reviews-eyebrow {
+    margin-bottom: 10px;
+    color: var(--ad-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .reviews-heading h2 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: clamp(28px, 3vw, 46px);
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+  }
+
+  .reviews-heading p {
+    margin: 10px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .review-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 230px;
+    padding: 24px 22px 20px;
+    border-radius: var(--ad-radius-lg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82));
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    box-shadow: var(--ad-shadow-md);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(18, 16, 13, 0.14);
+  }
+
+  .review-stars {
+    color: #f0a11f;
+    font-size: 16px;
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  .review-text {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: 14px;
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .review-author img,
+  .review-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .review-author img {
+    object-fit: cover;
+  }
+
+  .review-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(216, 31, 25, 0.12);
+    color: var(--ad-accent);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .review-author strong {
+    display: block;
+    color: var(--ad-text);
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .review-author span {
+    display: block;
+    color: var(--ad-text-soft);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  @media screen and (max-width: 900px) {
+    .reviews-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .autodrape-reviews {
+      padding: 36px 0 42px;
+    }
+
+    .reviews-container {
+      width: calc(100% - 28px);
+    }
+
+    .reviews-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .review-card {
+      min-height: auto;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What AutoDrape Customers Say"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Real feedback from our valued customers."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Customer image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer name",
+          "default": "Ahmed R."
+        },
+        {
+          "type": "text",
+          "id": "car",
+          "label": "Car model",
+          "default": "Toyota Corolla"
+        },
+        {
+          "type": "textarea",
+          "id": "review",
+          "label": "Review",
+          "default": "Perfect fit for my Corolla. Installation was really easy and the coverage is excellent."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "name": "Ahmed R.",
+            "car": "Toyota Corolla",
+            "review": "Perfect fit for my Corolla. Installation was really easy and the coverage is excellent."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "name": "Ayesha K.",
+            "car": "Honda Civic",
+            "review": "Build quality is great and it actually keeps the car cooler. Highly recommended!"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "name": "Bilal S.",
+            "car": "Suzuki Alto",
+            "review": "Best sunshades for my family car. Privacy and protection done right."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "name": "Hassan M.",
+            "car": "KIA Sportage",
+            "review": "Very premium quality and perfect for long drives."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

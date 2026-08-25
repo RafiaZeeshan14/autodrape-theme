@@ -1,0 +1,196 @@
+<section class="ad-brands">
+  <div class="ad-brands__container">
+
+    <div class="ad-brands__heading">
+      <div class="ad-brands__heading-left">
+        <h2>Select your car brand</h2>
+        <p>Find sunshades for 97+ car brands.</p>
+      </div>
+
+      <a href="/pages/all-brands" class="ad-brands__view-all">
+        {{ 'sections.car_models.view_all_brands' | t }}
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+    </div>
+
+    {% assign brands = metaobjects.car_brand.values %}
+
+    <div class="ad-brands__grid">
+
+      {% for brand in brands limit: 6 %}
+
+        <a
+          href="/pages/shop-by-car?brand={{ brand.system.handle | url_encode }}"
+          class="ad-brand"
+        >
+
+          {% if brand.brand_logo.value != blank %}
+            {{
+              brand.brand_logo.value
+              | image_url: width: 120
+              | image_tag:
+                loading: 'lazy',
+                class: 'ad-brand__logo',
+                alt: brand.brand_name.value
+            }}
+          {% endif %}
+
+          <span>
+            {{ brand.brand_name.value | default: brand.system.handle | replace: '-', ' ' | upcase }}
+          </span>
+
+        </a>
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+
+<style>
+  .ad-brands {
+    width: 100%;
+    padding: 10px 0 44px;
+    color: var(--ad-text);
+    background: #fff;
+  }
+
+  .ad-brands__container {
+    width: min(100% - 48px, 1280px);
+    margin: 0 auto;
+  }
+
+  .ad-brands__heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .ad-brands__heading-left {
+    text-align: left;
+  }
+
+  .ad-brands__heading h2 {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: clamp(28px, 2.8vw, 42px);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+
+  .ad-brands__heading p {
+    margin: 8px 0 0;
+    color: var(--ad-text-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .ad-brands__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+    color: var(--ad-accent, #7d1515);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color .2s ease, transform .2s ease;
+  }
+
+  .ad-brands__view-all:hover {
+    color: var(--ad-accent-strong, #5f1010);
+    transform: translateX(3px);
+  }
+
+  .ad-brands__grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .ad-brand {
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid rgba(17,17,17,.08);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(17,17,17,.04);
+    transition: .2s ease;
+  }
+
+  .ad-brand:hover {
+    transform: translateY(-3px);
+    border-color: rgba(125,21,21,.22);
+    box-shadow: 0 14px 30px rgba(17,17,17,.08);
+  }
+
+  .ad-brand__logo {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ad-brand span {
+    color: var(--ad-text);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .ad-brands__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .ad-brands__container {
+      width: calc(100% - 28px);
+    }
+
+    .ad-brands__heading {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .ad-brands__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "AutoDrape Brands",
+  "settings": [],
+  "presets": [
+    {
+      "name": "AutoDrape Brands"
+    }
+  ]
+}
+{% endschema %}

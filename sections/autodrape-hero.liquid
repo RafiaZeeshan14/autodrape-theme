@@ -1,0 +1,878 @@
+<section class="autodrape-hero">
+  <div class="autodrape-hero__inner">
+
+    <!-- =========================
+         HERO BACKGROUND / CAR
+         ========================= -->
+    <div class="autodrape-hero__visual">
+      <img
+        src="{{ 'heroimage.png' | asset_url }}"
+        alt="AutoDrape premium car sunshades"
+        class="autodrape-hero__car"
+        loading="eager"
+      >
+    </div>
+
+
+    <!-- =========================
+         LEFT CONTENT
+         ========================= -->
+    <div class="autodrape-hero__content">
+
+      <div class="autodrape-hero__eyebrow">
+        PREMIUM PROTECTION
+      </div>
+
+      <h1 class="autodrape-hero__title">
+        <span>PERFECT FIT</span>
+        <strong>FOR YOUR CAR</strong>
+      </h1>
+
+      <p class="autodrape-hero__description">
+        Custom-Fit Car Shades &amp; Accessories<br>
+        Engineered for Comfort. Built for Protection.
+      </p>
+
+
+      <!-- BENEFITS -->
+      <div class="autodrape-hero__benefits">
+
+        <div class="autodrape-benefit">
+          <div class="autodrape-benefit__icon">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="11"></circle>
+              <path d="M32 4v9M32 51v9M4 32h9M51 32h9"></path>
+              <path d="M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7"></path>
+              <path d="M27 29h10l-2 9h-6z"></path>
+            </svg>
+          </div>
+          <div class="autodrape-benefit__title">
+            UV PROTECTION
+          </div>
+        </div>
+
+
+        <div class="autodrape-benefit">
+          <div class="autodrape-benefit__icon">
+            <svg viewBox="0 0 64 64">
+              <rect x="17" y="17" width="30" height="30" rx="3"></rect>
+              <path d="M9 22V14a5 5 0 0 1 5-5h8"></path>
+              <path d="M55 22V14a5 5 0 0 0-5-5h-8"></path>
+              <path d="M9 42v8a5 5 0 0 0 5 5h8"></path>
+              <path d="M55 42v8a5 5 0 0 1-5 5h-8"></path>
+            </svg>
+          </div>
+          <div class="autodrape-benefit__title">
+            CUSTOM FIT
+          </div>
+        </div>
+
+
+        <div class="autodrape-benefit">
+          <div class="autodrape-benefit__icon">
+            <svg viewBox="0 0 64 64">
+              <path d="M32 7l22 8v16c0 14-9 23-22 27C19 54 10 45 10 31V15z"></path>
+              <path d="M23 32l6 6 13-14"></path>
+            </svg>
+          </div>
+          <div class="autodrape-benefit__title">
+            PREMIUM QUALITY
+          </div>
+        </div>
+
+
+        <div class="autodrape-benefit">
+          <div class="autodrape-benefit__icon">
+            <svg viewBox="0 0 64 64">
+              <circle cx="23" cy="26" r="9"></circle>
+              <circle cx="41" cy="26" r="9"></circle>
+              <path d="M15 39c-7 2-10 7-10 12"></path>
+              <path d="M49 39c7 2 10 7 10 12"></path>
+              <path d="M32 20v24"></path>
+              <path d="M25 32l7 7 7-7"></path>
+            </svg>
+          </div>
+          <div class="autodrape-benefit__title">
+            EASY TO USE
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- =========================
+         VEHICLE SELECTOR
+         ========================= -->
+   <!-- EXISTING CAR SELECTOR -->
+<div class="autodrape-hero__finder-slot">
+  {% render 'autodrape-car-selector' %}
+</div>
+
+  </div>
+</section>
+
+
+<style>
+
+/* =========================================================
+   FONTS
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,600;1,700;1,800&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.autodrape-hero {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 680px;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: visible;
+
+  background: #fff;
+}
+
+
+.autodrape-hero__inner {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 680px;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   BACKGROUND / CAR IMAGE
+   ========================================================= */
+
+.autodrape-hero__visual {
+  position: absolute;
+
+  z-index: 1;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+}
+
+
+.autodrape-hero__car {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center center;
+}
+
+
+/* =========================================================
+   LEFT CONTENT
+   ========================================================= */
+
+.autodrape-hero__content {
+  position: relative;
+
+  z-index: 5;
+
+  width: 48%;
+
+  padding-left: 5%;
+
+  padding-top: 78px;
+
+  box-sizing: border-box;
+}
+
+
+.autodrape-hero__eyebrow {
+  margin: 0 0 15px;
+
+  color: #111;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  letter-spacing: .04em;
+
+  line-height: 1;
+}
+
+
+.autodrape-hero__title {
+  margin: 0;
+
+  padding: 0;
+
+  font-family: 'Barlow Condensed', sans-serif;
+
+  font-size: clamp(68px, 6.2vw, 96px);
+
+  font-weight: 800;
+
+  line-height: .88;
+
+  letter-spacing: -.025em;
+
+  text-transform: uppercase;
+}
+
+
+.autodrape-hero__title span {
+  display: block;
+
+  color: #a90000;
+
+  font-family: 'Barlow Condensed', sans-serif;
+
+  font-weight: 800;
+
+  font-style: italic;
+
+  letter-spacing: -.02em;
+
+  white-space: nowrap;
+}
+
+
+.autodrape-hero__title strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #111;
+
+  font-family: 'Barlow Condensed', sans-serif;
+
+  font-weight: 800;
+
+  font-style: normal;
+
+  letter-spacing: -.025em;
+
+  white-space: nowrap;
+}
+
+
+.autodrape-hero__description {
+  margin: 38px 0 0;
+
+  color: #252525;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 19px;
+
+  font-weight: 500;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   BENEFITS
+   ========================================================= */
+
+.autodrape-hero__benefits {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 40px;
+
+  margin-top: 47px;
+}
+
+
+.autodrape-benefit {
+  width: 100px;
+
+  text-align: center;
+}
+
+
+.autodrape-benefit__icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 12px;
+}
+
+
+.autodrape-benefit__icon svg {
+  width: 50px;
+  height: 50px;
+
+  fill: none;
+
+  stroke: #171717;
+
+  stroke-width: 2;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+.autodrape-benefit__title {
+  color: #111;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   FINDER POSITION
+   ========================================================= */
+
+.autodrape-hero__finder-slot {
+  position: absolute;
+
+  z-index: 20;
+
+  right: 7%;
+
+  /*
+    Raised higher to provide enough space below for native <select>
+    dropdowns to open downward. Keeps the card visually inside the hero.
+  */
+  bottom: 120px;
+
+  width: 43%;
+
+  max-width: 700px;
+
+  pointer-events: none;
+
+  box-sizing: border-box;
+}
+
+
+.autodrape-hero__finder-slot > * {
+  pointer-events: auto;
+}
+
+
+/* =========================================================
+   FINDER CARD
+   ========================================================= */
+
+.autodrape-finder {
+  width: 100%;
+
+  padding: 20px 22px 19px;
+
+  background: rgba(255,255,255,.98);
+
+  border: 1px solid rgba(255,255,255,.9);
+
+  border-radius: 16px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.12),
+    0 4px 12px rgba(0,0,0,.05);
+
+  font-family: 'Montserrat', sans-serif;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+
+/* =========================================================
+   FINDER STEPS
+   ========================================================= */
+
+.autodrape-finder__steps {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  gap: 8px;
+
+  margin: 0;
+}
+
+
+.autodrape-finder__steps .step {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(0,0,0,.025);
+
+  color: #888;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+.autodrape-finder__steps .step .num {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #dedede;
+
+  color: #666;
+
+  font-size: 12px;
+
+  font-weight: 800;
+}
+
+
+.autodrape-finder__steps .step.active {
+  color: #a50000;
+
+  background: rgba(165,0,0,.06);
+}
+
+
+.autodrape-finder__steps .step.active .num {
+  background: #a50000;
+
+  color: #fff;
+}
+
+
+/* =========================================================
+   SELECT FIELDS
+   ========================================================= */
+
+.autodrape-finder__body {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+
+.autodrape-finder .field {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.autodrape-finder .field label {
+  display: block;
+
+  color: #666;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+
+.autodrape-finder .field select {
+  width: 100%;
+
+  height: 46px;
+
+  padding: 0 12px;
+
+  border: 1px solid #e1e1e1;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  color: #222;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  box-sizing: border-box;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+.autodrape-finder .field select:focus {
+  border-color: #a50000;
+
+  box-shadow: 0 0 0 2px rgba(165,0,0,.08);
+}
+
+
+/* =========================================================
+   FIND PRODUCTS BUTTON
+   ========================================================= */
+
+.autodrape-finder__cta {
+  width: 100%;
+
+  margin-top: 0;
+}
+
+
+.autodrape-finder .btn-find {
+  width: 100%;
+
+  height: 46px;
+
+  border: 0;
+
+  border-radius: 7px;
+
+  background: #a50000;
+
+  color: #fff;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  letter-spacing: .01em;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    transform .2s ease;
+}
+
+
+.autodrape-finder .btn-find:hover {
+  background: #8c0000;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   LARGE DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1200px) {
+
+  .autodrape-hero__finder-slot {
+    right: 7%;
+
+    bottom: 28px;
+
+    width: 43%;
+
+    max-width: 700px;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+  .autodrape-hero__inner {
+    min-height: 600px;
+  }
+
+
+  .autodrape-hero__content {
+    width: 50%;
+
+    padding-left: 4%;
+
+    padding-top: 65px;
+  }
+
+
+  .autodrape-hero__title {
+    font-size: clamp(48px, 5.5vw, 70px);
+  }
+
+
+  .autodrape-hero__description {
+    font-size: 16px;
+
+    margin-top: 28px;
+  }
+
+
+  .autodrape-hero__benefits {
+    gap: 20px;
+
+    margin-top: 34px;
+  }
+
+
+  .autodrape-hero__finder-slot {
+    right: 4%;
+
+    bottom: 20px;
+
+    width: 55%;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+
+  .autodrape-hero {
+    min-height: auto;
+
+    overflow: hidden;
+  }
+
+
+  .autodrape-hero__inner {
+    min-height: auto;
+
+    padding-bottom: 30px;
+  }
+
+
+  .autodrape-hero__content {
+    width: 100%;
+
+    padding: 45px 22px 0;
+
+    text-align: center;
+  }
+
+
+  .autodrape-hero__eyebrow {
+    font-size: 13px;
+
+    margin-bottom: 12px;
+  }
+
+
+  .autodrape-hero__title {
+    font-size: clamp(40px, 11vw, 58px);
+
+    line-height: .95;
+  }
+
+
+  .autodrape-hero__title span,
+  .autodrape-hero__title strong {
+    white-space: normal;
+  }
+
+
+  .autodrape-hero__description {
+    margin-top: 22px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+  }
+
+
+  .autodrape-hero__benefits {
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top: 28px;
+
+    flex-wrap: wrap;
+  }
+
+
+  .autodrape-benefit {
+    width: 75px;
+  }
+
+
+  .autodrape-benefit__icon {
+    width: 45px;
+    height: 45px;
+
+    margin-bottom: 8px;
+  }
+
+
+  .autodrape-benefit__icon svg {
+    width: 38px;
+    height: 38px;
+  }
+
+
+  .autodrape-benefit__title {
+    font-size: 9px;
+
+    white-space: normal;
+  }
+
+
+  .autodrape-hero__visual {
+    position: relative;
+
+    inset: auto;
+
+    width: 100%;
+
+    height: 280px;
+
+    margin-top: 15px;
+  }
+
+
+  .autodrape-hero__car {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+  }
+
+
+  .autodrape-hero__finder-slot {
+    position: relative;
+
+    right: auto;
+    bottom: auto;
+
+    width: calc(100% - 30px);
+
+    max-width: none;
+
+    margin: -30px auto 0;
+  }
+
+
+  .autodrape-finder {
+    padding: 16px;
+
+    border-radius: 12px;
+  }
+
+
+  .autodrape-finder__steps {
+    gap: 4px;
+  }
+
+
+  .autodrape-finder__steps .step {
+    padding: 5px 7px;
+
+    font-size: 9px;
+  }
+
+
+  .autodrape-finder__steps .step .num {
+    width: 25px;
+    height: 25px;
+
+    font-size: 10px;
+  }
+
+
+  .autodrape-finder__body {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+}
+
+</style>
+
+
+{% schema %}
+{
+  "name": "AutoDrape Hero",
+  "tag": "section",
+  "class": "autodrape-hero-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "AutoDrape Hero"
+    }
+  ]
+}
+{% endschema %}

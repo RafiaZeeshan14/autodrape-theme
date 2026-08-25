@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "car-results",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

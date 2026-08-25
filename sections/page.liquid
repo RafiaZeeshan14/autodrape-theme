@@ -1,0 +1,31 @@
+{% comment %}
+  This section is used in the page template to render store pages like About us
+  or Contact us.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
+
+  Fallback: when the requested page is one of the specialized custom pages
+  (e.g. car-results, shop-by-car) but the merchant has not assigned the
+  dedicated custom template to the page in the admin, render the correct
+  content instead of just the page title. This keeps those URLs working
+  regardless of the admin template assignment.
+{% endcomment %}
+
+{% if page.handle == 'car-results' %}
+  {% render 'car-results-content' %}
+{% elsif page.handle == 'shop-by-car' %}
+  {% render 'shop-by-car-content' %}
+{% elsif page.handle == 'all-brands' %}
+  {% render 'all-brands-content' %}
+{% else %}
+  <h1>{{ page.title }}</h1>
+
+  {{ page.content }}
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:general.page",
+  "settings": []
+}
+{% endschema %}

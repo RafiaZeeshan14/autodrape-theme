@@ -1,0 +1,181 @@
+/**
+ * Critical CSS for the theme.
+ * Reference-aligned foundation: bright white canvas, maroon accents, clean spacing.
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: var(--font-body--family);
+  background:
+    radial-gradient(circle at top left, rgba(125, 21, 21, 0.07), transparent 22%),
+    linear-gradient(180deg, #ffffff 0%, #fbfaf8 100%);
+  color: var(--ad-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::selection {
+  background: var(--ad-accent);
+  color: #ffffff;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  border-radius: var(--style-border-radius-inputs);
+}
+
+select {
+  background-color: #ffffff;
+  color: currentcolor;
+}
+
+dialog {
+  background-color: #ffffff;
+  color: var(--ad-text);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ad-accent);
+  outline-offset: 3px;
+}
+
+.shopify-section {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.shopify-section > * {
+  width: 100%;
+}
+
+.shopify-section > :is(
+  .ad-hero,
+  .ad-find-car,
+  .ad-shades,
+  .ad-protection,
+  .ad-how,
+  .ad-showcase,
+  .ad-comparison,
+  .autodrape-reviews,
+  .autodrape-faq,
+  .autodrape-contact,
+  .ad-brands,
+  .ad-footer
+) {
+  animation: adSectionIn 0.8s ease both;
+}
+
+.shopify-section > :is(
+  .ad-hero,
+  .ad-find-car,
+  .ad-shades,
+  .ad-protection,
+  .ad-how,
+  .ad-showcase,
+  .ad-comparison,
+  .autodrape-reviews,
+  .autodrape-faq,
+  .autodrape-contact,
+  .ad-brands
+) :is(h1, h2, h3) {
+  font-family: var(--font-display--family);
+  letter-spacing: -0.04em;
+}
+
+.shopify-section > :is(
+  .ad-hero,
+  .ad-find-car,
+  .ad-shades,
+  .ad-protection,
+  .ad-how,
+  .ad-showcase,
+  .ad-comparison,
+  .autodrape-reviews,
+  .autodrape-faq,
+  .ad-brands,
+  .ad-footer
+) :is(p, a, button, input, select, textarea) {
+  font-family: var(--font-body--family);
+}
+
+@keyframes adSectionIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

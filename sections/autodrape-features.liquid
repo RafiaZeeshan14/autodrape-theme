@@ -1,0 +1,65 @@
+<section class="autodrape-why">
+  <div class="autodrape-why__inner">
+    <div class="why-left">
+      <h2 class="why-title">WHY CHOOSE <span>AUTODRAPES?</span></h2>
+      <p class="why-copy">We combine premium materials with precision fit to deliver unmatched protection and comfort for your car.</p>
+      <a href="/pages/about" class="btn-learn">LEARN MORE</a>
+    </div>
+
+    <div class="why-right">
+      <div class="why-card">
+        <img src="{{ 'why/fit.jpg' | asset_url }}" alt="Precise Fit">
+        <div class="why-card__overlay">
+          <div class="why-card__title">PRECISE FIT</div>
+          <div class="why-card__sub">Tailored for Your Car</div>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <img src="{{ 'why/materials.jpg' | asset_url }}" alt="Premium Materials">
+        <div class="why-card__overlay">
+          <div class="why-card__title">PREMIUM MATERIALS</div>
+          <div class="why-card__sub">Built to Last</div>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <img src="{{ 'why/comfort.jpg' | asset_url }}" alt="Style & Comfort">
+        <div class="why-card__overlay">
+          <div class="why-card__title">STYLE & COMFORT</div>
+          <div class="why-card__sub">For Every Drive</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .autodrape-why { padding: 40px 5%; background: #fff; }
+    .autodrape-why__inner { max-width: 1200px; margin: 0 auto; display:grid; grid-template-columns: 1fr 1.4fr; gap: 28px; align-items:center; }
+
+    .why-left { padding: 12px 8px; }
+    .why-title { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; margin: 0 0 14px; }
+    .why-title span { color: #a90000; }
+    .why-copy { color: #666; font-size: 15px; line-height:1.6; margin-bottom: 18px; max-width: 460px; }
+    .btn-learn { display:inline-block; background:#a90000; color:#fff; padding:12px 20px; border-radius:8px; text-decoration:none; font-weight:700; }
+
+    .why-right { display:flex; gap:18px; }
+    .why-card { position: relative; flex:1 1 0; border-radius:8px; overflow:hidden; min-height:220px; }
+    .why-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .why-card__overlay { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:18px; background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 100%); color:#fff; }
+    .why-card__title { font-size:18px; font-weight:800; letter-spacing:0.02em; }
+    .why-card__sub { font-size:13px; opacity:0.9; margin-top:6px; }
+
+    @media screen and (max-width:1100px) { .autodrape-why__inner { grid-template-columns: 1fr 1fr; } }
+    @media screen and (max-width:749px) { .autodrape-why__inner { grid-template-columns: 1fr; } .why-right { flex-direction:row; overflow-x:auto; padding-bottom:8px; } .why-card { min-width:220px; flex:0 0 220px; }
+    .why-left { text-align:center; }
+    }
+  </style>
+
+{% schema %}
+{
+  "name": "Why Choose AutoDrape",
+  "settings": [],
+  "presets": [{ "name": "Why Choose AutoDrape" }]
+}
+{% endschema %}

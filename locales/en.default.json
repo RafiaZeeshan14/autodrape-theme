@@ -1,0 +1,113 @@
+{
+  "404": {
+    "title": "404",
+    "not_found": "Page not found.",
+    "back_to_shopping": "Back to shopping"
+  },
+  "blog": {
+    "article_comments": "Comments",
+    "article_metadata_html": "{{ date }} by {{ author }}",
+    "comment_form_body": "Comment",
+    "comment_form_email": "Email",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Post",
+    "comment_form_title": "Add a comment"
+  },
+  "cart": {
+    "checkout": "Checkout",
+    "title": "Cart",
+    "update": "Update",
+    "remove": "Remove"
+  },
+  "customers": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "title": "Login"
+    }
+  },
+  "collections": {
+    "title": "Collections"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Add to Apple Wallet",
+    "card": "Gift card",
+    "expired": "This gift card has expired",
+    "expires_on": "This gift card expires on {{ expires_on }}",
+    "use_at_checkout": "Use this gift card at checkout"
+  },
+  "password": {
+    "title": "This shop is private",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search articles, pages, or products",
+    "submit": "Search",
+    "no_results_html": "No results found for {{ terms }}",
+    "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "general": {
+    "menu": "Menu",
+    "close": "Close",
+    "cart": "Cart",
+    "header": "Header",
+    "footer": "Footer",
+    "coming_soon": "Coming soon"
+  },
+  "sections": {
+    "hero": {
+      "eyebrow": "Precision fit sunshades",
+      "heading": "FULL COVERED WINDOW\nUV SUNSHADES",
+      "subheading": "Premium protection. Perfect fit. Built for your car.",
+      "primary_label": "FIND YOUR CAR",
+      "secondary_label": "SHOP PRODUCTS"
+    },
+    "find_your_car": {
+      "heading": "Find shades made for your car",
+      "text": "Choose your vehicle to see the sunshades designed for its exact windows.",
+      "button_label": "SHOW MY SHADES"
+    },
+    "shade_types": {
+      "heading": "Protection to match how you drive",
+      "link_label": "EXPLORE SHADES"
+    },
+    "benefits": {
+      "heading": "Built around the details that matter",
+      "text": "Premium sunshades designed to make every drive more comfortable."
+    },
+    "how_it_works": {
+      "heading": "Your perfect fit in three simple steps"
+    },
+    "car_models": {
+      "heading": "Popular car models",
+      "text": "Explore shades made for some of the most-driven cars.",
+      "view_all_brands": "View all brands"
+    },
+    "product_showcase": {
+      "heading": "Made for Your Car.\nDesigned for Protection."
+    },
+    "comparison": {
+      "heading": "Full Shades vs Half Shades"
+    },
+    "reviews": {
+      "heading": "Trusted by drivers who value the details"
+    },
+    "faq": {
+      "heading": "Questions, answered"
+    },
+    "final_cta": {
+      "heading": "Find the Perfect Sunshades for Your Car",
+      "button_label": "FIND YOUR CAR"
+    }
+  },
+  "labels": {
+    "background": "Background",
+    "heading": "Heading",
+    "text": "Text",
+    "image": "Image",
+    "link": "Link"
+  }
+}

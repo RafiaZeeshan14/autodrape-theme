@@ -1,0 +1,119 @@
+{% doc %}
+  Renders the "Shop by car" results grid for `/pages/car-results`.
+
+  Reads `brand`, `model` and `year` from the page URL query string via
+  JavaScript (`URLSearchParams`) and shows the product cards whose
+  `compatible_car_models` metaobject matches:
+
+  - brand (metaobject system handle) equals the `brand` URL parameter
+  - model_name equals the `model` URL parameter (handleized)
+  - year is within the metaobject year_range (inclusive)
+
+  If no query parameters are present, all compatible products are shown.
+
+  @example
+  {% render 'car-results-content' %}
+{% enddoc %}
+
+<div class="page-width" style="padding: 40px 20px;">
+  <div class="section-header text-center" style="margin-bottom: 30px;">
+    <h1 class="h2">Car Results</h1>
+    <p id="car-results-selected-summary" style="font-size: 1.1em; color: #555;">
+      Loading compatible products...
+    </p>
+  </div>
+
+  <div id="car-results-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
+    {% for product in collections.all.products %}
+      {% assign compatible_models = product.metafields.custom.compatible_car_models.value %}
+
+      {% if compatible_models != blank %}
+        {% for compatible_model in compatible_models %}
+          {% comment %} Extract brand system handle safely without breaking Liquid {% endcomment %}
+          {% assign brand_obj = compatible_model.brand.value %}
+          {% assign p_brand = '' %}
+
+          {% if brand_obj.system.handle != blank %}
+            {% assign p_brand = brand_obj.system.handle | handleize %}
+          {% elsif brand_obj.title != blank %}
+            {% assign p_brand = brand_obj.title | handleize %}
+          {% endif %}
+
+          {% assign p_model = compatible_model.model_name.value | default: compatible_model.model_name | handleize %}
+          {% assign year_range = compatible_model.year_range.value | default: compatible_model.year_range | strip %}
+          {% assign year_parts = year_range | split: '-' %}
+          {% assign p_start_year = year_parts[0] | strip | plus: 0 %}
+          {% assign p_end_year = year_parts[1] | strip | plus: 0 %}
+
+          <div
+            class="car-product-card"
+            data-brand="{{ p_brand }}"
+            data-model="{{ p_model }}"
+            data-start-year="{{ p_start_year }}"
+            data-end-year="{{ p_end_year }}"
+            style="display: none; border: 1px solid #e8e8e8; padding: 15px; border-radius: 8px; flex: 1 1 250px; max-width: 300px;"
+          >
+            <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title | escape }}" style="width: 100%; height: auto; border-radius: 4px; object-fit: cover;" loading="lazy">
+              {% endif %}
+
+              <h3 style="font-size: 1.1em; margin: 10px 0 5px 0;">{{ product.title }}</h3>
+              <p style="font-weight: bold; margin: 0 0 10px 0;">{{ product.price | money }}</p>
+              <span class="button" style="display: block; text-align: center; padding: 8px; background: #000; color: #fff; border-radius: 4px;">View Product</span>
+            </a>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div id="car-results-empty" style="display: none; text-align: center; padding: 40px 0;">
+    <h3>No matching compatible products found.</h3>
+    <p>Try selecting a different car model or year.</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const selectedBrand = (params.get('brand') || '').toLowerCase().trim();
+    const selectedModel = (params.get('model') || '').toLowerCase().trim();
+    const selectedYear = parseInt(params.get('year') || '0', 10);
+
+    const summary = document.getElementById('car-results-selected-summary');
+    if (summary) {
+      if (selectedBrand && selectedModel && selectedYear) {
+        summary.textContent = `Showing compatible products for ${selectedBrand.toUpperCase()} ${selectedModel.toUpperCase()} (${selectedYear})`;
+      } else {
+        summary.textContent = `Showing all compatible products.`;
+      }
+    }
+
+    const cards = document.querySelectorAll('.car-product-card');
+    let matchCount = 0;
+
+    cards.forEach(card => {
+      const cardBrand = (card.dataset.brand || '').toLowerCase().trim();
+      const cardModel = (card.dataset.model || '').toLowerCase().trim();
+      const cardStartYear = parseInt(card.dataset.startYear || '0', 10);
+      const cardEndYear = parseInt(card.dataset.endYear || '0', 10);
+
+      const brandMatches = !selectedBrand || cardBrand === selectedBrand;
+      const modelMatches = !selectedModel || cardModel === selectedModel;
+      const yearMatches = !selectedYear || (selectedYear >= cardStartYear && selectedYear <= cardEndYear);
+
+      if (brandMatches && modelMatches && yearMatches) {
+        card.style.display = 'block';
+        matchCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const emptyMsg = document.getElementById('car-results-empty');
+    if (emptyMsg) {
+      emptyMsg.style.display = (matchCount === 0) ? 'block' : 'none';
+    }
+  });
+</script>
