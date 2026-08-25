@@ -152,7 +152,7 @@
   color: var(--ad-text);
   text-decoration: none;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
@@ -193,7 +193,7 @@
 .ad-hero__heading {
   margin: 0;
   color: var(--ad-text);
-  font-family: var(--font-display--family);
+  font-family: var(--font-heading--family);
   font-size: clamp(42px, 4.7vw, 74px);
   line-height: 0.98;
   font-weight: 900;
@@ -265,7 +265,7 @@
 }
 
 .ad-hero__benefit-copy strong {
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -294,7 +294,7 @@
   justify-content: center;
   gap: 10px;
   border-radius: 999px;
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -380,14 +380,14 @@
   border-radius: 999px;
   background: #b7b7b7;
   color: #ffffff;
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 16px;
   font-weight: 800;
 }
 
 .ad-hero__finder-step strong {
   color: var(--ad-text);
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 15px;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -420,7 +420,7 @@
   border: 1px solid rgba(17, 17, 17, 0.14);
   background: #ffffff;
   color: var(--ad-text);
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -449,7 +449,7 @@
   background: linear-gradient(180deg, #c21a1d, var(--ad-accent));
   color: #ffffff;
   text-decoration: none;
-  font-family: var(--font-display--family);
+  font-family: var(--font-ui--family);
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.12em;

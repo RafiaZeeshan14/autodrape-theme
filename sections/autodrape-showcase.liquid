@@ -1,13 +1,11 @@
 <section class="ad-showcase">
   <div class="ad-showcase__container">
-    {% if section.settings.background_image != blank %}
-      <img
-        class="ad-showcase__image"
-        src="{{ section.settings.background_image | image_url: width: 1800 }}"
-        alt="AutoDrape sunshades"
-        loading="lazy"
-      >
-    {% endif %}
+    <img
+      class="ad-showcase__image"
+      src="{{ 'premiumbuild.png' | asset_url }}"
+      alt="AutoDrape sunshades"
+      loading="lazy"
+    >
 
     <div class="ad-showcase__overlay"></div>
 
@@ -22,12 +20,6 @@
       <p>
         High quality, custom-fit sunshades for a cooler and more comfortable drive.
       </p>
-
-      <div class="ad-showcase__tabs">
-        <a href="/collections/full-shades" class="ad-showcase__tab ad-showcase__tab--active">Full Shades</a>
-        <a href="/collections/half-shades" class="ad-showcase__tab">Half Shades</a>
-        <a href="/collections/front-back-shades" class="ad-showcase__tab">Front + Back</a>
-      </div>
 
       <a href="/collections/all" class="ad-showcase__button">
         Shop Now
@@ -75,7 +67,7 @@
   .ad-showcase__content {
     position: relative;
     z-index: 2;
-    width: min(100% - 48px, 1320px);
+    width: min(100% - 24px, 1320px);
     margin: 0 auto;
     padding: 56px 0;
   }
@@ -96,7 +88,7 @@
   .ad-showcase__content h2 {
     max-width: 540px;
     margin: 0;
-    font-size: clamp(34px, 3.6vw, 54px);
+    font-size: clamp(42px, 5vw, 72px);
     line-height: 1.02;
     font-weight: 600;
     letter-spacing: -0.05em;
@@ -145,6 +137,10 @@
 
   .ad-showcase__tab--active {
     background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+  }
+
+  .ad-showcase__button {
+    display: none;
   }
 
   .ad-showcase__button {

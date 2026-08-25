@@ -15,8 +15,10 @@
   {% render 'car-results-content' %}
 {% elsif page.handle == 'shop-by-car' %}
   {% render 'shop-by-car-content' %}
-{% elsif page.handle == 'all-brands' %}
+{% elsif page.handle == 'all-brands' or page.handle == 'shop-by-brand' %}
   {% render 'all-brands-content' %}
+{% elsif page.handle == 'all-products' %}
+  {% render 'all-products-content' %}
 {% else %}
   <h1>{{ page.title }}</h1>
 

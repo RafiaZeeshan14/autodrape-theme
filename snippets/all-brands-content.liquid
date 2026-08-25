@@ -21,29 +21,7 @@
       <p>Choose your car brand to find the perfect fit.</p>
     </div>
 
-        <!-- REQ-DIAG: probe query string handling -->
-    <div style="background:#ffe0e0;border:1px solid #f99;padding:10px;font-size:12px;text-align:left;margin-bottom:20px;">
-      request.query_string: [{{ request.query_string }}]
-      request.path: [{{ request.path }}]
-      <br>
-      {% assign qs = request.query_string %}
-      {% assign parts = qs | split: '&' %}
-      {% assign probe_brand = '' %}
-      {% for p in parts %}
-        {% assign pair = p | split: '=' %}
-        {% assign k = pair[0] | downcase | strip %}
-        {% assign v = pair[1] | strip %}
-        {% if k == 'brand' %}{% assign probe_brand = v | handleize %}{% endif %}
-      {% endfor %}
-            parsed brand: [{{ probe_brand }}]
-      matched brand name:
-      {% for b in metaobjects.car_brand.values %}
-        {% assign b_handle = b.system.handle | handleize %}
-        {% if b_handle == probe_brand %}[{{ b.brand_name.value }}]{% endif %}
-      {% endfor %}
-    </div>
-
-    {% assign car_brands = metaobjects.car_brand.values %}
+            {% assign car_brands = metaobjects.car_brand.values %}
 
     <div class="autodrape-brands-grid">
 
@@ -98,7 +76,7 @@
 
   .autodrape-all-brands__header h1 {
     margin: 0;
-    font-family: 'Montserrat', Arial, sans-serif;
+    font-family: var(--font-ui--family);
     font-size: 42px;
     font-weight: 800;
     letter-spacing: -1px;
@@ -111,7 +89,7 @@
 
   .autodrape-all-brands__header p {
     margin: 10px 0 0;
-    font-family: 'Montserrat', Arial, sans-serif;
+    font-family: var(--font-ui--family);
     font-size: 15px;
     color: #666;
   }
@@ -159,7 +137,7 @@
   }
 
   .autodrape-brand-card__name {
-    font-family: 'Montserrat', Arial, sans-serif;
+    font-family: var(--font-ui--family);
     font-size: 18px;
     font-weight: 700;
     color: #111;

@@ -21,6 +21,14 @@
         HOME
       </a>
 
+            <!-- SHOP BY BRAND -->
+      <a
+        href="/pages/shop-by-brand"
+        class="ad-header__link {% if request.path == '/pages/shop-by-brand' %}ad-header__link--active{% endif %}"
+      >
+        SHOP BY BRAND
+      </a>
+
       <!-- SHOP BY CAR -->
       <a
         href="/pages/shop-by-car"
@@ -31,8 +39,8 @@
 
       <!-- ALL PRODUCTS -->
       <a
-        href="{{ routes.all_products_collection_url }}"
-        class="ad-header__link {% if request.path == routes.all_products_collection_url %}ad-header__link--active{% endif %}"
+        href="/pages/all-products"
+        class="ad-header__link {% if request.path == '/pages/all-products' %}ad-header__link--active{% endif %}"
       >
         ALL PRODUCTS
       </a>
@@ -124,6 +132,13 @@
       HOME
     </a>
 
+        <a
+      href="/pages/shop-by-brand"
+      class="{% if request.path == '/pages/shop-by-brand' %}active{% endif %}"
+    >
+      SHOP BY BRAND
+    </a>
+
     <a
       href="/pages/shop-by-car"
       class="{% if request.path == '/pages/shop-by-car' %}active{% endif %}"
@@ -132,8 +147,8 @@
     </a>
 
     <a
-      href="{{ routes.all_products_collection_url }}"
-      class="{% if request.path == routes.all_products_collection_url %}active{% endif %}"
+      href="/pages/all-products"
+      class="{% if request.path == '/pages/all-products' %}active{% endif %}"
     >
       ALL PRODUCTS
     </a>

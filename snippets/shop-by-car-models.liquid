@@ -1,386 +1,236 @@
 {% doc %}
-  Renders the brand-specific "Models" view for the Shop By Car flow.
+  Renders the dynamic brand-specific model directory for Shop By Car.
 
-  Shown when the visitor lands on a deep link such as
-  `/pages/shop-by-car?brand=toyota` (or any page carrying `?brand=<handle>`).
-
-  It renders:
-    1. A brand hero — logo (from the `car_brand` metaobject), the heading
-       "[BRAND] CAR MODELS" and a short description.
-    2. A small benefits strip.
-    3. A section heading "ALL [BRAND] MODELS".
-    4. A responsive grid of model/generation cards read from the existing
-       `car_model` metaobjects. Each generation/year-range record becomes its
-       OWN card (e.g. two Corolla records with different year ranges render as
-       two separate cards).
-
-  IMPORTANT — why this is client-side driven:
-  `request.query_string` is NOT reliably populated in this store's Shopify
-  Liquid context (verified empty even for `/pages/all-brands?brand=toyota` on
-  the local dev server). The `brand` URL parameter is therefore read with
-  `URLSearchParams` — the same proven pattern already used by
-  `car-results-content.liquid`. Every brand/model value is rendered
-  server-side as `data-*` attributes so the markup is correct and filterable
-  even before / without JavaScript.
-
-  Each model card links to the EXISTING next step:
-  `/pages/car-results?brand=<handle>&model=<handle>&year=<end_year>` using the
-  very same year-range matching the existing car-results page already
-  understands — so the existing matching system is left untouched.
+  All car model records are emitted from the existing car_model metaobject.
+  The browser filters them by the brand query parameter, groups records of
+  the same model into a single card (year-range suffixes and brand prefixes
+  are stripped from the raw record names), and switches generation images
+  without a page reload.
 
   @example
   {% render 'shop-by-car-models' %}
 {% enddoc %}
 
-{% comment %}
-  Per-brand lookup data (hidden). The JS uses this to populate the brand hero
-  once the `brand` parameter is known from the URL. `data-handle` is handleized
-  so the comparison is case/whitespace insensitive.
-{% endcomment %}
-<div class="ad-sbc-brands" data-ad-sbc-brands style="display: none;">
-  {% for b in metaobjects.car_brand.values %}
-    {% assign b_handle = b.system.handle | handleize %}
-    {% assign b_name = b.brand_name.value %}
-    {% assign b_logo = '' %}
-    {% if b.brand_logo.value %}{% assign b_logo = b.brand_logo.value | image_url: width: 400 %}{% endif %}
+{% comment %} Brand data is used to populate the selected brand header. {% endcomment %}
+<div class="ad-sbc-brands" data-ad-sbc-brands hidden>
+  {% for brand in metaobjects.car_brand.values %}
     <div
       class="ad-sbc-brand"
-      data-handle="{{ b_handle }}"
-      data-name="{{ b_name | escape }}"
-      data-logo="{{ b_logo }}"
-    >Select your {{ b_name }} model to find the perfect sunshades for your car.</div>
+      data-handle="{{ brand.system.handle | handleize }}"
+      data-name="{{ brand.brand_name.value | escape }}"
+      data-logo="{% if brand.brand_logo.value %}{{ brand.brand_logo.value | image_url: width: 400 }}{% endif %}"
+    ></div>
   {% endfor %}
 </div>
 
-<div class="shop-by-car-models" data-ad-sbc-models style="display: none;">
-
-  <!-- Breadcrumb -->
-  <nav class="shop-by-car-models__breadcrumb" aria-label="breadcrumb">
-    <a href="/">Home</a>
-    <span class="shop-by-car-models__breadcrumb-sep">&gt;</span>
-    <a href="/pages/shop-by-car">Shop By Car</a>
-    <span class="shop-by-car-models__breadcrumb-sep">&gt;</span>
-    <span class="shop-by-car-models__breadcrumb-brand" data-ad-sbc-breadcrumb>?</span>
-  </nav>
-
-  <!-- Brand hero (populated by JS from the per-brand lookup above) -->
-  <div class="shop-by-car-models__hero" data-ad-sbc-hero>
+<div class="shop-by-car-models" data-ad-sbc-models hidden>
+  <div class="shop-by-car-models__hero">
     <div class="shop-by-car-models__hero-logo">
-      <img class="ad-sbc-hero-img" alt="" style="display: none; max-width: 220px; height: auto;">
+      <img class="ad-sbc-hero-img" alt="" width="220" height="110" hidden>
     </div>
-    <h1 class="shop-by-car-models__hero-title">
-      <span class="shop-by-car-models__hero-brand" data-ad-sbc-hero-brand>CAR</span> CAR MODELS
-    </h1>
+    <h1 class="shop-by-car-models__hero-title">ALL <span data-ad-sbc-hero-brand>BRAND</span> MODELS</h1>
     <p class="shop-by-car-models__hero-desc" data-ad-sbc-hero-desc></p>
   </div>
 
-  <!-- Benefits strip -->
-  <div class="shop-by-car-models__benefits">
-    <div class="shop-by-car-models__benefit">
-      <span class="shop-by-car-models__benefit-bullet">&#10003;</span>
-      <span class="shop-by-car-models__benefit-label">PERFECT FIT</span>
-      <span class="shop-by-car-models__benefit-desc">Custom-fit sunshades for every model.</span>
-    </div>
-    <div class="shop-by-car-models__benefit">
-      <span class="shop-by-car-models__benefit-bullet">&#10003;</span>
-      <span class="shop-by-car-models__benefit-label">UV PROTECTION</span>
-      <span class="shop-by-car-models__benefit-desc">Blocks heat and harmful UV rays.</span>
-    </div>
-    <div class="shop-by-car-models__benefit">
-      <span class="shop-by-car-models__benefit-bullet">&#10003;</span>
-      <span class="shop-by-car-models__benefit-label">EASY TO INSTALL</span>
-      <span class="shop-by-car-models__benefit-desc">Quick setup in seconds.</span>
-    </div>
-    <div class="shop-by-car-models__benefit">
-      <span class="shop-by-car-models__benefit-bullet">&#10003;</span>
-      <span class="shop-by-car-models__benefit-label">PREMIUM QUALITY</span>
-      <span class="shop-by-car-models__benefit-desc">Durable materials for long-lasting use.</span>
-    </div>
+  <div class="shop-by-car-models__benefits" aria-label="Product benefits">
+    <span><b aria-hidden="true">&#10003;</b> PERFECT FIT</span>
+    <span><b aria-hidden="true">&#10003;</b> UV PROTECTION</span>
+    <span><b aria-hidden="true">&#10003;</b> EASY TO INSTALL</span>
+    <span><b aria-hidden="true">&#10003;</b> PREMIUM QUALITY</span>
   </div>
 
-  <!-- Section heading -->
-  <h2 class="shop-by-car-models__section-title">
-    ALL <span class="shop-by-car-models__section-brand" data-ad-sbc-section-brand>?</span> MODELS
-  </h2>
-
-    <!-- Model grid (every generation record is its own card) -->
-  <div class="shop-by-car-models__grid">
-    {% for m in metaobjects.car_model.values %}
-      {% comment %}
-        Resolve the model's brand reference safely. `m.brand.value` can be
-        blank on some records, so we guard it (mirrors the selector pattern).
-      {% endcomment %}
-      {% assign m_brand_ref = m.brand.value %}
-      {% assign m_brand_handle = '' %}
-      {% assign m_brand_name = '' %}
-      {% if m_brand_ref %}
-        {% assign m_brand_handle = m_brand_ref.system.handle | handleize %}
-        {% assign m_brand_name = m_brand_ref.brand_name.value %}
-      {% endif %}
-
-      {% assign m_model_name = m.model_name.value | strip %}
-      {% assign m_model_handle = m_model_name | handleize %}
-
-      {% comment %}
-        year_range is stored as e.g. "2015–2021" (en dash) or "2015-2021".
-        Normalise dashes then split. Guard against a missing second part.
-      {% endcomment %}
-      {% assign m_year_range = m.year_range.value | strip %}
-      {% assign m_year_clean = m_year_range | replace: '–', '-' | replace: '—', '-' | strip %}
-      {% assign m_year_parts = m_year_clean | split: '-' %}
-      {% assign m_start_year = m_year_parts[0] | strip | plus: 0 %}
-      {% assign m_end_year = 0 %}
-      {% if m_year_parts.size > 1 %}
-        {% assign m_end_year = m_year_parts[1] | strip | plus: 0 %}
-      {% endif %}
-
-      {% assign m_img_url = '' %}
-      {% if m.model_image.value %}{% assign m_img_url = m.model_image.value | image_url: width: 600 %}{% endif %}
-
-      <a
-        href="/pages/car-results?brand={{ m_brand_handle | url_encode }}&model={{ m_model_handle | url_encode }}&year={{ m_end_year }}"
-        class="shop-by-car-models__card"
-        data-brand="{{ m_brand_handle }}"
-        data-model="{{ m_model_handle }}"
-        data-start-year="{{ m_start_year }}"
-        data-end-year="{{ m_end_year }}"
-        style="display: none;"
-      >
-        <div class="shop-by-car-models__card-image">
-          {% if m_img_url != blank %}
-            <img src="{{ m_img_url }}" alt="{{ m_brand_name }} {{ m_model_name }}" loading="lazy" class="shop-by-car-models__card-img">
-          {% else %}
-            <div class="shop-by-car-models__card-placeholder">
-              <svg viewBox="0 0 24 24" width="54" height="54" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 13l2-6h14l2 6v6a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="8" cy="17" r="1.2"/><circle cx="17" cy="17" r="1.2"/></svg>
-            </div>
-          {% endif %}
-        </div>
-        <div class="shop-by-car-models__card-body">
-          <div class="shop-by-car-models__card-title">{{ m_brand_name | upcase }} {{ m_model_name | upcase }}</div>
-          <div class="shop-by-car-models__card-years">{{ m_start_year }} – {{ m_end_year }}</div>
-          <div class="shop-by-car-models__card-btn">SELECT MODEL →</div>
-        </div>
-      </a>
-    {% endfor %}
-
-        <div class="shop-by-car-models__empty" data-ad-sbc-empty style="display: none;">
-      <p>No models found for this brand.</p>
-    </div>
-  </div>
+  <div class="shop-by-car-models__grid" data-ad-sbc-grid></div>
+  <p class="shop-by-car-models__empty" data-ad-sbc-empty hidden>No models found for this brand.</p>
 </div>
 
+<script type="application/json" data-ad-sbc-model-data>
+  [
+    {% for model in metaobjects.car_model.values %}
+      {% assign model_brand = model.brand.value %}
+      {% assign model_image = model.image.value | default: model.model_image.value %}
+      {
+        "handle": {{ model.system.handle | json }},
+        "name": {{ model.model_name.value | default: model.model_name | json }},
+        "yearRange": {{ model.year_range.value | default: model.year_range | json }},
+        "brand": {% if model_brand %}{{ model_brand.system.handle | handleize | json }}{% else %}null{% endif %},
+        "image": {% if model_image %}{{ model_image | image_url: width: 900 | json }}{% else %}null{% endif %}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+</script>
+
 <style>
-  .shop-by-car-models {
-    width: 100%;
-    background: #fff;
-    padding: 40px 20px 60px;
-  }
-
-  .shop-by-car-models__breadcrumb {
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 18px;
-  }
-  .shop-by-car-models__breadcrumb a { color: #888; text-decoration: none; }
-  .shop-by-car-models__breadcrumb a:hover { text-decoration: underline; }
-  .shop-by-car-models__breadcrumb-sep { margin: 0 6px; color: #bbb; }
-
-  .shop-by-car-models__hero { text-align: center; margin-bottom: 34px; }
-  .shop-by-car-models__hero-logo { display: flex; justify-content: center; margin-bottom: 14px; }
-  .shop-by-car-models__hero-title {
-    margin: 0;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: #111;
-  }
-  .shop-by-car-models__hero-brand { color: #a90000; }
-  .shop-by-car-models__hero-desc {
-    margin: 10px 0 0;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 15px;
-    color: #666;
-  }
-
-  .shop-by-car-models__benefits {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    margin-bottom: 34px;
-  }
-  .shop-by-car-models__benefit {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #111;
-    white-space: nowrap;
-  }
-  .shop-by-car-models__benefit-bullet { color: #a90000; font-size: 16px; }
-  .shop-by-car-models__benefit-desc {
-    font-size: 11px;
-    color: #999;
-    font-weight: 400;
-  }
-
-  .shop-by-car-models__section-title {
-    margin: 0 0 22px;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    text-align: center;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: -0.3px;
-  }
-  .shop-by-car-models__section-brand { color: #a90000; }
-
-  .shop-by-car-models__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .shop-by-car-models__card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all .2s ease;
-  }
-  .shop-by-car-models__card:hover {
-    border-color: #a90000;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,.08);
-  }
-  .shop-by-car-models__card-image {
-    width: 100%;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fafafa;
-    overflow: hidden;
-  }
-  .shop-by-car-models__card-img { width: 100%; height: 100%; object-fit: cover; }
-  .shop-by-car-models__card-placeholder { display: flex; align-items: center; justify-content: center; }
-  .shop-by-car-models__card-body { padding: 16px 18px; }
-  .shop-by-car-models__card-title {
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    color: #111;
-    margin-bottom: 6px;
-  }
-  .shop-by-car-models__card-years {
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 12px;
-  }
-  .shop-by-car-models__card-btn {
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    color: #a90000;
-  }
-  .shop-by-car-models__empty { text-align: center; padding: 40px 0; font-family: 'Montserrat', Arial, sans-serif; color: #666; }
-
-  @media (max-width: 991px) {
-    .shop-by-car-models__grid { grid-template-columns: repeat(2, 1fr); }
-  }
+  .shop-by-car-models { width: 100%; padding: 52px 24px 84px; background: #fff; color: #111; }
+  .shop-by-car-models__hero { max-width: 900px; margin: 0 auto 30px; text-align: center; }
+  .shop-by-car-models__hero-logo { min-height: 90px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .shop-by-car-models__hero-logo img { display: block; max-width: 220px; max-height: 100px; object-fit: contain; }
+  .shop-by-car-models__hero-title { margin: 0; font-family: var(--font-heading--family); font-size: clamp(30px, 4vw, 48px); font-weight: 900; line-height: 1.1; letter-spacing: 0; }
+  .shop-by-car-models__hero-title span { color: #d90000; }
+  .shop-by-car-models__hero-desc { margin: 12px 0 0; color: #666; font-family: var(--font-ui--family); font-size: 16px; }
+  .shop-by-car-models__benefits { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; margin: 0 auto 38px; max-width: 960px; }
+  .shop-by-car-models__benefits span { display: inline-flex; align-items: center; gap: 9px; padding: 0 25px; border-right: 1px solid #ddd; font: 700 13px var(--font-ui--family); white-space: nowrap; }
+  .shop-by-car-models__benefits span:last-child { border-right: 0; }
+  .shop-by-car-models__benefits b { color: #d90000; font-size: 20px; line-height: 1; }
+  .shop-by-car-models__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; max-width: 1180px; margin: 0 auto; }
+  .shop-by-car-models__card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #e3e3e3; border-radius: 12px; background: #fff; box-shadow: 0 5px 16px rgba(0, 0, 0, .07); transition: transform .2s ease, box-shadow .2s ease; }
+  .shop-by-car-models__card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0, 0, 0, .11); }
+  .shop-by-car-models__card-image { display: flex; align-items: center; justify-content: center; height: 235px; padding: 12px 20px; background: #fafafa; }
+  .shop-by-car-models__card-image img { width: 100%; height: 100%; object-fit: contain; }
+  .shop-by-car-models__card-body { display: flex; flex: 1; flex-direction: column; align-items: center; padding: 18px 16px 16px; text-align: center; }
+  .shop-by-car-models__card-brand { color: #666; font: 700 14px var(--font-ui--family); letter-spacing: .3px; }
+  .shop-by-car-models__card-title { margin: 3px 0 9px; font: 900 30px/1.1 var(--font-ui--family); text-transform: uppercase; }
+  .shop-by-car-models__accent { width: 35px; height: 3px; margin-bottom: 16px; background: #d90000; }
+  .shop-by-car-models__label { margin-bottom: 10px; color: #666; font: 700 13px var(--font-ui--family); text-transform: uppercase; }
+  .shop-by-car-models__years { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; min-height: 39px; margin-bottom: 20px; }
+  .shop-by-car-models__year { padding: 9px 16px; border: 1px solid #e00000; border-radius: 9px; background: #fff; color: #d00000; font: 700 13px var(--font-ui--family); cursor: pointer; }
+  .shop-by-car-models__year.is-active, .shop-by-car-models__year:hover { background: #d90000; color: #fff; }
+  .shop-by-car-models__button { display: block; width: 100%; margin-top: auto; padding: 14px 12px; border: 0; border-radius: 8px; background: #d90000; color: #fff; text-align: center; text-decoration: none; font: 800 14px var(--font-ui--family); }
+  .shop-by-car-models__button:hover { background: #ad0000; }
+  .shop-by-car-models__empty { margin: 40px auto; text-align: center; font: 600 16px var(--font-ui--family); }
+  @media (max-width: 991px) { .shop-by-car-models__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 640px) {
+    .shop-by-car-models { padding: 38px 14px 60px; }
+    .shop-by-car-models__benefits { gap: 14px 0; }
+    .shop-by-car-models__benefits span { width: 50%; padding: 0 10px; justify-content: center; border-right: 0; }
     .shop-by-car-models__grid { grid-template-columns: 1fr; }
-    .shop-by-car-models__hero-title { font-size: 28px; }
-        .shop-by-car-models { padding: 30px 14px 50px; }
+    .shop-by-car-models__card-image { height: 210px; }
   }
 </style>
 
 <script>
   (function () {
     var root = document.querySelector('[data-ad-sbc-models]');
-    if (!root) return;
+    var dataNode = document.querySelector('[data-ad-sbc-model-data]');
+    if (!root || !dataNode) return;
 
-    var brandsRoot = document.querySelector('[data-ad-sbc-brands]');
-    var selectorWrap = document.querySelector('[data-ad-sbc-selector]');
-
-    var urlBrand = (new URLSearchParams(window.location.search).get('brand') || '').toLowerCase().trim();
-
-    var hero = root.querySelector('[data-ad-sbc-hero]');
-    var heroImg = root.querySelector('.ad-sbc-hero-img');
+    var models;
+    try { models = JSON.parse(dataNode.textContent); } catch (error) { models = []; }
+    var params = new URLSearchParams(window.location.search);
+    var brandHandle = (params.get('brand') || '').toLowerCase().trim();
+    var brandNode = document.querySelector('[data-ad-sbc-brands] .ad-sbc-brand[data-handle="' + brandHandle + '"]');
+    var brandName = brandNode ? brandNode.getAttribute('data-name') : brandHandle.toUpperCase();
+    var grid = root.querySelector('[data-ad-sbc-grid]');
+    var empty = root.querySelector('[data-ad-sbc-empty]');
     var heroBrand = root.querySelector('[data-ad-sbc-hero-brand]');
     var heroDesc = root.querySelector('[data-ad-sbc-hero-desc]');
-    var breadcrumbBrand = root.querySelector('[data-ad-sbc-breadcrumb]');
-    var sectionBrand = root.querySelector('[data-ad-sbc-section-brand]');
-    var cards = root.querySelectorAll('.shop-by-car-models__card');
-    var empty = root.querySelector('[data-ad-sbc-empty]');
+    var heroImage = root.querySelector('.ad-sbc-hero-img');
+    var selector = document.querySelector('[data-ad-sbc-selector]');
 
-    function populateBrand(brand) {
-      var brandEl = brandsRoot ? brandsRoot.querySelector('.ad-sbc-brand[data-handle="' + brand + '"]') : null;
-      var displayName = brand.toUpperCase();
+    if (!brandHandle) return;
+    if (selector) selector.hidden = true;
+    root.hidden = false;
+    heroBrand.textContent = brandName.toUpperCase();
+    heroDesc.textContent = 'Select your ' + brandName + ' model to find the perfect sunshades for your car.';
+    if (brandNode && brandNode.getAttribute('data-logo')) {
+      heroImage.src = brandNode.getAttribute('data-logo');
+      heroImage.alt = brandName + ' logo';
+      heroImage.hidden = false;
+    }
+    function escapeRegExp(value) {
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+    var brandPrefixes = {};
+    if (brandHandle) brandPrefixes[brandHandle.trim().toLowerCase()] = true;
+    if (brandName) brandPrefixes[String(brandName).trim().toLowerCase()] = true;
 
-      if (brandEl) {
-        displayName = (brandEl.getAttribute('data-name') || brand.toUpperCase());
-        var logo = brandEl.getAttribute('data-logo');
-        if (logo && heroImg) {
-          heroImg.src = logo;
-          heroImg.alt = displayName + ' logo';
-          heroImg.style.display = 'block';
-        } else if (heroImg) {
-          heroImg.style.display = 'none';
-        }
-        if (heroDesc) heroDesc.textContent = brandEl.textContent || '';
-      } else {
-        if (heroImg) heroImg.style.display = 'none';
-        if (heroDesc) heroDesc.textContent = 'Select your ' + displayName.toLowerCase() + ' model to find compatible products.';
+    // Derive a stable, groupable model name from a raw metaobject record name.
+    // Records are stored inconsistently (e.g. "Toyota Corolla 2015-2025",
+    // "Camry 2002-2006", "Yaris Sedan 2022", or just "Corolla"). We strip any
+    // trailing year range and a leading brand prefix so that all generations of
+    // the same model collapse onto one card (Corolla, Camry, Fortuner, ...).
+    function cleanModelName(value) {
+      var name = String(value || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+      name = name.replace(/\s+(?:19|20)\d{2}\s*-\s*(?:19|20)\d{2}$/i, '');
+      name = name.replace(/\s+(?:19|20)\d{2}$/i, '');
+      if (Object.keys(brandPrefixes).length) {
+        var prefixRe = new RegExp('^(?:' + Object.keys(brandPrefixes).map(escapeRegExp).join('|') + ')\\s+', 'i');
+        name = name.replace(prefixRe, '');
       }
+      return name.replace(/\s+/g, ' ').trim();
+    }
+    function slug(value) {
+      return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
 
-      var upper = displayName.toUpperCase();
-      if (heroBrand) heroBrand.textContent = upper;
-      if (sectionBrand) sectionBrand.textContent = upper;
-      if (breadcrumbBrand) breadcrumbBrand.textContent = upper;
+    function normalizeRange(value) {
+      return String(value || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+    }
+    function normalizeName(value) {
+      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+    function parseRange(value) {
+      var parts = normalizeRange(value).split('-');
+      var start = parseInt(parts[0], 10) || 0;
+      var end = parseInt(parts[parts.length - 1], 10) || start;
+      return { start: start, end: end };
+    }
+    function compareEntries(a, b) {
+      var aRange = parseRange(a.yearRange);
+      var bRange = parseRange(b.yearRange);
+      if (aRange.start !== bRange.start) return aRange.start - bRange.start;
+      if (aRange.end !== bRange.end) return aRange.end - bRange.end;
+      return normalizeRange(a.yearRange).localeCompare(normalizeRange(b.yearRange));
+    }
+    function startYear(range) {
+      var parts = normalizeRange(range).split('-');
+      return parseInt(parts[0], 10) || 0;
+    }
+    function makeCard(group) {
+      var defaultEntry = group.entries[group.entries.length - 1] || group.entries[0];
+      var card = document.createElement('article');
+      card.className = 'shop-by-car-models__card';
+      card.innerHTML = '<div class="shop-by-car-models__card-image"><img alt=""></div><div class="shop-by-car-models__card-body"><div class="shop-by-car-models__card-brand"></div><h2 class="shop-by-car-models__card-title"></h2><div class="shop-by-car-models__accent"></div><div class="shop-by-car-models__label">AVAILABLE MODEL' + (group.entries.length > 1 ? 'S' : '') + '</div><div class="shop-by-car-models__years"></div><a class="shop-by-car-models__button" href="#">VIEW OPTIONS <span aria-hidden="true">&#8594;</span></a></div>';
+      var image = card.querySelector('img');
+      var cardBrand = card.querySelector('.shop-by-car-models__card-brand');
+      var title = card.querySelector('.shop-by-car-models__card-title');
+      var years = card.querySelector('.shop-by-car-models__years');
+      var link = card.querySelector('.shop-by-car-models__button');
+      cardBrand.textContent = brandName.toUpperCase();
+      title.textContent = group.name;
 
-      var anyMatch = false;
-      cards.forEach(function (card) {
-        var cardBrand = (card.getAttribute('data-brand') || '').toLowerCase().trim();
-        card.style.display = (cardBrand === brand) ? '' : 'none';
-        if (cardBrand === brand) anyMatch = true;
+      function selectEntry(entry, activeButton) {
+        if (entry.image) {
+          image.src = entry.image;
+          image.alt = brandName + ' ' + group.name;
+          image.hidden = false;
+        } else {
+          image.removeAttribute('src');
+          image.alt = '';
+          image.hidden = true;
+        }
+        Array.prototype.forEach.call(years.children, function (button) { button.classList.toggle('is-active', button === activeButton); });
+        link.href = '/pages/car-results?brand=' + encodeURIComponent(brandHandle) + '&model=' + encodeURIComponent(slug(group.name)) + '&year=' + startYear(entry.yearRange);
+      }
+      group.entries.forEach(function (entry, index) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'shop-by-car-models__year';
+        button.textContent = normalizeRange(entry.yearRange).replace('-', ' - ');
+        button.addEventListener('click', function () { selectEntry(entry, button); });
+        years.appendChild(button);
+        if (entry === defaultEntry || (defaultEntry && normalizeRange(entry.yearRange) === normalizeRange(defaultEntry.yearRange))) {
+          selectEntry(entry, button);
+        }
       });
-
-      if (empty) empty.style.display = anyMatch ? 'none' : 'block';
+      return card;
     }
 
-    function showModels(brand) {
-      if (selectorWrap) selectorWrap.style.display = 'none';
-      root.style.display = 'block';
-      if (hero) hero.style.display = 'block';
-      populateBrand(brand);
-    }
-
-    function resetToSelector() {
-      if (selectorWrap) selectorWrap.style.display = 'block';
-      root.style.display = 'none';
-      if (hero) hero.style.display = 'none';
-      if (empty) empty.style.display = 'none';
-    }
-
-    if (urlBrand) {
-      showModels(urlBrand);
-    } else {
-      resetToSelector();
-    }
-
-    /* Honour back/forward navigation between deep links. */
-    window.addEventListener('popstate', function () {
-      var b = (new URLSearchParams(window.location.search).get('brand') || '').toLowerCase().trim();
-      if (b) { showModels(b); } else { resetToSelector(); }
+    var groups = {};
+    models.filter(function (model) { return model.brand === brandHandle && model.name; }).forEach(function (model) {
+      var clean = cleanModelName(model.name);
+      var key = normalizeName(clean);
+      if (!key) return;
+      if (!groups[key]) groups[key] = { name: clean, entries: [] };
+      if (!groups[key].entries.some(function (entry) { return normalizeRange(entry.yearRange) === normalizeRange(model.yearRange); })) {
+        groups[key].entries.push(model);
+      }
     });
+    Object.keys(groups).sort(function (a, b) {
+      return normalizeName(groups[a].name).localeCompare(normalizeName(groups[b].name));
+    }).forEach(function (key) {
+      groups[key].entries.sort(compareEntries);
+      grid.appendChild(makeCard(groups[key]));
+    });
+    empty.hidden = Object.keys(groups).length > 0;
   })();
 </script>
