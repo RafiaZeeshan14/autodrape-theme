@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 675" role="img" aria-label="Half shades placeholder">
+  <defs>
+    <pattern id="cr-mesh-half" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M0 24L24 0M12 0v24M0 12h24" fill="none" stroke="#d9d0c3" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="675" fill="#f6f1ea"/>
+  <circle cx="472" cy="286" r="228" fill="#efe7db"/>
+  <rect x="252" y="156" width="396" height="264" rx="30" fill="none" stroke="#b9ae9e" stroke-width="2.5" stroke-dasharray="9 9"/>
+  <path d="M252 186 a30 30 0 0 1 30 -30 h336 a30 30 0 0 1 30 30 v112 h-396 z" fill="url(#cr-mesh-half)" stroke="#141414" stroke-width="2.5"/>
+  <path d="M292 214 L560 196" stroke="#ffffff" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <text x="512" y="384" font-family="Manrope, Arial, sans-serif" font-size="17" letter-spacing="3" fill="#a09584">CLEAR VIEW ZONE</text>
+  <rect x="90" y="556" width="56" height="7" fill="#d90000"/>
+  <text x="90" y="612" font-family="Manrope, Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="7" fill="#141414">HALF SHADES</text>
+  <text x="800" y="612" font-family="Manrope, Arial, sans-serif" font-size="15" letter-spacing="2" fill="#8a8072">02 / PLACEHOLDER</text>
+</svg>

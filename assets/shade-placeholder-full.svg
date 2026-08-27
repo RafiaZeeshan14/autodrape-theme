@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 675" role="img" aria-label="Full shades placeholder">
+  <defs>
+    <pattern id="cr-mesh-full" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M0 24L24 0M12 0v24M0 12h24" fill="none" stroke="#d9d0c3" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="675" fill="#f6f1ea"/>
+  <circle cx="472" cy="286" r="228" fill="#efe7db"/>
+  <rect x="252" y="156" width="396" height="264" rx="30" fill="url(#cr-mesh-full)" stroke="#141414" stroke-width="2.5"/>
+  <path d="M292 200 L420 184 M332 356 L588 236" stroke="#ffffff" stroke-opacity="0.55" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <circle cx="620" cy="188" r="7" fill="#d90000"/>
+  <rect x="90" y="556" width="56" height="7" fill="#d90000"/>
+  <text x="90" y="612" font-family="Manrope, Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="7" fill="#141414">FULL SHADES</text>
+  <text x="804" y="612" font-family="Manrope, Arial, sans-serif" font-size="15" letter-spacing="2" fill="#8a8072">01 / PLACEHOLDER</text>
+</svg>

@@ -1,119 +1,793 @@
 {% doc %}
-  Renders the "Shop by car" results grid for `/pages/car-results`.
+  Renders the Car Results experience for `/pages/car-results`.
 
-  Reads `brand`, `model` and `year` from the page URL query string via
-  JavaScript (`URLSearchParams`) and shows the product cards whose
-  `compatible_car_models` metaobject matches:
+  The customer's selection is carried in the URL query string by the car
+  selector (`autodrape-car-selector`) and the model directory
+  (`shop-by-car-models`) snippets:
 
-  - brand (metaobject system handle) equals the `brand` URL parameter
-  - model_name equals the `model` URL parameter (handleized)
-  - year is within the metaobject year_range (inclusive)
+      /pages/car-results?brand=bmw&model=x5&year=2019
 
-  If no query parameters are present, all compatible products are shown.
+  This snippet resolves the matching `car_model` metaobject record on the
+  client (display name, generation ranges, showcase image) using the same
+  data sources and slug helpers as `shop-by-car-models.liquid`, then renders
+  a premium shade configurator. Selecting a shade type swaps the showcase
+  image and updates the order summary panel.
+
+  Product/cart integration intentionally ships as a static demo: shade
+  descriptions, prices, quantity and add-to-cart behaviour are placeholders
+  until real product wiring lands. Shade artwork uses local placeholder
+  SVGs merchants can replace with photography later.
+
+  Routing contract: the `brand`/`model`/`year` parameters are consumed here
+  only for display and image resolution - they are never rewritten,
+  redirected or removed, so existing deep links keep working.
 
   @example
   {% render 'car-results-content' %}
 {% enddoc %}
 
-<div class="page-width" style="padding: 40px 20px;">
-  <div class="section-header text-center" style="margin-bottom: 30px;">
-    <h1 class="h2">Car Results</h1>
-    <p id="car-results-selected-summary" style="font-size: 1.1em; color: #555;">
-      Loading compatible products...
-    </p>
-  </div>
+<div class="car-results">
+  <div class="car-results__container">
 
-  <div id="car-results-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
-    {% for product in collections.all.products %}
-      {% assign compatible_models = product.metafields.custom.compatible_car_models.value %}
+    <nav class="car-results__breadcrumb" aria-label="Breadcrumb">
+      <a href="/pages/shop-by-car">&#8592;&nbsp;{{ 'car_results.back_to_selector' | t }}</a>
+    </nav>
 
-      {% if compatible_models != blank %}
-        {% for compatible_model in compatible_models %}
-          {% comment %} Extract brand system handle safely without breaking Liquid {% endcomment %}
-          {% assign brand_obj = compatible_model.brand.value %}
-          {% assign p_brand = '' %}
+    <div class="car-results__grid">
 
-          {% if brand_obj.system.handle != blank %}
-            {% assign p_brand = brand_obj.system.handle | handleize %}
-          {% elsif brand_obj.title != blank %}
-            {% assign p_brand = brand_obj.title | handleize %}
-          {% endif %}
+      <!-- Gallery: showcase stage + shade type selector -->
+      <div class="car-results__gallery">
 
-          {% assign p_model = compatible_model.model_name.value | default: compatible_model.model_name | handleize %}
-          {% assign year_range = compatible_model.year_range.value | default: compatible_model.year_range | strip %}
-          {% assign year_parts = year_range | split: '-' %}
-          {% assign p_start_year = year_parts[0] | strip | plus: 0 %}
-          {% assign p_end_year = year_parts[1] | strip | plus: 0 %}
+        <figure class="car-results__stage">
+          <img class="car-results__stage-img" src="{{ 'car.png' | asset_url }}" alt="" width="1200" height="900">
+          <button type="button" class="car-results__fullsize" data-cr-fullsize>
+            &#8599;&nbsp;{{ 'car_results.view_full_size' | t }}
+          </button>
+        </figure>
 
-          <div
-            class="car-product-card"
-            data-brand="{{ p_brand }}"
-            data-model="{{ p_model }}"
-            data-start-year="{{ p_start_year }}"
-            data-end-year="{{ p_end_year }}"
-            style="display: none; border: 1px solid #e8e8e8; padding: 15px; border-radius: 8px; flex: 1 1 250px; max-width: 300px;"
-          >
-            <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
-              {% if product.featured_image %}
-                <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title | escape }}" style="width: 100%; height: auto; border-radius: 4px; object-fit: cover;" loading="lazy">
-              {% endif %}
+        <p class="car-results__rail-heading">{{ 'car_results.shades_heading' | t }}</p>
 
-              <h3 style="font-size: 1.1em; margin: 10px 0 5px 0;">{{ product.title }}</h3>
-              <p style="font-weight: bold; margin: 0 0 10px 0;">{{ product.price | money }}</p>
-              <span class="button" style="display: block; text-align: center; padding: 8px; background: #000; color: #fff; border-radius: 4px;">View Product</span>
-            </a>
+        {% comment %}
+          Demo shade cards (name + showcase image source). Replace asset
+          placeholders and DEMO PRICE values when product wiring becomes
+          available. Card price was intentionally dropped so each card stays
+          a clean image + name thumbnail; the price lives in the order panel.
+        {% endcomment %}
+        <div class="car-results__rail" role="group" aria-label="{{ 'car_results.shades_heading' | t }}">
+
+          <!-- DEMO PRICE -->
+          <button type="button" class="car-results__shade is-active" aria-pressed="true"
+            data-shade-name="{{ 'car_results.shade_full_name' | t }}"
+            data-shade-price="$89.00"
+            data-shade-image="{{ 'shade-placeholder-full.svg' | asset_url }}">
+            <span class="car-results__shade-thumb">
+              <img src="{{ 'shade-placeholder-full.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
+            </span>
+            <span class="car-results__shade-name">{{ 'car_results.shade_full_name' | t }}</span>
+          </button>
+
+          <!-- DEMO PRICE -->
+          <button type="button" class="car-results__shade" aria-pressed="false"
+            data-shade-name="{{ 'car_results.shade_half_name' | t }}"
+            data-shade-price="$59.00"
+            data-shade-image="{{ 'shade-placeholder-half.svg' | asset_url }}">
+            <span class="car-results__shade-thumb">
+              <img src="{{ 'shade-placeholder-half.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
+            </span>
+            <span class="car-results__shade-name">{{ 'car_results.shade_half_name' | t }}</span>
+          </button>
+
+          <button type="button" class="car-results__shade" aria-pressed="false"
+            data-shade-name="{{ 'car_results.shade_windshield_name' | t }}"
+            data-shade-price="$69.00"
+            data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
+            <span class="car-results__shade-thumb">
+              <img src="{{ 'shade-placeholder-windshield.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
+            </span>
+            <span class="car-results__shade-name">{{ 'car_results.shade_windshield_name' | t }}</span>
+          </button>
+
+          <!-- DEMO PRICE: rear window reuses the windshield placeholder -->
+          <button type="button" class="car-results__shade" aria-pressed="false"
+            data-shade-name="{{ 'car_results.shade_set_name' | t }}"
+            data-shade-price="$149.00"
+            data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
+            <span class="car-results__shade-thumb">
+              <img src="{{ 'shade-placeholder-windshield.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
+            </span>
+            <span class="car-results__shade-name">{{ 'car_results.shade_set_name' | t }}</span>
+          </button>
+
+        </div><!-- /.car-results__rail -->
+
+      </div><!-- /.car-results__gallery -->
+
+      <!-- Details: selected car identity + shade order summary -->
+      <aside class="car-results__details">
+
+        <p class="car-results__eyebrow">{{ 'car_results.eyebrow_selected_car' | t }}</p>
+
+        <p class="car-results__brand" data-cr-title-brand>{{ 'car_results.heading_fallback' | t }}</p>
+        <h1 class="car-results__model" data-cr-title-model hidden></h1>
+
+        <p class="car-results__year" data-cr-chip-year hidden></p>
+
+        <hr class="car-results__rule">
+
+        <p class="car-results__shade-label">{{ 'car_results.selected_shade_label' | t }}</p>
+        <h2 class="car-results__shade-heading" data-cr-shade-name>{{ 'car_results.shade_full_name' | t }}</h2>
+
+        <p class="car-results__desc">{{ 'car_results.shade_desc_full' | t }}</p>
+
+        <div class="car-results__quality">
+          <p class="car-results__quality-label">{{ 'car_results.quality_label' | t }}</p>
+          <p class="car-results__quality-text">{{ 'car_results.quality_text' | t }}</p>
+        </div>
+
+        <form class="car-results__buy" action="#" novalidate>
+          <div class="car-results__qty">
+            <button type="button" class="car-results__qty-btn" data-cr-qty-minus aria-label="{{ 'car_results.decrease_qty_aria' | t }}">&minus;</button>
+            <output class="car-results__qty-value" data-cr-qty-value aria-live="polite">1</output>
+            <button type="button" class="car-results__qty-btn" data-cr-qty-plus aria-label="{{ 'car_results.increase_qty_aria' | t }}">+</button>
           </div>
+          <!-- DEMO PRICE -->
+          <span class="car-results__price" data-cr-price>$89.00</span>
+          <button type="submit" class="car-results__add" data-cr-add>{{ 'car_results.add_to_cart' | t }}</button>
+        </form>
+
+        <p class="car-results__secure">{{ 'car_results.secure_note' | t }}</p>
+
+      </aside>
+
+    </div><!-- /.car-results__grid -->
+
+    {% comment %}
+      Client-side resolution data - mirrors the metaobject sources of
+      shop-by-car-models.liquid so name slugs and generation images stay in
+      perfect sync across the flow.
+    {% endcomment %}
+
+    <script type="application/json" data-car-results-brands>
+      [
+        {% for brand in metaobjects.car_brand.values %}
+          {
+            "handle": {{ brand.system.handle | handleize | json }},
+            "name": {{ brand.brand_name.value | default: brand.title | json }},
+            "logo": {% if brand.brand_logo.value %}{{ brand.brand_logo.value | image_url: width: 400 | json }}{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
         {% endfor %}
-      {% endif %}
-    {% endfor %}
-  </div>
+      ]
+    </script>
 
-  <div id="car-results-empty" style="display: none; text-align: center; padding: 40px 0;">
-    <h3>No matching compatible products found.</h3>
-    <p>Try selecting a different car model or year.</p>
-  </div>
-</div>
+    <script type="application/json" data-car-results-models>
+      [
+        {% for cr_model in metaobjects.car_model.values %}
+          {% assign cr_model_brand = cr_model.brand.value %}
+          {% assign cr_model_image = cr_model.image.value | default: cr_model.model_image.value %}
+          {
+            "handle": {{ cr_model.system.handle | json }},
+            "name": {{ cr_model.model_name.value | default: cr_model.model_name | json }},
+            "yearRange": {{ cr_model.year_range.value | default: cr_model.year_range | json }},
+            "brand": {% if cr_model_brand %}{{ cr_model_brand.system.handle | handleize | json }}{% else %}null{% endif %},
+            "image": {% if cr_model_image %}{{ cr_model_image | image_url: width: 1100 | json }}{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    </script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const params = new URLSearchParams(window.location.search);
-    const selectedBrand = (params.get('brand') || '').toLowerCase().trim();
-    const selectedModel = (params.get('model') || '').toLowerCase().trim();
-    const selectedYear = parseInt(params.get('year') || '0', 10);
+  </div><!-- /.car-results__container -->
+</div><!-- /.car-results -->
 
-    const summary = document.getElementById('car-results-selected-summary');
-    if (summary) {
-      if (selectedBrand && selectedModel && selectedYear) {
-        summary.textContent = `Showing compatible products for ${selectedBrand.toUpperCase()} ${selectedModel.toUpperCase()} (${selectedYear})`;
-      } else {
-        summary.textContent = `Showing all compatible products.`;
+{% stylesheet %}
+  .car-results {
+    width: 100%;
+    padding: clamp(24px, 4vw, 56px) clamp(16px, 4vw, 48px) clamp(48px, 6vw, 88px);
+    background: #ffffff;
+    color: var(--ad-text, #141414);
+  }
+
+  .car-results__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .car-results__breadcrumb {
+    margin-bottom: clamp(14px, 2vw, 22px);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+  }
+
+  .car-results__breadcrumb a {
+    color: var(--ad-muted, #7a746a);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .car-results__breadcrumb a:hover {
+    color: var(--ad-accent, #d90000);
+  }
+
+  .car-results__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(24px, 3vw, 44px);
+  }
+
+  @media screen and (min-width: 990px) {
+    .car-results__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(320px, 4fr);
+      align-items: start;
+    }
+  }
+
+  /* Showcase stage */
+  .car-results__stage {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    border-radius: calc(var(--ad-radius-lg, 20px));
+    border: 1px solid var(--ad-border, #e9e2d8);
+    background:
+      radial-gradient(circle at 70% 18%, rgba(125, 21, 21, 0.05), transparent 42%),
+      linear-gradient(165deg, #fbfaf8 0%, #f3eee6 100%);
+    box-shadow: var(--ad-shadow-soft, 0 22px 50px -30px rgba(20, 20, 20, 0.35));
+  }
+
+  .car-results__stage-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .car-results__fullsize {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border: 1px solid #e8e2d8;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ad-text, #141414);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 6px 18px -8px rgba(20, 20, 20, 0.28);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .car-results__fullsize:hover {
+    color: var(--ad-accent, #d90000);
+    border-color: rgba(217, 0, 0, 0.4);
+  }
+
+  /* Shade type rail heading + cards */
+  .car-results__rail-heading {
+    margin: 18px 0 12px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ad-muted, #7a746a);
+  }
+
+  .car-results__rail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 0;
+  }
+
+  @media screen and (min-width: 600px) {
+    .car-results__rail {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .car-results__shade {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--ad-border, #e9e2d8);
+    border-radius: var(--ad-radius-md, 14px);
+    background: #ffffff;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .car-results__shade:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ad-shadow-soft, 0 22px 50px -30px rgba(20, 20, 20, 0.35));
+  }
+
+  .car-results__shade:focus-visible {
+    outline: 2px solid var(--ad-accent, #d90000);
+    outline-offset: 2px;
+  }
+
+  .car-results__shade.is-active {
+    border-color: var(--ad-accent, #d90000);
+    box-shadow: 0 0 0 1px var(--ad-accent, #d90000) inset;
+  }
+
+  .car-results__shade-thumb {
+    overflow: hidden;
+    border-radius: calc(var(--ad-radius-md, 14px) - 6px);
+    background: #f6f1ea;
+    aspect-ratio: 4 / 3;
+  }
+
+  .car-results__shade-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .car-results__shade:hover .car-results__shade-thumb img {
+    transform: scale(1.05);
+  }
+
+  .car-results__shade-name {
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  /* Details / order summary panel */
+  .car-results__details {
+    padding: clamp(22px, 2.4vw, 34px);
+    border: 1px solid var(--ad-border, #e9e2d8);
+    border-radius: var(--ad-radius-lg, 18px);
+    background: #ffffff;
+    box-shadow: var(--ad-shadow-soft, 0 22px 50px -30px rgba(20, 20, 20, 0.22));
+  }
+
+  .car-results__eyebrow {
+    margin: 0 0 6px;
+    color: var(--ad-accent, #d90000);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .car-results__brand {
+    margin: 0 0 4px;
+    color: var(--ad-accent, #d90000);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .car-results__model {
+    margin: 0 0 6px;
+    font-family: var(--font-heading--family), Georgia, 'Times New Roman', serif;
+    font-size: clamp(30px, 3vw, 44px);
+    font-weight: 700;
+    line-height: 1.02;
+    color: var(--ad-text, #141414);
+  }
+
+  .car-results__year {
+    margin: 0;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ad-muted, #6f695f);
+  }
+
+  .car-results__rule {
+    margin: clamp(14px, 2vw, 20px) 0;
+    border: none;
+    border-top: 1px solid var(--ad-border, #e9e2d8);
+  }
+
+  .car-results__shade-label {
+    margin: 0 0 6px;
+    color: var(--ad-muted, #6f695f);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .car-results__shade-heading {
+    margin: 0 0 10px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .car-results__desc {
+    margin: 0 0 16px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ad-muted, #6f695f);
+  }
+
+  .car-results__quality {
+    margin-bottom: 18px;
+  }
+
+  .car-results__quality-label {
+    margin: 0 0 4px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ad-text, #141414);
+  }
+
+  .car-results__quality-text {
+    margin: 0;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ad-muted, #6f695f);
+  }
+
+  /* Buy form */
+  .car-results__buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .car-results__qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--ad-border-strong, #d9d0c3);
+    border-radius: 999px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .car-results__qty-btn {
+    width: 40px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    color: var(--ad-text, #141414);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .car-results__qty-btn:hover {
+    background: #f6f1ea;
+  }
+
+  .car-results__qty-value {
+    min-width: 34px;
+    text-align: center;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .car-results__price {
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .car-results__add {
+    flex: 1 1 100%;
+    min-height: 48px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 999px;
+    background: var(--ad-accent, #d90000);
+    color: #ffffff;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+  }
+
+  .car-results__add:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+  }
+
+  .car-results__secure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ad-muted, #7a746a);
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    'use strict';
+
+    var root = document.querySelector('.car-results');
+    if (!root) return;
+
+    var params = new URLSearchParams(window.location.search);
+    var brandParam = (params.get('brand') || '').trim().toLowerCase();
+    var modelParam = (params.get('model') || '').trim();
+    var yearParam = parseInt(params.get('year'), 10) || 0;
+
+    // ------------------------------------------------------------------
+    // Name helpers - intentionally mirror shop-by-car-models.liquid so the
+    // `model` slug arriving in the URL can be resolved against the exact
+    // same cleaned model names that generated it.
+    // ------------------------------------------------------------------
+    function escapeRegExp(value) {
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function slug(value) {
+      return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function normalizeRange(value) {
+      return String(value || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+    }
+
+    function normalizeName(value) {
+      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
+    var brandPrefixes = {};
+    if (brandParam) brandPrefixes[brandParam] = true;
+
+    function cleanModelName(value) {
+      var name = String(value || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+      name = name.replace(/\s+(?:19|20)\d{2}\s*-\s*(?:19|20)\d{2}$/i, '');
+      name = name.replace(/\s+(?:19|20)\d{2}$/i, '');
+      if (Object.keys(brandPrefixes).length) {
+        var prefixRe = new RegExp('^(?:' + Object.keys(brandPrefixes).map(escapeRegExp).join('|') + ')\\s+', 'i');
+        name = name.replace(prefixRe, '');
+      }
+      return name.replace(/\s+/g, ' ').trim();
+    }
+
+    function parseRange(value) {
+      var parts = normalizeRange(value).split('-');
+      var start = parseInt(parts[0], 10) || 0;
+      var end = parseInt(parts[parts.length - 1], 10) || start;
+      return { start: start, end: end };
+    }
+
+    function readIsland(selector) {
+      var node = document.querySelector(selector);
+      if (!node) return [];
+      try {
+        var parsed = JSON.parse(node.textContent);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
       }
     }
 
-    const cards = document.querySelectorAll('.car-product-card');
-    let matchCount = 0;
+    var brands = readIsland('[data-car-results-brands]');
+    var models = readIsland('[data-car-results-models]');
 
-    cards.forEach(card => {
-      const cardBrand = (card.dataset.brand || '').toLowerCase().trim();
-      const cardModel = (card.dataset.model || '').toLowerCase().trim();
-      const cardStartYear = parseInt(card.dataset.startYear || '0', 10);
-      const cardEndYear = parseInt(card.dataset.endYear || '0', 10);
-
-      const brandMatches = !selectedBrand || cardBrand === selectedBrand;
-      const modelMatches = !selectedModel || cardModel === selectedModel;
-      const yearMatches = !selectedYear || (selectedYear >= cardStartYear && selectedYear <= cardEndYear);
-
-      if (brandMatches && modelMatches && yearMatches) {
-        card.style.display = 'block';
-        matchCount++;
-      } else {
-        card.style.display = 'none';
+    // ------------------------------------------------------------------
+    // Resolve the selected car from brand/model/year parameters.
+    //
+    // shop-by-car-models builds links as:
+    //   ?brand=<handle>&model=<slug(cleanModelName(name))>&year=<rangeStart>
+    // so here we reconstruct cleanName per record, slug it, and compare -
+    // using the same prefix/year stripping and case/space normalisation.
+    // ------------------------------------------------------------------
+    var brandRecord = null;
+    for (var i = 0; i < brands.length; i++) {
+      if (String(brands[i].handle || '').toLowerCase() === brandParam) {
+        brandRecord = brands[i];
+        break;
       }
+    }
+
+    if (brandRecord && brandRecord.name) {
+      brandPrefixes[String(brandRecord.name).trim().toLowerCase()] = true;
+      models.forEach(function (model) { model.cleanName = cleanModelName(model.name); });
+    }
+
+    var matchingModels = [];
+    if (brandParam) {
+      models.forEach(function (model) {
+        if (String(model.brand || '').toLowerCase() !== brandParam || !model.cleanName) return;
+        if (modelParam && slug(model.cleanName) !== modelParam) return;
+        matchingModels.push(model);
+      });
+    }
+
+    matchingModels.sort(function (a, b) {
+      var aRange = parseRange(a.yearRange);
+      var bRange = parseRange(b.yearRange);
+      if (!yearParam) return bRange.end - aRange.end;
+      var aDist = Math.min(Math.abs(aRange.start - yearParam), Math.abs(aRange.end - yearParam));
+      var bDist = Math.min(Math.abs(bRange.start - yearParam), Math.abs(bRange.end - yearParam));
+      if (aDist !== bDist) return aDist - bDist;
+      return normalizeRange(a.yearRange).localeCompare(normalizeRange(b.yearRange));
     });
 
-    const emptyMsg = document.getElementById('car-results-empty');
-    if (emptyMsg) {
-      emptyMsg.style.display = (matchCount === 0) ? 'block' : 'none';
+    var selectedModel = matchingModels[0] || null;
+
+    function yearsLabel(model) {
+      if (!model || !model.yearRange) return '';
+      return normalizeRange(model.yearRange).replace('-', ' - ');
     }
-  });
-</script>
+
+    function rangeContainsYear(rangeValue, year) {
+      if (!year) return false;
+      var range = parseRange(rangeValue);
+      if (!range.start) return false;
+      return year >= range.start && year <= range.end;
+    }
+
+    // ------------------------------------------------------------------
+    // Header / identity panel
+    // ------------------------------------------------------------------
+    var titleBrand = root.querySelector('[data-cr-title-brand]');
+    var titleModel = root.querySelector('[data-cr-title-model]');
+    var chipYear = root.querySelector('[data-cr-chip-year]');
+    var stageImg = root.querySelector('.car-results__stage-img');
+    var fullsizeBtn = root.querySelector('[data-cr-fullsize]');
+
+    document.title = 'Car Results';
+
+    if (titleBrand) {
+      titleBrand.textContent = brandRecord && brandRecord.name
+        ? brandRecord.name
+        : titleBrand.textContent;
+    }
+
+    if (titleModel) {
+      if (selectedModel && selectedModel.cleanName) {
+        titleModel.textContent = selectedModel.cleanName;
+        titleModel.hidden = false;
+      } else if (modelParam) {
+        titleModel.textContent = modelParam.replace(/-/g, ' ').replace(/\b\w/g, function (m) { return m.toUpperCase(); });
+        titleModel.hidden = false;
+      }
+    }
+
+    if (chipYear) {
+      var chipText = '';
+      if (selectedModel) chipText = yearsLabel(selectedModel);
+      else if (yearParam) chipText = String(yearParam);
+      if (chipText) {
+        chipYear.textContent = chipText;
+        chipYear.hidden = false;
+      }
+    }
+
+    var modelImage = selectedModel && selectedModel.image;
+    if (modelImage && stageImg) {
+      stageImg.src = modelImage;
+      if (selectedModel.cleanName) {
+        stageImg.alt = [(brandRecord && brandRecord.name) || '', selectedModel.cleanName].join(' ').trim();
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // Shade selection - swaps the showcase image and updates the summary
+    // ------------------------------------------------------------------
+    var shadeButtons = Array.prototype.slice.call(root.querySelectorAll('.car-results__shade'));
+    var shadeName = root.querySelector('[data-cr-shade-name]');
+    var shadePrice = root.querySelector('[data-cr-price]');
+    var qtyValue = root.querySelector('[data-cr-qty-value]');
+    var minusBtn = root.querySelector('[data-cr-qty-minus]');
+    var plusBtn = root.querySelector('[data-cr-qty-plus]');
+    var buyForm = root.querySelector('.car-results__buy');
+    var addBtn = root.querySelector('[data-cr-add]');
+    var quantity = 1;
+
+    function parsePrice(value) {
+      var num = parseFloat(String(value || '').replace(/[^0-9.]/g, ''));
+      return isNaN(num) ? 0 : num;
+    }
+
+    function formatPrice(amount) {
+      return '$' + amount.toFixed(2);
+    }
+
+    function activeShade() {
+      for (var s = 0; s < shadeButtons.length; s++) {
+        if (shadeButtons[s].classList.contains('is-active')) return shadeButtons[s];
+      }
+      return null;
+    }
+
+    function currentUnitPrice() {
+      var shade = activeShade();
+      return shade ? parsePrice(shade.getAttribute('data-shade-price')) : 0;
+    }
+
+    function refreshTotal() {
+      if (shadePrice) shadePrice.textContent = formatPrice(currentUnitPrice() * quantity);
+    }
+
+    function setQuantity(next) {
+      quantity = Math.min(99, Math.max(1, next));
+      if (qtyValue) qtyValue.textContent = String(quantity);
+      refreshTotal();
+    }
+
+    shadeButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        shadeButtons.forEach(function (other) {
+          var isActive = other === button;
+          other.classList.toggle('is-active', isActive);
+          other.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        var shadeImage = button.getAttribute('data-shade-image');
+        if (shadeImage && stageImg) {
+          stageImg.src = shadeImage;
+          stageImg.alt = button.getAttribute('data-shade-name') || '';
+        }
+        if (shadeName) shadeName.textContent = button.getAttribute('data-shade-name') || '';
+        refreshTotal();
+      });
+    });
+
+    if (minusBtn) minusBtn.addEventListener('click', function () { setQuantity(quantity - 1); });
+    if (plusBtn) plusBtn.addEventListener('click', function () { setQuantity(quantity + 1); });
+
+    // View full size - opens the current showcase image in a new tab.
+    if (fullsizeBtn && stageImg) {
+      fullsizeBtn.addEventListener('click', function () {
+        var url = stageImg.currentSrc || stageImg.src;
+        if (url) window.open(url, '_blank', 'noopener');
+      });
+    }
+
+    // Demo add-to-cart: replaced by real cart wiring alongside product data.
+    if (buyForm) {
+      buyForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!addBtn || addBtn.disabled) return;
+        var originalLabel = addBtn.textContent;
+        addBtn.disabled = true;
+        addBtn.textContent = 'Added \u2713';
+        window.setTimeout(function () {
+          addBtn.disabled = false;
+          addBtn.textContent = originalLabel;
+        }, 1500);
+      });
+    }
+
+    refreshTotal();
+  })();
+{% endjavascript %}
+

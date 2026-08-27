@@ -468,6 +468,36 @@
      * BRAND → MODEL
      */
 
+    /*
+     * Slug helpers - mirror car-results-content.liquid so the `model` value
+     * placed in the URL resolves against the exact same cleaned model names.
+     * (The metaobject handle is NOT what Car Results expects.)
+     */
+
+    function escapeRegExp(value) {
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function slug(value) {
+      return String(value || '').toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+    }
+
+    function cleanModelName(value, brandHandle) {
+      var name = String(value || '')
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+      name = name.replace(/\s+(?:19|20)\d{2}\s*-\s*(?:19|20)\d{2}$/i, '');
+      name = name.replace(/\s+(?:19|20)\d{2}$/i, '');
+      if (brandHandle) {
+        var prefixRe = new RegExp('^(?:' + escapeRegExp(brandHandle) + ')\\s+', 'i');
+        name = name.replace(prefixRe, '');
+      }
+      return name.replace(/\s+/g, ' ').trim();
+    }
+
     brandSelect.addEventListener('change', function () {
 
       const brandId =
@@ -502,7 +532,7 @@
           document.createElement('option');
 
         option.value =
-          model.handle;
+          slug(cleanModelName(model.name, model.brandHandle));
 
         option.textContent =
           model.name;

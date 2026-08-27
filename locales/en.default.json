@@ -109,5 +109,24 @@
     "text": "Text",
     "image": "Image",
     "link": "Link"
+  },
+  "car_results": {
+    "back_to_selector": "Back to car selector",
+    "shades_heading": "Select shade type to view",
+    "view_full_size": "View full size",
+    "eyebrow_selected_car": "Selected car",
+    "heading_fallback": "Your car",
+    "selected_shade_label": "Selected shade",
+    "shade_full_name": "Full Window Covered Shades",
+    "shade_desc_full": "Custom-cut automotive shades that hug every window shape and keep the cabin cool, calm and glare-free.",
+    "shade_half_name": "Front + Back Shades",
+    "shade_windshield_name": "Front Windshield Shade",
+    "shade_set_name": "Rear Window Shade",
+    "quality_label": "Premium Quality",
+    "quality_text": "Precision-cut fit, premium UV-blocking fabric and effortless magnetic installation.",
+    "decrease_qty_aria": "Decrease quantity",
+    "increase_qty_aria": "Increase quantity",
+    "add_to_cart": "Add to cart",
+    "secure_note": "Secure checkout"
   }
 }

@@ -1,0 +1,30 @@
+{% doc %}
+  Renders a single product card shared by the Homepage "Shop Our Top Products"
+  section and the All Products page so both displays use one consistent
+  component (typography, price, SHOP NOW button, border, spacing, and a
+  portrait 4:5 image area with `object-fit: contain`).
+
+  All product data is fetched from Shopify by the caller and passed in —
+  nothing here is hardcoded.
+
+  @param {product} product - The Shopify product to render
+
+  @example
+  {% render 'product-card', product: product %}
+{% enddoc %}
+
+<article class="product-card">
+  <div class="product-card__image">
+    {% if product.featured_image %}
+      {{ product.featured_image | image_url: width: 600 | image_tag: alt: product.title, loading: 'lazy' }}
+    {% endif %}
+  </div>
+  <div class="product-card__body">
+    <h3 class="product-card__name">{{ product.title }}</h3>
+    {% if product.description != blank %}
+      <p class="product-card__desc">{{ product.description | strip_html | truncatewords: 20 }}</p>
+    {% endif %}
+    <p class="product-card__price">{{ product.price | money }}</p>
+    <a class="product-card__btn" href="/pages/shop-by-car">SHOP NOW</a>
+  </div>
+</article>
