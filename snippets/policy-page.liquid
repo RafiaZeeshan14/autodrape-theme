@@ -1,0 +1,30 @@
+{% doc %}
+  Renders a shared, premium policy-page layout for the store's legal pages
+  (Privacy Policy, Return & Exchange / Refund Policy, Terms & Conditions,
+  Shipping & Delivery Policy).
+
+  The policy's existing title and body are rendered exactly as-is inside a
+  wide, clean white content area - only the presentation is styled here. No
+  wording, numbering, headings, or other content is altered, and the header
+  and footer of the store are untouched.
+
+  Uses the AutoDrapes design tokens (Manrope typography and maroon accents)
+  for a consistent premium reading experience that
+  is fully responsive on mobile, tablet, and desktop.
+
+  @param {page} policy - The policy page object to render
+
+  @example
+  {% render 'policy-page', policy: page %}
+{% enddoc %}
+
+<div class="ad-policy">
+  <div class="ad-policy__container">
+    <h1 class="ad-policy__title">{{ policy.title }}</h1>
+
+    <div class="ad-policy__body">
+      {{ policy.content }}
+    </div>
+  </div>
+</div>
+

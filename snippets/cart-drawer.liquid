@@ -1,0 +1,684 @@
+{% doc %}
+  Renders the site-wide cart drawer (right-side slide-in sidebar).
+
+  The drawer is rendered from the theme layout so it is available on every
+  page. It reads the customer's cart live from Shopify's AJAX endpoints:
+
+    GET  /cart.js         - current cart (rendered on open / refresh)
+    POST /cart/change.js  - quantity updates and item removal
+
+  Everything displayed (item image, title, price, quantity, subtotal) comes
+  from those responses - nothing is hardcoded.
+
+  The header cart link (`.ad-header__cart`) is intercepted so it opens this
+  drawer instead of navigating to /cart, and the drawer exposes
+  `window.AutoDrapeCart.open()` so add-to-cart flows (e.g. the Car Results
+  page) can open the drawer with the newly added item.
+
+  @example
+  {% render 'cart-drawer' %}
+{% enddoc %}
+
+<div
+  class="ad-cart"
+  data-cart-drawer
+  data-cart-currency="{{ cart.currency | default: shop.currency }}"
+  data-dec-label="{{ 'car_results.decrease_qty_aria' | t }}"
+  data-inc-label="{{ 'car_results.increase_qty_aria' | t }}"
+  data-remove-label="{{ 'cart.remove' | t }}"
+  aria-hidden="true"
+>
+  <div class="ad-cart__overlay" data-cart-close></div>
+
+  <aside class="ad-cart__panel" role="dialog" aria-modal="true" aria-label="{{ 'cart.drawer_title' | t }}">
+    <div class="ad-cart__head">
+      <h2 class="ad-cart__title">{{ 'cart.drawer_title' | t }}</h2>
+      <button type="button" class="ad-cart__close" data-cart-close aria-label="{{ 'general.close' | t }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="ad-cart__body">
+      <div class="ad-cart__items" data-cart-items></div>
+
+      <div class="ad-cart__empty" data-cart-empty hidden>
+        <p>{{ 'cart.empty' | t }}</p>
+      </div>
+    </div>
+
+    <div class="ad-cart__foot" data-cart-foot hidden>
+      <div class="ad-cart__summary">
+        <div class="ad-cart__summary-row">
+          <span>{{ 'cart.quantity' | t }}</span>
+          <span data-cart-count>0</span>
+        </div>
+        <div class="ad-cart__summary-row">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span data-cart-subtotal></span>
+        </div>
+        <div class="ad-cart__summary-row ad-cart__summary-row--total">
+          <span>{{ 'cart.total' | t }}</span>
+          <span data-cart-total></span>
+        </div>
+        <p class="ad-cart__taxes">{{ 'cart.taxes_note' | t }}</p>
+      </div>
+
+      <form class="ad-cart__checkout-form" action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="ad-cart__checkout">{{ 'cart.checkout' | t }}</button>
+      </form>
+
+      <button type="button" class="ad-cart__continue" data-cart-close>{{ 'cart.continue_shopping' | t }}</button>
+
+      <div class="ad-cart__trust">
+        <span class="ad-cart__trust-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>
+          {{ 'cart.trust_secure' | t }}
+        </span>
+        <span class="ad-cart__trust-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          {{ 'cart.trust_returns' | t }}
+        </span>
+        <span class="ad-cart__trust-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4h14v12H1z"></path><path d="M15 8h4l4 4v4h-8z"></path><circle cx="6" cy="19" r="2"></circle><circle cx="17" cy="19" r="2"></circle></svg>
+          {{ 'cart.trust_delivery' | t }}
+        </span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% stylesheet %}
+  .ad-cart {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .ad-cart.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .ad-cart__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.55);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    cursor: pointer;
+  }
+  .ad-cart.is-open .ad-cart__overlay {
+    opacity: 1;
+  }
+
+  .ad-cart__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 100vw);
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background: var(--ad-surface-strong);
+    color: var(--ad-text);
+    box-shadow: var(--ad-shadow-lg);
+    transform: translateX(100%);
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    font-family: var(--font-ui--family);
+  }
+  .ad-cart.is-open .ad-cart__panel {
+    transform: translateX(0);
+  }
+
+  .ad-cart__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+  .ad-cart__title {
+    margin: 0;
+    font-family: var(--font-ui--family);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .ad-cart__close {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid var(--ad-border);
+    border-radius: 50%;
+    color: var(--ad-text);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+  .ad-cart__close:hover {
+    color: var(--ad-accent);
+    border-color: var(--ad-accent);
+    transform: rotate(90deg);
+  }
+  .ad-cart__close svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .ad-cart__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 22px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ad-cart__item {
+    display: flex;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--ad-border);
+  }
+  .ad-cart__item:last-child {
+    border-bottom: 0;
+  }
+  .ad-cart__item-img {
+    width: 84px;
+    height: 84px;
+    flex: 0 0 84px;
+    object-fit: contain;
+    border-radius: var(--ad-radius-md);
+    background: #ffffff;
+    border: 1px solid var(--ad-border);
+    padding: 4px;
+  }
+  .ad-cart__item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .ad-cart__item-title {
+    margin: 0;
+    padding-right: 26px;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+  .ad-cart__item-meta {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--ad-text);
+  }
+  .ad-cart__item-meta--muted {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ad-text-muted);
+  }
+  .ad-cart__item-variant {
+    margin: 0;
+    font-size: 11px;
+    color: var(--ad-text-muted);
+  }
+  .ad-cart__item-price {
+    margin: 2px 0 0;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .ad-cart__qty {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    border: 1px solid var(--ad-border-strong);
+    border-radius: 999px;
+    overflow: hidden;
+    align-self: flex-start;
+  }
+  .ad-cart__qty button {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    color: var(--ad-text);
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .ad-cart__qty button:hover {
+    color: var(--ad-accent);
+    background: var(--ad-accent-soft);
+  }
+  .ad-cart__qty-value {
+    min-width: 34px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .ad-cart__remove {
+    align-self: flex-start;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid var(--ad-border);
+    border-radius: 50%;
+    color: var(--ad-text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .ad-cart__remove:hover {
+    color: var(--ad-accent);
+    border-color: var(--ad-accent);
+  }
+  .ad-cart__remove svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ad-cart__empty {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--ad-text-muted);
+    font-size: 14px;
+  }
+  .ad-cart__empty[hidden] {
+    display: none;
+  }
+
+  .ad-cart__foot {
+    padding: 18px 22px 22px;
+    border-top: 1px solid var(--ad-border);
+    background: var(--ad-surface-strong);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ad-cart__foot[hidden] {
+    display: none;
+  }
+  .ad-cart__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+  .ad-cart__summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ad-text-soft);
+  }
+  .ad-cart__summary-row span:last-child {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ad-text);
+  }
+  .ad-cart__summary-row--total {
+    margin-top: 2px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ad-border);
+  }
+  .ad-cart__summary-row--total span:first-child {
+    font-size: 13px;
+    color: var(--ad-text);
+  }
+  .ad-cart__summary-row--total span:last-child {
+    font-size: 20px;
+  }
+  .ad-cart__taxes {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ad-text-muted);
+  }
+  .ad-cart__checkout-form {
+    margin: 0;
+  }
+  .ad-cart__checkout {
+    display: block;
+    width: 100%;
+    padding: 16px 18px;
+    border: 0;
+    border-radius: var(--ad-radius-md);
+    background: var(--ad-accent);
+    color: #fff;
+    font-family: var(--font-ui--family);
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(17, 17, 17, 0.16);
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .ad-cart__checkout:hover {
+    background: var(--ad-accent-strong);
+    transform: translateY(-1px);
+  }
+  .ad-cart__continue {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: var(--ad-radius-md);
+    background: transparent;
+    border: 1px solid var(--ad-border-strong);
+    color: var(--ad-text);
+    font-family: var(--font-ui--family);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .ad-cart__continue:hover {
+    border-color: var(--ad-accent);
+    color: var(--ad-accent);
+  }
+
+  .ad-cart__trust {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--ad-border);
+  }
+  .ad-cart__trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1 1 auto;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ad-text-soft);
+    text-align: center;
+  }
+  .ad-cart__trust-item svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    fill: none;
+    stroke: var(--ad-accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media screen and (max-width: 480px) {
+    .ad-cart__panel {
+      width: 100vw;
+    }
+    .ad-cart__head {
+      padding: 16px 18px;
+    }
+    .ad-cart__body {
+      padding: 6px 16px;
+    }
+    .ad-cart__foot {
+      padding: 16px 18px 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function initCartDrawer() {
+      var root = document.querySelector('[data-cart-drawer]');
+      if (!root) return;
+
+      var itemsNode = root.querySelector('[data-cart-items]');
+      var emptyNode = root.querySelector('[data-cart-empty]');
+      var footNode = root.querySelector('[data-cart-foot]');
+      var totalNode = root.querySelector('[data-cart-total]');
+      var subtotalNode = root.querySelector('[data-cart-subtotal]');
+      var countNode = root.querySelector('[data-cart-count]');
+      var closeBtn = root.querySelector('[data-cart-close]');
+      var iso = root.getAttribute('data-cart-currency') || 'USD';
+      var decLabel = root.getAttribute('data-dec-label') || 'Decrease quantity';
+      var incLabel = root.getAttribute('data-inc-label') || 'Increase quantity';
+      var removeLabel = root.getAttribute('data-remove-label') || 'Remove';
+      var lastFocus = null;
+
+      function money(cents) {
+        var amount = (cents || 0) / 100;
+        try {
+          return new Intl.NumberFormat(document.documentElement.lang || 'en', {
+            style: 'currency',
+            currency: iso,
+            minimumFractionDigits: 2
+          }).format(amount);
+        } catch (error) {
+          return amount.toFixed(2);
+        }
+      }
+
+      function esc(value) {
+        var div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+      }
+
+      // ------------------------------------------------------------------
+      // Car information is NOT guessed from the page URL here. It travels
+      // ON each cart line as hidden line item properties (_car_brand,
+      // _car_model, _car_years) set at add-to-cart time by
+      // car-results-content.liquid, so every item keeps exactly the car
+      // that was selected when it was added.
+      // ------------------------------------------------------------------
+
+      function updateCount(count) {
+        var badges = document.querySelectorAll('.ad-header__cart-count');
+        for (var i = 0; i < badges.length; i++) {
+          badges[i].textContent = String(count || 0);
+        }
+      }
+
+      function renderCart(cart) {
+        updateCount(cart.item_count);
+        var items = cart.items || [];
+        var itemCount = items.length;
+
+        itemsNode.innerHTML = '';
+        emptyNode.hidden = itemCount > 0;
+        footNode.hidden = itemCount === 0;
+
+        if (countNode) {
+          countNode.textContent = String(cart.item_count || 0);
+        }
+        if (subtotalNode) {
+          subtotalNode.textContent = money(cart.items_subtotal_price != null ? cart.items_subtotal_price : cart.total_price);
+        }
+        if (totalNode) {
+          totalNode.textContent = money(cart.total_price);
+        }
+
+        items.forEach(function (item, index) {
+          var line = index + 1;
+          var img = item.image || (item.featured_image && item.featured_image.src) || '';
+          var title = item.product_title || item.title || '';
+          var variantTitle = item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title : '';
+          var typeLine = variantTitle || (item.product_type && item.product_type !== title ? item.product_type : '');
+
+          // Per-line car info from the line item properties set at
+          // add-to-cart time - each item shows its own selected car.
+          var props = item.properties || {};
+          var carName = ((props._car_brand || '') + ' ' + (props._car_model || '')).trim();
+          var carYears = props._car_years || '';
+          var imgTag = img
+            ? '<img class="ad-cart__item-img" src="' + esc(img) + '" alt="' + esc(title) + '" loading="lazy">'
+            : '<div class="ad-cart__item-img"></div>';
+
+          var row = document.createElement('div');
+          row.className = 'ad-cart__item';
+          row.innerHTML =
+            imgTag +
+            '<div class="ad-cart__item-info">' +
+              '<p class="ad-cart__item-title">' + esc(title) + '</p>' +
+              (carName ? '<p class="ad-cart__item-meta">' + esc(carName) + '</p>' : '') +
+              (carYears ? '<p class="ad-cart__item-meta ad-cart__item-meta--muted">' + esc(carYears) + '</p>' : '') +
+              (typeLine ? '<p class="ad-cart__item-variant">' + esc(typeLine) + '</p>' : '') +
+              '<p class="ad-cart__item-price">' + esc(money(item.price)) + '</p>' +
+              '<div class="ad-cart__qty">' +
+                '<button type="button" data-cart-dec aria-label="' + esc(decLabel) + '">&#8722;</button>' +
+                '<span class="ad-cart__qty-value">' + String(item.quantity) + '</span>' +
+                '<button type="button" data-cart-inc aria-label="' + esc(incLabel) + '">+</button>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" class="ad-cart__remove" data-cart-remove aria-label="' + esc(removeLabel) + '">' +
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"></path><path d="M6 7l1 12a1 1 0 001 1h8a1 1 0 001-1l1-12"></path></svg>' +
+            '</button>';
+
+          var dec = row.querySelector('[data-cart-dec]');
+          var inc = row.querySelector('[data-cart-inc]');
+          var remove = row.querySelector('[data-cart-remove]');
+
+          dec.addEventListener('click', function () {
+            changeQuantity(line, Math.max(0, item.quantity - 1));
+          });
+
+          inc.addEventListener('click', function () {
+            changeQuantity(line, Math.min(99, item.quantity + 1));
+          });
+
+          remove.addEventListener('click', function () {
+            changeQuantity(line, 0);
+          });
+
+          itemsNode.appendChild(row);
+        });
+      }
+
+      function changeQuantity(line, quantity) {
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ line: line, quantity: quantity })
+        })
+          .then(function (response) {
+            if (!response.ok) throw new Error('Cart change failed');
+            return response.json();
+          })
+          .then(function (cart) {
+            iso = cart.currency || iso;
+            renderCart(cart);
+          })
+          .catch(function () {
+            refresh();
+          });
+      }
+
+      function refresh() {
+        fetch('/cart.js', {
+          headers: { 'Accept': 'application/json' }
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (cart) {
+            iso = cart.currency || iso;
+            renderCart(cart);
+          })
+          .catch(function () {});
+      }
+
+      function open() {
+        lastFocus = document.activeElement;
+        root.classList.add('is-open');
+        root.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        refresh();
+        window.setTimeout(function () {
+          if (closeBtn && closeBtn.focus) closeBtn.focus();
+        }, 350);
+      }
+
+      function close() {
+        root.classList.remove('is-open');
+        root.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        window.setTimeout(function () {
+          if (lastFocus && lastFocus.focus && document.contains(lastFocus)) {
+            lastFocus.focus();
+          }
+        }, 380);
+      }
+
+      // Header cart icon opens the drawer instead of navigating to /cart.
+      document.addEventListener('click', function (event) {
+        var trigger = event.target.closest ? event.target.closest('.ad-header__cart') : null;
+        if (trigger) {
+          event.preventDefault();
+          open();
+        }
+      });
+
+      // Close button, overlay and "Continue shopping" all close the drawer.
+      var closeEls = root.querySelectorAll('[data-cart-close]');
+      for (var i = 0; i < closeEls.length; i++) {
+        closeEls[i].addEventListener('click', close);
+      }
+
+      // Escape key closes the drawer.
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && root.classList.contains('is-open')) {
+          close();
+        }
+      });
+
+      // Keep the drawer and header badge in sync with the live cart.
+      refresh();
+
+      window.AutoDrapeCart = {
+        open: open,
+        close: close,
+        refresh: refresh
+      };
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCartDrawer);
+    } else {
+      initCartDrawer();
+    }
+  })();
+{% endjavascript %}

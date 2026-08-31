@@ -25,6 +25,17 @@
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'ad-reference.css' | asset_url | stylesheet_tag }}
 
+    {% comment %}
+      Shared policy-page styling for the store's policy pages
+      (/policies/privacy-policy, /policies/refund-policy,
+      /policies/terms-of-service, /policies/shipping-policy), which Shopify
+      renders with its built-in markup (.shopify-policy__*). The rules are
+      scoped to policy classes / the .ad-policy wrapper, so loading the file
+      on every page is safe and guarantees the design applies to the real
+      rendered DOM of every policy route.
+    {% endcomment %}
+    {{ 'policy-page.css' | asset_url | stylesheet_tag }}
+
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 
@@ -37,5 +48,61 @@
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+{% render 'cart-drawer' %}
+
+    {% comment %}
+      Presentation-only polish for the built-in Shopify policy markup:
+      1. Wrap the policy content in a full-width .ad-policy area so the
+         white background and generous padding render correctly.
+      2. If the first body line is an "Effective"/"Last updated" meta line,
+         present it neatly below the title. No content is ever changed.
+      The script self-guards: on non-policy pages no matching container
+      exists and it returns immediately.
+    {% endcomment %}
+    <script>
+      (function () {
+        function stylePolicy() {
+          var container = document.querySelector('.shopify-policy__container, #shopify-policy__container, .ad-policy__container, .shopify-policy__wrap, #shopify-policy');
+          if (!container) return;
+
+          // Climb to the OUTERMOST native policy wrapper so the whole
+          // policy block is wrapped once - .ad-policy becomes the single
+          // horizontal-padding owner and no double-padding can occur.
+          var root = container;
+          while (root.parentElement && (' ' + root.parentElement.className + ' ').indexOf('shopify-policy') !== -1) {
+            root = root.parentElement;
+          }
+
+          var hasNativePolicy = !!document.querySelector('.shopify-policy__container, #shopify-policy__container, .shopify-policy__wrap, #shopify-policy');
+          if (hasNativePolicy && !root.closest('.ad-policy')) {
+            var outer = document.createElement('div');
+            outer.className = 'ad-policy';
+            root.parentNode.insertBefore(outer, root);
+            outer.appendChild(root);
+          }
+
+          var body = container.querySelector('.shopify-policy__body, .ad-policy__body');
+          if (body && body.firstElementChild) {
+            var firstText = (body.firstElementChild.textContent || '').trim().replace(/\s+/g, ' ');
+            if (/^(effective|last updated|updated|as of|effective date)/i.test(firstText)) {
+              body.firstElementChild.classList.add('ad-policy__meta');
+            }
+          }
+        }
+
+        function onReady() {
+          stylePolicy();
+          if (!document.querySelector('.shopify-policy__container, #shopify-policy__container')) {
+            window.setTimeout(stylePolicy, 300);
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', onReady);
+        } else {
+          onReady();
+        }
+      })();
+    </script>
   </body>
 </html>

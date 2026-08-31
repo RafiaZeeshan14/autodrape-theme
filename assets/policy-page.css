@@ -1,0 +1,352 @@
+﻿/*
+  AutoDrape ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Shared policy-page styling
+  ------------------------------------------------------------------
+  Wide, clean, premium layout for ALL store policy pages:
+
+    /policies/privacy-policy      ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Privacy Policy
+    /policies/refund-policy       ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Return & Exchange / Refund Policy
+    /policies/terms-of-service    ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Terms & Conditions
+    /policies/shipping-policy     ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Shipping & Delivery Policy
+
+  Loaded from layout/theme.liquid only on /policies/* routes.
+
+  Shopify renders policy routes with its built-in markup:
+    .shopify-policy__container / .shopify-policy__title / .shopify-policy__body
+  The theme's own policy snippet (.ad-policy / .ad-policy__container /
+  .ad-policy__title / .ad-policy__body) reuses the same classes so both
+  render paths stay visually identical.
+
+  Presentation only ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â the stored policy wording, numbering, headings and
+  bullet content are never altered.
+*/
+
+/* =====================================================================
+   FULL-WIDTH LAYOUT (overrides Shopify's injected policy stylesheet)
+   ----------------------------------------------------------------
+   Shopify renders /policies/* with its own markup AND injects its own
+   <style> block into content_for_layout that constrains the container
+   to a narrow ~700px centered column (e.g. max-width on
+   .shopify-policy__container). Because that injected stylesheet loads
+   after our <head> stylesheet, equal-specificity rules lose.
+   These rules therefore use higher specificity (body ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦) + !important
+   so the full-width design wins regardless of load order or nesting.
+   ===================================================================== */
+body .ad-policy,
+body .shopify-policy,
+body .shopify-policy__wrap,
+body .shopify-policy__main,
+body #shopify-policy,
+body .shopify-policy__container,
+body #shopify-policy__container,
+body .ad-policy__container {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* No descendant of the policy container may impose a narrow prose width.
+   Media are excluded so their intrinsic max-width:100% still works. */
+.shopify-policy__container :not(img):not(video):not(iframe):not(svg) {
+  max-width: none !important;
+}
+
+/* ---------------------------------------------------------------------
+   Horizontal padding ownership
+   The OUTERMOST policy wrapper owns ~40-60px horizontal padding; inner
+   wrappers stay padding-free so we never double-pad.
+   --------------------------------------------------------------------- */
+body > .shopify-policy__wrap,
+body > .shopify-policy__main,
+body > #shopify-policy,
+body > .shopify-policy__container,
+body > #shopify-policy__container,
+body .ad-policy {
+  padding-left: clamp(24px, 4vw, 60px) !important;
+  padding-right: clamp(24px, 4vw, 60px) !important;
+}
+
+/* The layout script moves the native container inside .ad-policy ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â then
+   .ad-policy owns the padding and the native wrappers don't pad. */
+.ad-policy .shopify-policy__wrap,
+.ad-policy .shopify-policy__main,
+.ad-policy #shopify-policy,
+.ad-policy .shopify-policy__container,
+.ad-policy #shopify-policy__container,
+.ad-policy .ad-policy__container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* If a wrap exists around an already-wrapped .ad-policy, drop its padding. */
+body > .shopify-policy__wrap:has(.ad-policy) {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Outer full-width white page area */
+body .ad-policy {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-top: 72px !important;
+  padding-bottom: 104px !important;
+  background: #ffffff !important;
+}
+
+/* ONE consistent premium sans-serif across the ENTIRE policy page
+   (title, meta line, headings, body, bullets, links, tables).
+   Manrope is the AutoDrapes brand sans, loaded in layout/theme.liquid;
+   Inter and system sans-serif are fallbacks only - the stack can never
+   fall back to a serif font. */
+body .ad-policy,
+body .shopify-policy__container,
+body #shopify-policy__container,
+body .shopify-policy__wrap,
+body .shopify-policy__main {
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important;
+}
+
+/* Prominent, elegant, centered title with a short red accent line below */
+.shopify-policy__title,
+.ad-policy__title {
+  margin: 0 0 28px;
+  padding-bottom: 0;
+  border-bottom: 0;
+  text-align: center;
+}
+
+.shopify-policy__title h1,
+.ad-policy__title {
+  margin: 0 0 18px;
+  color: #111111;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: clamp(32px, 3vw, 38px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+/* Short red accent line underneath the title */
+.shopify-policy__title h1::after,
+.ad-policy__title::after {
+  content: "";
+  display: block;
+  width: 54px;
+  height: 3px;
+  margin: 16px auto 0;
+  border-radius: 0;
+  background: var(--ad-accent, #7d1515);
+}
+
+/* Effective-date / last-updated line, neatly placed below the title */
+.ad-policy__meta {
+  display: block;
+  margin: 0 0 28px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #8a8a8a;
+}
+
+/* Body typography ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dark, highly readable */
+.shopify-policy__body,
+.ad-policy__body {
+  color: #1b1b1b;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+  overflow-wrap: break-word;
+}
+
+.shopify-policy__body > *:first-child,
+.ad-policy__body > *:first-child {
+  margin-top: 0;
+}
+
+.shopify-policy__body p,
+.ad-policy__body p {
+  margin: 0 0 16px;
+}
+
+/* Numbered section headings ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â AutoDrapes brand red, bold, with a subtle
+   light-gray divider under each major section */
+.shopify-policy__body h2,
+.shopify-policy__body h3,
+.shopify-policy__body h4,
+.shopify-policy__body h1,
+.ad-policy__body h2,
+.ad-policy__body h3,
+.ad-policy__body h4,
+.ad-policy__body h1 {
+  margin: 52px 0 18px;
+  padding: 18px 0 0;
+  border-top: 1px solid #dddddd;
+  border-bottom: 0;
+  color: var(--ad-accent, #7d1515) !important;
+  font-weight: 700;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.shopify-policy__body h2:first-child,
+.ad-policy__body h2:first-child {
+  margin-top: 26px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.shopify-policy__body h3,
+.shopify-policy__body h4,
+.ad-policy__body h3,
+.ad-policy__body h4 {
+  border-top: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+  margin-top: 32px;
+}
+
+.shopify-policy__body h2,
+.ad-policy__body h2 {
+  font-weight: 700;
+  font-size: clamp(22px, 2.1vw, 24px);
+}
+
+.shopify-policy__body h3,
+.ad-policy__body h3 {
+  font-size: clamp(19px, 2vw, 22px);
+}
+
+.shopify-policy__body h4,
+.ad-policy__body h4 {
+  font-size: 17px;
+}
+
+/* Cleanly indented bullet / numbered lists with red markers */
+.shopify-policy__body ul,
+.shopify-policy__body ol,
+.ad-policy__body ul,
+.ad-policy__body ol {
+  margin: 0 0 22px;
+  padding-left: 30px;
+}
+
+.shopify-policy__body ul,
+.ad-policy__body ul {
+  list-style: disc;
+}
+
+
+.shopify-policy__body ol,
+.ad-policy__body ol {
+  list-style: decimal;
+}
+
+.shopify-policy__body li,
+.ad-policy__body li {
+  margin: 0 0 9px;
+  padding-left: 4px;
+  line-height: 1.7;
+}
+
+.shopify-policy__body li::marker,
+.ad-policy__body li::marker {
+  color: var(--ad-accent, #7d1515);
+  font-weight: 700;
+}
+
+/* Emphasis, links */
+.shopify-policy__body strong,
+.shopify-policy__body b,
+.ad-policy__body strong,
+.ad-policy__body b {
+  color: var(--ad-accent, #7d1515);
+  font-weight: 700;
+}
+
+.shopify-policy__body a,
+.ad-policy__body a {
+  color: var(--ad-accent, #7d1515);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.shopify-policy__body a:hover,
+.ad-policy__body a:hover {
+  color: var(--ad-accent-strong, #5f1010);
+}
+
+/* Tables (shipping tables etc.) */
+.shopify-policy__body table,
+.ad-policy__body table {
+  width: 100%;
+  margin: 0 0 20px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.shopify-policy__body th,
+.shopify-policy__body td,
+.ad-policy__body th,
+.ad-policy__body td {
+  padding: 10px 14px;
+  border: 1px solid rgba(17, 17, 17, 0.14);
+  text-align: left;
+  vertical-align: top;
+}
+
+.shopify-policy__body th,
+.ad-policy__body th {
+  background: rgba(125, 21, 21, 0.06);
+  color: #111111;
+  font-weight: 700;
+}
+
+/* Responsive ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â tablet & mobile */
+@media screen and (max-width: 768px) {
+  .ad-policy {
+    padding: 28px 28px 68px;
+  }
+
+  .shopify-policy__body,
+  .ad-policy__body {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .shopify-policy__container,
+  #shopify-policy__container,
+  .ad-policy__container {
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .ad-policy {
+    padding: 24px 20px 56px;
+  }
+
+  .shopify-policy__title h1,
+  .ad-policy__title {
+    font-size: 29px;
+    margin-bottom: 18px;
+  }
+
+  .shopify-policy__body h2,
+  .ad-policy__body h2 {
+    margin-top: 32px;
+    font-size: 20px;
+  }
+
+  .shopify-policy__body ul,
+  .shopify-policy__body ol,
+  .ad-policy__body ul,
+  .ad-policy__body ol {
+    padding-left: 24px;
+  }
+}

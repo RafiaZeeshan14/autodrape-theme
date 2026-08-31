@@ -444,9 +444,8 @@
 
     const carModels = [
 
-      {% assign car_models = metaobjects.car_model.values %}
-
-      {% for model in car_models %}
+      {% paginate metaobjects.car_model.values by 250 %}
+      {% for model in metaobjects.car_model.values %}
 
         {
           id: {{ model.system.id | json }},
@@ -460,6 +459,7 @@
         {% unless forloop.last %},{% endunless %}
 
       {% endfor %}
+      {% endpaginate %}
 
     ];
 

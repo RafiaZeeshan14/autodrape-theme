@@ -11,24 +11,27 @@
   client (display name, generation ranges, showcase image) using the same
   data sources and slug helpers as `shop-by-car-models.liquid`, then renders
   a premium shade configurator. Selecting a shade type swaps the showcase
-  image and updates the order summary panel.
+  image and updates the order summary panel. The details column also exposes a
+  three-tab shade picker (4 Side Coverage / Rear Window Shield / Front Window
+  Shield) with Full/Half sub-tabs; every tab reuses the same shade selection and
+  Shopify product-resolution data as the rail cards - no separate resolution.
 
-  Product/cart integration intentionally ships as a static demo: shade
-  descriptions, prices, quantity and add-to-cart behaviour are placeholders
-  until real product wiring lands. Shade artwork uses local placeholder
-  SVGs merchants can replace with photography later.
+  Product wiring: Full/Half coverage cards resolve the compatible Shopify
+  product through the existing `Compatible Car Models` metafield; Front
+  Windshield Shade and Rear Windshield Shade cards resolve their universal
+  Shopify products for every vehicle. Titles, prices and variants come
+  live from those product records.
 
   Routing contract: the `brand`/`model`/`year` parameters are consumed here
   only for display and image resolution - they are never rewritten,
   redirected or removed, so existing deep links keep working.
 
-  TEMPORARY console-only compatibility test: resolves the existing Full and
-  Half Window Coverage Sunshades products, reads
-  `product.metafields.custom.compatible_car_models.value`, and logs to the
-  browser console whether the resolved selected car model id appears among
-  the referenced car model ids (FULL MATCH / HALF MATCH). No UI output.
-  Remove together with the `data-car-compat-test` island and the
-  `compatibilityTest` JS block when real product wiring lands.
+  Full/Half wiring is data driven: every product carrying a non-empty
+  `custom.compatible_car_models` metafield is serialised into the
+  `data-car-compat-test` island; on the client the Full and Half shade cards
+  resolve the product (per role) whose references include the selected car
+  model's metaobject id - so additional generations or products require no
+  template changes.
 
   @example
   {% render 'car-results-content' %}
@@ -47,7 +50,14 @@
       <div class="car-results__gallery">
 
         <figure class="car-results__stage">
-          <img class="car-results__stage-img" src="{{ 'car.png' | asset_url }}" alt="" width="1200" height="900">
+          {% comment %}
+            The showcase intentionally starts WITHOUT a static image src so no
+            default/demo car picture can flash during initial page load. The
+            width/height attributes keep the box's aspect ratio (no layout
+            shift) while the stage shows only its neutral background until the
+            initially-selected Full Window Coverage product hydrates the image.
+          {% endcomment %}
+          <img class="car-results__stage-img" alt="" width="1200" height="900">
           <button type="button" class="car-results__fullsize" data-cr-fullsize>
             &#8599;&nbsp;{{ 'car_results.view_full_size' | t }}
           </button>
@@ -88,6 +98,7 @@
           </button>
 
           <button type="button" class="car-results__shade" aria-pressed="false"
+            data-shade-key="front"
             data-shade-name="{{ 'car_results.shade_windshield_name' | t }}"
             data-shade-price="$69.00"
             data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
@@ -99,6 +110,7 @@
 
           <!-- DEMO PRICE: rear window reuses the windshield placeholder -->
           <button type="button" class="car-results__shade" aria-pressed="false"
+            data-shade-key="rear"
             data-shade-name="{{ 'car_results.shade_set_name' | t }}"
             data-shade-price="$149.00"
             data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
@@ -132,6 +144,24 @@
         <div class="car-results__quality">
           <p class="car-results__quality-label">{{ 'car_results.quality_label' | t }}</p>
           <p class="car-results__quality-text">{{ 'car_results.quality_text' | t }}</p>
+        </div>
+
+        <div class="car-results__tabs" data-cr-tabs>
+          <div class="car-results__tabs-row" role="tablist" aria-label="{{ 'car_results.tabs_label' | t }}">
+            <button type="button" class="car-results__tab is-active" role="tab" aria-selected="true"
+              data-cr-tab="side">{{ 'car_results.tab_side_name' | t }}</button>
+            <button type="button" class="car-results__tab" role="tab" aria-selected="false"
+              data-cr-tab="rear">{{ 'car_results.tab_rear_name' | t }}</button>
+            <button type="button" class="car-results__tab" role="tab" aria-selected="false"
+              data-cr-tab="front">{{ 'car_results.tab_front_name' | t }}</button>
+          </div>
+
+          <div class="car-results__subtabs" role="tablist" aria-label="{{ 'car_results.shades_heading' | t }}" data-cr-subtabs>
+            <button type="button" class="car-results__subtab is-active" role="tab" aria-selected="true"
+              data-cr-subtab="full">{{ 'car_results.subtab_full_name' | t }}</button>
+            <button type="button" class="car-results__subtab" role="tab" aria-selected="false"
+              data-cr-subtab="half">{{ 'car_results.subtab_half_name' | t }}</button>
+          </div>
         </div>
 
         <form class="car-results__buy" action="#" novalidate>
@@ -171,6 +201,7 @@
 
     <script type="application/json" data-car-results-models>
       [
+        {% paginate metaobjects.car_model.values by 250 %}
         {% for cr_model in metaobjects.car_model.values %}
           {% assign cr_model_brand = cr_model.brand.value %}
           {% assign cr_model_image = cr_model.image.value | default: cr_model.model_image.value %}
@@ -183,136 +214,267 @@
             "image": {% if cr_model_image %}{{ cr_model_image | image_url: width: 1100 | json }}{% else %}null{% endif %}
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
+        {% endpaginate %}
       ]
     </script>
 
     {% comment %}
-      TEMPORARY COMPATIBILITY TEST - console only, no UI output.
+      Full/Half compatible product wiring - fully data driven, nothing pinned.
 
-      Resolves the existing "Full Window Coverage Sunshades" and "Half Window
-      Coverage Sunshades" products (exact-handle lookup first, then a title
-      scan over collections.all as fallback) and serialises their
-      product.metafields.custom.compatible_car_models.value references so the
-      client test can compare car model ids with the resolved selected model.
-      Remove together with the `compatibilityTest` JS block when real product
-      wiring lands.
+      A car is compatible with a shade when the product's
+      `custom.compatible_car_models` metafield references the selected
+      `car_model` metaobject. The store keeps multiple "Full Window Coverage
+      Sunshades" / "Half Window Coverage Sunshades" products, each wired to a
+      different generation range through that metafield. Every product that
+      carries at least one compatible-car reference is collected below and
+      serialised into the `data-car-compat-test` island; the client then
+      picks - per shade role (full/half, detected from the product title) -
+      the product whose references include the resolved selected model. The
+      chosen product's live title, price, image, description and variant are
+      what its card shows. If no candidate references the selected model the
+      static card stays exactly as it is.
     {% endcomment %}
 
-    {% assign compat_full_product = all_products['full-window-coverage-sunshades-1'] %}
-    {% assign compat_half_product = all_products['half-window-coverage-sunshades'] %}
-    {% assign compat_full_found = false %}
-    {% assign compat_half_found = false %}
+    {% assign compat_full_candidate_handles = '' %}
+    {% assign compat_half_candidate_handles = '' %}
 
-    {% if compat_full_product %}
-      {% assign compat_full_found = true %}
-    {% endif %}
-    {% if compat_half_product %}
-      {% assign compat_half_found = true %}
-    {% endif %}
-
-    {% unless compat_full_found %}
+    {% paginate collections.all.products by 250 %}
       {% for compat_candidate in collections.all.products %}
-        {% unless compat_full_found %}
-          {% assign compat_candidate_title = compat_candidate.title | downcase %}
+        {% assign compat_candidate_refs = null %}
+        {% if compat_candidate.metafields.custom.compatible_car_models %}
+          {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.value %}
+          {% unless compat_candidate_refs %}
+            {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.references %}
+          {% endunless %}
+        {% endif %}
+
+        {% if compat_candidate_refs %}
+          {% assign compat_candidate_title = compat_candidate.title | strip | downcase %}
           {% if compat_candidate_title contains 'full window' %}
-            {% assign compat_full_product = compat_candidate %}
-            {% assign compat_full_found = true %}
+            {% if compat_full_candidate_handles != '' %}{% assign compat_full_candidate_handles = compat_full_candidate_handles | append: ',' %}{% endif %}
+            {% assign compat_full_candidate_handles = compat_full_candidate_handles | append: compat_candidate.handle %}
+          {% elsif compat_candidate_title contains 'half window' %}
+            {% if compat_half_candidate_handles != '' %}{% assign compat_half_candidate_handles = compat_half_candidate_handles | append: ',' %}{% endif %}
+            {% assign compat_half_candidate_handles = compat_half_candidate_handles | append: compat_candidate.handle %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endpaginate %}
+
+    {% assign compat_full_candidates = compat_full_candidate_handles | split: ',' %}
+    {% assign compat_half_candidates = compat_half_candidate_handles | split: ',' %}
+
+    {% comment %}
+      UNIVERSAL FRONT/REAR PRODUCTS - dynamic for every selected car.
+
+      Front Windshield Shade and Rear Windshield Shade apply regardless of the
+      selected vehicle, so unlike Full/Half there is no `Compatible Car
+      Models` matching.
+
+      Front resolves by handle (`all_products['front-windshield-shade']`)
+      with a title-scan fallback over collections.all.
+
+      Rear resolves by its EXACT title "Rear Windshield Shade" across the
+      whole catalog (paginated) - no handle is guessed, and the old general
+      "Rear Window Shield" product can never be matched because its title
+      differs.
+    {% endcomment %}
+
+    {% assign universal_front_product = all_products['front-windshield-shade'] %}
+    {% assign universal_rear_product = null %}
+    {% assign universal_front_found = false %}
+    {% assign universal_rear_found = false %}
+
+    {% if universal_front_product %}
+      {% assign universal_front_found = true %}
+    {% endif %}
+    {% if universal_rear_product %}
+      {% assign universal_rear_found = true %}
+    {% endif %}
+
+    {% unless universal_front_found %}
+      {% for universal_candidate in collections.all.products %}
+        {% unless universal_front_found %}
+          {% assign universal_candidate_title = universal_candidate.title | downcase %}
+          {% if universal_candidate_title contains 'front windshield' %}
+            {% assign universal_front_product = universal_candidate %}
+            {% assign universal_front_found = true %}
           {% endif %}
         {% endunless %}
       {% endfor %}
     {% endunless %}
 
-    {% unless compat_half_found %}
-      {% for compat_candidate in collections.all.products %}
-        {% unless compat_half_found %}
-          {% assign compat_candidate_title = compat_candidate.title | downcase %}
-          {% if compat_candidate_title contains 'half window' %}
-            {% assign compat_half_product = compat_candidate %}
-            {% assign compat_half_found = true %}
-          {% endif %}
-        {% endunless %}
-      {% endfor %}
-    {% endunless %}
-
-    {% assign compat_full_image = '' %}
-    {% if compat_full_found %}
-      {% assign compat_feat_url = compat_full_product.featured_image | image_url: width: 1100 %}
-      {% for compat_img in compat_full_product.images %}
-        {% if compat_full_image == '' %}
-          {% assign compat_img_url = compat_img | image_url: width: 1100 %}
-          {% if compat_img_url != compat_feat_url %}{% assign compat_full_image = compat_img_url %}{% endif %}
+    {% comment %}
+      Exact-title resolution for the Rear Windshield Shade product. Search
+      spans the whole catalog via pagination (beyond the default 50-product
+      window) and matches the product whose trimmed, lowercased title is
+      exactly "rear windshield shade" - no handle is guessed and the old
+      general "Rear Window Shield" product is never selected.
+    {% endcomment %}
+    {% paginate collections.all.products by 250 %}
+      {% for universal_candidate in collections.all.products %}
+        {% assign universal_candidate_title = universal_candidate.title | strip | downcase %}
+        {% if universal_candidate_title == 'rear windshield shade' %}
+          {% assign universal_rear_product = universal_candidate %}
         {% endif %}
       {% endfor %}
-      {% if compat_full_image == '' %}{% assign compat_full_image = compat_feat_url %}{% endif %}
+    {% endpaginate %}
+
+    {% if universal_rear_product %}
+      {% assign universal_rear_found = true %}
     {% endif %}
 
-    {% assign compat_full_refs = null %}
-    {% if compat_full_found %}
-      {% assign compat_full_refs = compat_full_product.metafields.custom.compatible_car_models.value %}
-      {% unless compat_full_refs %}
-        {% assign compat_full_refs = compat_full_product.metafields.custom.compatible_car_models.references %}
-      {% endunless %}
+    {% assign universal_front_image = '' %}
+    {% if universal_front_found %}
+      {% assign universal_front_image = universal_front_product.featured_image | image_url: width: 1100 %}
+      {% if universal_front_image == '' %}
+        {% assign universal_front_image = universal_front_product.images.first | image_url: width: 1100 %}
+      {% endif %}
     {% endif %}
 
-    {% assign compat_half_image = '' %}
-    {% if compat_half_found %}
-      {% assign compat_half_feat_url = compat_half_product.featured_image | image_url: width: 1100 %}
-      {% for compat_img in compat_half_product.images %}
-        {% if compat_half_image == '' %}
-          {% assign compat_img_url = compat_img | image_url: width: 1100 %}
-          {% if compat_img_url != compat_half_feat_url %}{% assign compat_half_image = compat_img_url %}{% endif %}
-        {% endif %}
-      {% endfor %}
-      {% if compat_half_image == '' %}{% assign compat_half_image = compat_half_feat_url %}{% endif %}
+    {% assign universal_rear_image = '' %}
+    {% if universal_rear_found %}
+      {% assign universal_rear_image = universal_rear_product.featured_image | image_url: width: 1100 %}
+      {% if universal_rear_image == '' %}
+        {% assign universal_rear_image = universal_rear_product.images.first | image_url: width: 1100 %}
+      {% endif %}
     {% endif %}
 
-    {% assign compat_half_refs = null %}
-    {% if compat_half_found %}
-      {% assign compat_half_refs = compat_half_product.metafields.custom.compatible_car_models.value %}
-      {% unless compat_half_refs %}
-        {% assign compat_half_refs = compat_half_product.metafields.custom.compatible_car_models.references %}
-      {% endunless %}
+    {% assign universal_front_variant = null %}
+    {% if universal_front_found %}
+      {% assign universal_front_variant = universal_front_product.selected_or_first_available_variant %}
+      {% assign universal_front_available_variant = universal_front_product.first_available_variant %}
+    {% endif %}
+
+    {% assign universal_rear_variant = null %}
+    {% if universal_rear_found %}
+      {% assign universal_rear_variant = universal_rear_product.selected_or_first_available_variant %}
+      {% assign universal_rear_available_variant = universal_rear_product.first_available_variant %}
     {% endif %}
 
     <script type="application/json" data-car-compat-test>
       {
         "full": {
-          "found": {{ compat_full_found | json }},
-          "title": {% if compat_full_found %}{{ compat_full_product.title | json }}{% else %}null{% endif %},
-          "handle": {% if compat_full_found %}{{ compat_full_product.handle | json }}{% else %}null{% endif %},
-          "price": {% if compat_full_found %}{{ compat_full_product.price | money | json }}{% else %}null{% endif %},
-          "description": {% if compat_full_found %}{{ compat_full_product.description | json }}{% else %}null{% endif %},
-          "image": {% if compat_full_image %}{{ compat_full_image | json }}{% else %}null{% endif %},
-          "compatibleModels": [
-            {% if compat_full_found %}
-              {% for compat_ref in compat_full_refs %}
-                {
-                  "id": {{ compat_ref.system.id | json }},
-                  "handle": {{ compat_ref.system.handle | json }},
-                  "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
-                }{% unless forloop.last %},{% endunless %}
+          "found": {% if compat_full_candidates.size > 0 %}true{% else %}false{% endif %},
+          "candidates": [
+            {% for compat_candidate_handle in compat_full_candidates %}
+              {% assign compat_candidate = all_products[compat_candidate_handle] %}
+              {% if compat_candidate %}
+              {% assign compat_candidate_feat_url = compat_candidate.featured_image | image_url: width: 1100 %}
+              {% assign compat_candidate_image = '' %}
+              {% for compat_img in compat_candidate.images %}
+                {% if compat_candidate_image == '' %}
+                  {% assign compat_img_url = compat_img | image_url: width: 1100 %}
+                  {% if compat_img_url != compat_candidate_feat_url %}{% assign compat_candidate_image = compat_img_url %}{% endif %}
+                {% endif %}
               {% endfor %}
-            {% endif %}
+              {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
+              {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.value %}
+              {% unless compat_candidate_refs %}
+                {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.references %}
+              {% endunless %}
+              {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
+              {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
+              {
+                "title": {{ compat_candidate.title | json }},
+                "handle": {{ compat_candidate.handle | json }},
+                "price": {{ compat_candidate.price | money | json }},
+                "description": {{ compat_candidate.description | json }},
+                "image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},
+                "variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},
+                "availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},
+                "available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},
+                "compatibleModels": [
+                  {% for compat_ref in compat_candidate_refs %}
+                    {
+                      "id": {{ compat_ref.system.id | json }},
+                      "handle": {{ compat_ref.system.handle | json }},
+                      "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
+                    }{% unless forloop.last %},{% endunless %}
+                  {% endfor %}
+                ]
+              }{% unless forloop.last %},{% endunless %}
+              {% endif %}
+            {% endfor %}
           ]
         },
         "half": {
-          "found": {{ compat_half_found | json }},
-          "title": {% if compat_half_found %}{{ compat_half_product.title | json }}{% else %}null{% endif %},
-          "handle": {% if compat_half_found %}{{ compat_half_product.handle | json }}{% else %}null{% endif %},
-          "price": {% if compat_half_found %}{{ compat_half_product.price | money | json }}{% else %}null{% endif %},
-          "description": {% if compat_half_found %}{{ compat_half_product.description | json }}{% else %}null{% endif %},
-          "image": {% if compat_half_image %}{{ compat_half_image | json }}{% else %}null{% endif %},
-          "compatibleModels": [
-            {% if compat_half_found %}
-              {% for compat_ref in compat_half_refs %}
-                {
-                  "id": {{ compat_ref.system.id | json }},
-                  "handle": {{ compat_ref.system.handle | json }},
-                  "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
-                }{% unless forloop.last %},{% endunless %}
+          "found": {% if compat_half_candidates.size > 0 %}true{% else %}false{% endif %},
+          "candidates": [
+            {% for compat_candidate_handle in compat_half_candidates %}
+              {% assign compat_candidate = all_products[compat_candidate_handle] %}
+              {% if compat_candidate %}
+              {% assign compat_candidate_feat_url = compat_candidate.featured_image | image_url: width: 1100 %}
+              {% assign compat_candidate_image = '' %}
+              {% for compat_img in compat_candidate.images %}
+                {% if compat_candidate_image == '' %}
+                  {% assign compat_img_url = compat_img | image_url: width: 1100 %}
+                  {% if compat_img_url != compat_candidate_feat_url %}{% assign compat_candidate_image = compat_img_url %}{% endif %}
+                {% endif %}
               {% endfor %}
-            {% endif %}
+              {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
+              {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.value %}
+              {% unless compat_candidate_refs %}
+                {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.references %}
+              {% endunless %}
+              {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
+              {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
+              {
+                "title": {{ compat_candidate.title | json }},
+                "handle": {{ compat_candidate.handle | json }},
+                "price": {{ compat_candidate.price | money | json }},
+                "description": {{ compat_candidate.description | json }},
+                "image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},
+                "variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},
+                "availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},
+                "available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},
+                "compatibleModels": [
+                  {% for compat_ref in compat_candidate_refs %}
+                    {
+                      "id": {{ compat_ref.system.id | json }},
+                      "handle": {{ compat_ref.system.handle | json }},
+                      "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
+                    }{% unless forloop.last %},{% endunless %}
+                  {% endfor %}
+                ]
+              }{% unless forloop.last %},{% endunless %}
+              {% endif %}
+            {% endfor %}
           ]
+        }
+      }
+    </script>
+
+    {% comment %}
+      UNIVERSAL FRONT/REAR PRODUCT DATA - live Shopify records used to
+      hydrate the Front Windshield Shade and Rear Windshield Shade cards for
+      every selected car. Title, price, image, description and the Add to
+      cart variant id all come from the product records at render time.
+    {% endcomment %}
+
+    <script type="application/json" data-car-results-universal>
+      {
+        "front": {
+          "found": {{ universal_front_found | json }},
+          "title": {% if universal_front_found %}{{ universal_front_product.title | json }}{% else %}null{% endif %},
+          "handle": {% if universal_front_found %}{{ universal_front_product.handle | json }}{% else %}null{% endif %},
+          "price": {% if universal_front_found %}{{ universal_front_product.price | money | json }}{% else %}null{% endif %},
+          "description": {% if universal_front_found %}{{ universal_front_product.description | json }}{% else %}null{% endif %},
+          "image": {% if universal_front_image %}{{ universal_front_image | json }}{% else %}null{% endif %},
+          "availableVariantId": {% if universal_front_available_variant %}{{ universal_front_available_variant.id | json }}{% else %}null{% endif %},
+          "variantId": {% if universal_front_variant %}{{ universal_front_variant.id | json }}{% else %}null{% endif %},
+          "available": {% if universal_front_variant %}{{ universal_front_variant.available | json }}{% else %}null{% endif %}
+        },
+        "rear": {
+          "found": {{ universal_rear_found | json }},
+          "title": {% if universal_rear_found %}{{ universal_rear_product.title | json }}{% else %}null{% endif %},
+          "handle": {% if universal_rear_found %}{{ universal_rear_product.handle | json }}{% else %}null{% endif %},
+          "price": {% if universal_rear_found %}{{ universal_rear_product.price | money | json }}{% else %}null{% endif %},
+          "description": {% if universal_rear_found %}{{ universal_rear_product.description | json }}{% else %}null{% endif %},
+          "image": {% if universal_rear_image %}{{ universal_rear_image | json }}{% else %}null{% endif %},
+          "availableVariantId": {% if universal_rear_available_variant %}{{ universal_rear_available_variant.id | json }}{% else %}null{% endif %},
+          "variantId": {% if universal_rear_variant %}{{ universal_rear_variant.id | json }}{% else %}null{% endif %},
+          "available": {% if universal_rear_variant %}{{ universal_rear_variant.available | json }}{% else %}null{% endif %}
         }
       }
     </script>
@@ -591,6 +753,84 @@
     color: var(--ad-muted, #6f695f);
   }
 
+  /* Shade tabs (below Premium Quality) */
+  .car-results__tabs {
+    margin-bottom: 18px;
+  }
+
+  .car-results__tabs-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .car-results__tab,
+  .car-results__subtab {
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--ad-muted, #6f695f);
+    background: #ffffff;
+    border: 1px solid var(--ad-border, #e9e2d8);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .car-results__tab {
+    min-height: 42px;
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+
+  .car-results__tab:hover,
+  .car-results__subtab:hover {
+    border-color: var(--ad-accent, #d90000);
+    color: var(--ad-accent, #d90000);
+  }
+
+  .car-results__tab:focus-visible,
+  .car-results__subtab:focus-visible {
+    outline: 2px solid var(--ad-accent, #d90000);
+    outline-offset: 2px;
+  }
+
+  .car-results__tab.is-active,
+  .car-results__subtab.is-active {
+    border-color: var(--ad-accent, #d90000);
+    background: var(--ad-accent, #d90000);
+    color: #ffffff;
+    box-shadow: 0 0 0 1px var(--ad-accent, #d90000) inset;
+  }
+
+  .car-results__subtabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .car-results__subtabs[hidden] {
+    display: none;
+  }
+
+  .car-results__subtab {
+    min-height: 38px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+  }
+
+  @media screen and (max-width: 380px) {
+    .car-results__tabs-row,
+    .car-results__subtabs {
+      grid-template-columns: 1fr;
+    }
+  }
+
   /* Buy form */
   .car-results__buy {
     display: flex;
@@ -742,6 +982,21 @@
     var brands = readIsland('[data-car-results-brands]');
     var models = readIsland('[data-car-results-models]');
 
+    // Cached copies of the Shopify product data islands so the submit handler
+    // can resolve the live variant id deterministically - even if the async
+    // attribute-hydration pass has not run yet (or did not match).
+    var compatIslandData = (function () {
+      var node = document.querySelector('[data-car-compat-test]');
+      if (!node) return {};
+      try { return JSON.parse(node.textContent) || {}; } catch (error) { return {}; }
+    })();
+
+    var universalIslandData = (function () {
+      var node = document.querySelector('[data-car-results-universal]');
+      if (!node) return {};
+      try { return JSON.parse(node.textContent) || {}; } catch (error) { return {}; }
+    })();
+
     // ------------------------------------------------------------------
     // Resolve the selected car from brand/model/year parameters.
     //
@@ -786,36 +1041,39 @@
 
     // ------------------------------------------------------------------
     // Dynamic Full/Half shade cards - driven by the Shopify product
-    // metafield custom.compatible_car_models. When the selected car model
-    // id is listed on a product, that shade card's image, title, price and
-    // description are swapped in from the live Shopify product data. If a
-    // model is not compatible the static card is left exactly as it is.
+    // metafield custom.compatible_car_models.
+    //
+    // The store may expose several Full and several Half products, each
+    // wired to a different generation range through that metafield. The
+    // compatible entry for a shade role is the first candidate product whose
+    // referenced car model ids include the resolved selected model id. That
+    // entry's image, title, price and description are swapped onto the card
+    // from the live Shopify product data. If no candidate references the
+    // selected model the static card is left exactly as it is.
     // ------------------------------------------------------------------
-    function renderDynamicShades() {
-      var compatNode = document.querySelector('[data-car-compat-test]');
-      if (!compatNode) return;
-
-      var compatData = null;
-      try {
-        compatData = JSON.parse(compatNode.textContent);
-      } catch (error) {
-        return;
-      }
-      if (!compatData || !selectedModel) return;
-      if (selectedModel.id === undefined || selectedModel.id === null) return;
+    function matchedCompatEntry(shadeKey) {
+      if (!compatIslandData || !selectedModel) return null;
+      if (selectedModel.id === undefined || selectedModel.id === null) return null;
 
       var selectedId = String(selectedModel.id);
+      var roleData = compatIslandData[shadeKey];
+      if (!roleData) return null;
 
-      ['full', 'half'].forEach(function (shadeKey) {
-        var entry = compatData && compatData[shadeKey];
-        if (!entry || !entry.found) return;
-
-        var matched = (entry.compatibleModels || []).some(function (ref) {
+      var candidates = (roleData.candidates && roleData.candidates.length) ? roleData.candidates : [];
+      for (var c = 0; c < candidates.length; c++) {
+        if ((candidates[c].compatibleModels || []).some(function (ref) {
           return String(ref.id) === selectedId;
-        });
+        })) {
+          return candidates[c];
+        }
+      }
+      return null;
+    }
 
-        // Not compatible -> leave the static card exactly as it is.
-        if (!matched) return;
+    function renderDynamicShades() {
+      ['full', 'half'].forEach(function (shadeKey) {
+        var entry = matchedCompatEntry(shadeKey);
+        if (!entry) return;
 
         var button = root.querySelector('[data-shade-key="' + shadeKey + '"]');
         if (!button) return;
@@ -827,6 +1085,9 @@
         if (entry.title) button.setAttribute('data-shade-name', entry.title);
         if (entry.price) button.setAttribute('data-shade-price', entry.price);
         if (entry.image) button.setAttribute('data-shade-image', entry.image);
+        var crLiveVariant = entry.availableVariantId || entry.variantId;
+        if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
+        button.setAttribute('data-cr-available', (entry.availableVariantId || entry.available) ? 'true' : 'false');
 
         var thumbImg = button.querySelector('.car-results__shade-thumb img');
         if (thumbImg && entry.image) {
@@ -855,6 +1116,80 @@
     // Run once the rest of this script has queried the DOM references this
     // renderer depends on (stageImg, shadeName, shadePrice, quantity).
     window.setTimeout(renderDynamicShades, 0);
+
+    // ------------------------------------------------------------------
+    // Universal Front Windshield Shade / Rear Windshield Shade cards.
+    //
+    // Unlike Full/Half these two products fit every car, so they are
+    // rendered from the data-car-results-universal island without any
+    // `Compatible Car Models` matching. Same UI treatment as the dynamic
+    // Full/Half cards: image, title, price (and variant id for Add to
+    // cart) all come from the live Shopify product records.
+    // ------------------------------------------------------------------
+    function renderUniversalShades() {
+      var universalData = universalIslandData;
+      if (!universalData) return;
+
+      ['front', 'rear'].forEach(function (shadeKey) {
+        var entry = universalData[shadeKey];
+        if (!entry || !entry.found) return;
+
+        var button = root.querySelector('[data-shade-key="' + shadeKey + '"]');
+        if (!button) return;
+
+        // Record the live entry so the selection handler can reuse it
+        // (description + currency-aware price).
+        dynamicShades[shadeKey] = entry;
+
+        if (entry.title) button.setAttribute('data-shade-name', entry.title);
+        if (entry.price) button.setAttribute('data-shade-price', entry.price);
+        if (entry.image) button.setAttribute('data-shade-image', entry.image);
+        var crLiveVariant = entry.availableVariantId || entry.variantId;
+        if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
+        button.setAttribute('data-cr-available', (entry.availableVariantId || entry.available) ? 'true' : 'false');
+
+        var thumbImg = button.querySelector('.car-results__shade-thumb img');
+        if (thumbImg && entry.image) {
+          thumbImg.src = entry.image;
+          thumbImg.alt = entry.title || '';
+        }
+        var nameEl = button.querySelector('.car-results__shade-name');
+        if (nameEl && entry.title) nameEl.textContent = entry.title;
+
+        // If this card is the currently selected shade, reflect it in the
+        // showcase + summary/pricing column right away.
+        if (button.classList.contains('is-active')) {
+          if (entry.image && stageImg) {
+            stageImg.src = entry.image;
+            stageImg.alt = entry.title || '';
+          }
+          if (entry.title && shadeName) shadeName.textContent = entry.title;
+          if (entry.description && shadeDesc) shadeDesc.innerHTML = entry.description;
+          var qtyEl = root.querySelector('[data-cr-qty-value]');
+          var qty = parseInt(String(qtyEl ? qtyEl.textContent : '1').replace(/[^0-9]/g, ''), 10) || 1;
+          if (entry.price && shadePrice) shadePrice.textContent = formatMoney(entry.price, qty);
+        }
+      });
+    }
+
+    window.setTimeout(renderUniversalShades, 0);
+
+    // Graceful fallback: if the initially-selected shade (Full) has no
+    // hydrated live product - e.g. when the selected car is not listed in
+    // the product's Compatible Car Models - populate the showcase with that
+    // card's configured placeholder so the stage is never left blank. This
+    // runs AFTER both hydration passes, so no default/demo car image can
+    // flash before the dynamic data has had its chance to resolve.
+    window.setTimeout(function () {
+      if (!stageImg || stageImg.getAttribute('src')) return;
+      var active = activeShade();
+      if (!active) return;
+      var fallbackImage = active.getAttribute('data-shade-image');
+      if (fallbackImage) {
+        stageImg.src = fallbackImage;
+        stageImg.alt = active.getAttribute('data-shade-name') || '';
+      }
+    }, 0);
 
     function yearsLabel(model) {
       if (!model || !model.yearRange) return '';
@@ -905,13 +1240,11 @@
       }
     }
 
-    var modelImage = selectedModel && selectedModel.image;
-    if (modelImage && stageImg) {
-      stageImg.src = modelImage;
-      if (selectedModel.cleanName) {
-        stageImg.alt = [(brandRecord && brandRecord.name) || '', selectedModel.cleanName].join(' ').trim();
-      }
-    }
+    // NOTE: the showcase image is intentionally NOT set from the selected
+    // car model's metaobject image here. The stage starts empty (no static
+    // src) and is populated only when the initially-selected Full Window
+    // Coverage product hydrates in renderDynamicShades - this prevents
+    // any default/demo car image from flashing on initial page load.
 
     // ------------------------------------------------------------------
     // Shade selection - swaps the showcase image and updates the summary
@@ -930,6 +1263,12 @@
 
     // shadeKey -> matched live product entry (full/half)
     var dynamicShades = {};
+
+    // Shade tab UI references - the "side" group tab owns the Full/Half
+    // sub-tabs; "rear"/"front" are single-shade tabs.
+    var tabButtons = Array.prototype.slice.call(root.querySelectorAll('[data-cr-tab]'));
+    var subtabButtons = Array.prototype.slice.call(root.querySelectorAll('[data-cr-subtab]'));
+    var subtabsWrap = root.querySelector('[data-cr-subtabs]');
 
     function moneyParts(money) {
       var s = String(money || '');
@@ -998,7 +1337,108 @@
             : defaultShadeDesc;
         }
 
+        reflectTabsForShadeKey(button.getAttribute('data-shade-key'));
+
         refreshTotal();
+      });
+    });
+
+    // ------------------------------------------------------------------
+    // Shade tab UI - the three category tabs sit directly below the
+    // Premium Quality note in the details column and drive the exact same
+    // selection path as the rail cards: a tab/sub-tab click re-activates
+    // the matching rail shade button (data-shade-key), so the showcase
+    // image, title, price, variant id and availability all come from the
+    // existing Shopify product data - no separate resolution logic.
+    //
+    //   "side" (4 side coverage sunshades) owns the two Full/Half
+    //   sub-tabs. Rear Window Shield / Front Window Shield are single
+    //   shade tabs that hide the Full/Half sub-tabs while they are active.
+    // ------------------------------------------------------------------
+    function tabButtonByKey(key) {
+      for (var t = 0; t < tabButtons.length; t++) {
+        if (tabButtons[t].getAttribute('data-cr-tab') === key) return tabButtons[t];
+      }
+      return null;
+    }
+
+    function subtabButtonByKey(key) {
+      for (var st = 0; st < subtabButtons.length; st++) {
+        if (subtabButtons[st].getAttribute('data-cr-subtab') === key) return subtabButtons[st];
+      }
+      return null;
+    }
+
+    function shadeButtonByKey(key) {
+      for (var s = 0; s < shadeButtons.length; s++) {
+        if (shadeButtons[s].getAttribute('data-shade-key') === key) return shadeButtons[s];
+      }
+      return null;
+    }
+
+    function setTabActive(key) {
+      var active = tabButtonByKey(key);
+      tabButtons.forEach(function (tab) {
+        var isOn = tab === active;
+        tab.classList.toggle('is-active', isOn);
+        tab.setAttribute('aria-selected', isOn ? 'true' : 'false');
+      });
+    }
+
+    function setSubtabActive(key) {
+      var active = subtabButtonByKey(key);
+      subtabButtons.forEach(function (st) {
+        var isOn = st === active;
+        st.classList.toggle('is-active', isOn);
+        st.setAttribute('aria-selected', isOn ? 'true' : 'false');
+      });
+    }
+
+    // Keep the tab/sub-tab UI in sync with whichever shade is selected.
+    function reflectTabsForShadeKey(key) {
+      if (key === 'full' || key === 'half') {
+        setTabActive('side');
+        setSubtabActive(key);
+        if (subtabsWrap) subtabsWrap.hidden = false;
+      } else if (key === 'rear' || key === 'front') {
+        setTabActive(key);
+        if (subtabsWrap) subtabsWrap.hidden = true;
+      }
+    }
+
+    function activeSubtabKey() {
+      var fallback = 'full';
+      for (var st = 0; st < subtabButtons.length; st++) {
+        if (subtabButtons[st].classList.contains('is-active')) {
+          fallback = subtabButtons[st].getAttribute('data-cr-subtab') || fallback;
+        }
+      }
+      return fallback;
+    }
+
+    tabButtons.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var tabKey = tab.getAttribute('data-cr-tab');
+        var shadeBtn = shadeButtonByKey(tabKey);
+        if (tabKey === 'side') {
+          // Re-show the Full/Half sub-tabs. If a Rear/Front shade was
+          // active (sub-tabs hidden) fall back to the default FULL sub-tab;
+          // otherwise keep the currently active Full/Half selection.
+          if (subtabsWrap && subtabsWrap.hidden) {
+            setSubtabActive('full');
+            shadeBtn = shadeButtonByKey('full');
+          } else {
+            shadeBtn = shadeButtonByKey(activeSubtabKey());
+          }
+        }
+        if (shadeBtn) shadeBtn.click();
+      });
+    });
+
+    subtabButtons.forEach(function (st) {
+      st.addEventListener('click', function () {
+        var shadeBtn = shadeButtonByKey(st.getAttribute('data-cr-subtab'));
+        if (shadeBtn) shadeBtn.click();
       });
     });
 
@@ -1013,18 +1453,162 @@
       });
     }
 
-    // Demo add-to-cart: replaced by real cart wiring alongside product data.
+    // ------------------------------------------------------------------
+    // Selected-car line item properties. The car is already resolved above
+    // (selectedModel / brandRecord - the exact data the Car Results page
+    // displays), so it is attached to the cart line at add-to-cart time.
+    // Underscore-prefixed keys stay hidden from Shopify checkout/emails
+    // while remaining readable from /cart.js - the drawer renders them
+    // cleanly. No car data is hardcoded and the drawer never re-resolves
+    // the model from the URL.
+    // ------------------------------------------------------------------
+    function buildCarLineProperties() {
+      var props = {};
+      if (!selectedModel) return props;
+      var brandName = brandRecord && brandRecord.name ? String(brandRecord.name).trim() : '';
+      var modelName = selectedModel.cleanName || selectedModel.name || '';
+      var years = selectedModel.yearRange
+        ? normalizeRange(selectedModel.yearRange).replace('-', '\u2013')
+        : '';
+      if (brandName) props._car_brand = brandName;
+      if (modelName) props._car_model = modelName;
+      if (years) props._car_years = years;
+      if (selectedModel.handle) props._car_model_handle = String(selectedModel.handle);
+      return props;
+    }
+
+    // Add to cart - posts the selected shade's live variant to /cart/add.js
+    // using its real variant id and quantity, then opens the cart drawer to
+    // show the actual Shopify cart. All product data (variant id, price,
+    // image, title) comes from the live Shopify product records hydrated
+    // onto the shade buttons - nothing is hardcoded and no fake "Added"
+    // feedback is shown.
     if (buyForm) {
       buyForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (!addBtn || addBtn.disabled) return;
-        var originalLabel = addBtn.textContent;
+
+        var active = activeShade();
+        var key = active ? (active.getAttribute('data-shade-key') || '') : '';
+
+        if (!active || !key) {
+          console.error('ADD TO CART: no active shade found', { active: active, shadeButtons: shadeButtons.length });
+          return;
+        }
+
+        // Live variant id - prefer the attribute hydrated by the async
+        // renderers, then fall back to the same Shopify data islands so the
+        // value resolves deterministically for every card.
+        var variantId = active.getAttribute('data-cr-variant-id') || '';
+        var availableAttr = active.getAttribute('data-cr-available');
+        var islandEntry = null;
+
+        if (key === 'full' || key === 'half') {
+          islandEntry = matchedCompatEntry(key);
+        } else if (key === 'front' || key === 'rear') {
+          islandEntry = (universalIslandData && universalIslandData[key]) || null;
+        }
+
+        // The islands also flag the single variant Shopify confirms as
+        // available for the product (first_available_variant). Prefer it over
+        // the default variant so a sold-out first/default variant never blocks
+        // a genuinely-buyable product.
+        var buyableVariant = islandEntry ? (islandEntry.availableVariantId || '') : '';
+        if (!variantId) {
+          variantId = String(buyableVariant || (islandEntry && islandEntry.variantId) || '');
+        }
+
+        var isAvailable = Boolean(buyableVariant) ||
+          ((availableAttr === null || availableAttr === undefined || availableAttr === '')
+            ? (islandEntry ? islandEntry.available !== false : true)
+            : availableAttr !== 'false');
+
+        console.debug('[Car Results] Add to cart trace', {
+          shadeKey: key,
+          shadeName: active.getAttribute('data-shade-name'),
+          activeClass: active.className,
+          ariaPressed: active.getAttribute('aria-pressed'),
+          variantAttr: active.getAttribute('data-cr-variant-id'),
+          availableAttr: availableAttr,
+          islandVariantId: islandEntry ? islandEntry.variantId : null,
+          resolvedVariantId: variantId || null,
+          quantity: quantity
+        });
+
+        if (!variantId) {
+          console.error('ADD TO CART: missing variant ID', {
+            shadeKey: key,
+            shadeName: active.getAttribute('data-shade-name'),
+            shadeImage: active.getAttribute('data-shade-image'),
+            shadePrice: active.getAttribute('data-shade-price'),
+            variantAttr: active.getAttribute('data-cr-variant-id'),
+            availableAttr: availableAttr,
+            islandEntry: islandEntry,
+            compatIslandPresent: !!document.querySelector('[data-car-compat-test]'),
+            universalIslandPresent: !!document.querySelector('[data-car-results-universal]')
+          });
+          return;
+        }
+
+        if (!isAvailable) {
+          console.error('ADD TO CART: selected variant is not available', {
+            shadeKey: key,
+            variantId: variantId,
+            availableAttr: availableAttr,
+            islandAvailable: islandEntry ? islandEntry.available : null
+          });
+          return;
+        }
+
         addBtn.disabled = true;
-        addBtn.textContent = 'Added \u2713';
-        window.setTimeout(function () {
-          addBtn.disabled = false;
-          addBtn.textContent = originalLabel;
-        }, 1500);
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            items: [{
+              id: parseInt(variantId, 10),
+              quantity: quantity,
+              properties: buildCarLineProperties()
+            }]
+          })
+        })
+          .then(function (response) {
+            if (!response.ok) throw new Error('Add to cart failed: ' + response.status);
+            return response.json();
+          })
+          .then(function (cart) {
+            console.debug('[Car Results] Add to cart success', {
+              shadeKey: key,
+              variantId: variantId,
+              quantity: quantity,
+              cartItemCount: cart.item_count,
+              cartTotalPrice: cart.total_price
+            });
+
+            // Re-enable so repeated adds keep working (fixes a stuck-disabled
+            // button after the first successful add).
+            addBtn.disabled = false;
+
+            // Open the existing cart drawer; it re-fetches /cart.js so the
+            // newly added item and the real cart totals are displayed.
+            if (window.AutoDrapeCart) {
+              if (window.AutoDrapeCart.refresh) window.AutoDrapeCart.refresh();
+              if (window.AutoDrapeCart.open) window.AutoDrapeCart.open();
+            } else {
+              console.error('ADD TO CART: cart drawer (window.AutoDrapeCart) not found - navigating to /cart instead');
+              window.location.href = '/cart';
+            }
+          })
+          .catch(function (error) {
+            console.error('ADD TO CART: /cart/add.js request failed', {
+              shadeKey: key,
+              variantId: variantId,
+              quantity: quantity,
+              error: error
+            });
+            addBtn.disabled = false;
+          });
       });
     }
 

@@ -45,6 +45,7 @@
 
 <script type="application/json" data-ad-sbc-model-data>
   [
+    {% paginate metaobjects.car_model.values by 250 %}
     {% for model in metaobjects.car_model.values %}
       {% assign model_brand = model.brand.value %}
       {% assign model_image = model.image.value | default: model.model_image.value %}
@@ -56,6 +57,7 @@
         "image": {% if model_image %}{{ model_image | image_url: width: 900 | json }}{% else %}null{% endif %}
       }{% unless forloop.last %},{% endunless %}
     {% endfor %}
+    {% endpaginate %}
   ]
 </script>
 

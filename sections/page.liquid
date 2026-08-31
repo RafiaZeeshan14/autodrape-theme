@@ -9,7 +9,36 @@
   dedicated custom template to the page in the admin, render the correct
   content instead of just the page title. This keeps those URLs working
   regardless of the admin template assignment.
+
+  Policy pages (Privacy Policy, Return & Exchange / Refund Policy, Terms &
+  Conditions, Shipping & Delivery Policy) are rendered through the shared
+  policy-page layout so every policy keeps the same premium, card-based UI.
 {% endcomment %}
+
+{% assign policy_handles = 'privacy-policy,refund-policy,return-policy,return-and-exchange-policy,return-exchange-policy,terms-of-service,terms-and-conditions,terms-conditions,shipping-policy,shipping-delivery-policy,delivery-policy' | split: ',' %}
+{% assign is_policy_page = false %}
+{% for policy_handle in policy_handles %}
+  {% if page.handle == policy_handle %}
+    {% assign is_policy_page = true %}
+  {% endif %}
+{% endfor %}
+
+{% comment %}
+  Fallback for stores where a policy URL slug was customized in the admin:
+  any page whose URL matches one of the store's configured policy URLs
+  (the same URLs the footer links to) is treated as a policy page.
+{% endcomment %}
+{% unless is_policy_page %}
+  {% if shop.privacy_policy.url and page.url == shop.privacy_policy.url %}
+    {% assign is_policy_page = true %}
+  {% elsif shop.refund_policy.url and page.url == shop.refund_policy.url %}
+    {% assign is_policy_page = true %}
+  {% elsif shop.terms_of_service.url and page.url == shop.terms_of_service.url %}
+    {% assign is_policy_page = true %}
+  {% elsif shop.shipping_policy.url and page.url == shop.shipping_policy.url %}
+    {% assign is_policy_page = true %}
+  {% endif %}
+{% endunless %}
 
 {% if page.handle == 'car-results' %}
   {% render 'car-results-content' %}
@@ -19,6 +48,8 @@
   {% render 'all-brands-content' %}
 {% elsif page.handle == 'all-products' %}
   {% render 'all-products-content' %}
+{% elsif is_policy_page %}
+  {% render 'policy-page', policy: page %}
 {% else %}
   <h1>{{ page.title }}</h1>
 
