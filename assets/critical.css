@@ -166,10 +166,6 @@ body :is(p, a, button, input, select, textarea, label) {
   font-family: var(--font-ui--family) !important;
 }
 
-body .shop-by-car-models__card-title {
-  font-family: var(--font-ui--family) !important;
-}
-
 @keyframes adSectionIn {
   from {
     opacity: 0;

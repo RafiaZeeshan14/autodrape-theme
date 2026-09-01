@@ -1,14 +1,16 @@
-﻿/*
-  AutoDrape ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Shared policy-page styling
+/*
+  AutoDrape -- Shared policy-page styling
   ------------------------------------------------------------------
   Wide, clean, premium layout for ALL store policy pages:
 
-    /policies/privacy-policy      ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Privacy Policy
-    /policies/refund-policy       ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Return & Exchange / Refund Policy
-    /policies/terms-of-service    ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Terms & Conditions
-    /policies/shipping-policy     ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Shipping & Delivery Policy
+    /policies/privacy-policy      -> Privacy Policy
+    /policies/refund-policy       -> Return & Exchange / Refund Policy
+    /policies/terms-of-service    -> Terms & Conditions
+    /policies/shipping-policy     -> Shipping & Delivery Policy
 
-  Loaded from layout/theme.liquid only on /policies/* routes.
+  Loaded globally from layout/theme.liquid. Every rule below is scoped to
+  the policy markup classes or the .ad-policy wrapper, so no other page
+  type is ever affected.
 
   Shopify renders policy routes with its built-in markup:
     .shopify-policy__container / .shopify-policy__title / .shopify-policy__body
@@ -16,19 +18,32 @@
   .ad-policy__title / .ad-policy__body) reuses the same classes so both
   render paths stay visually identical.
 
-  Presentation only ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â the stored policy wording, numbering, headings and
+  Presentation only -- the stored policy wording, numbering, headings and
   bullet content are never altered.
+
+  TYPOGRAPHY CONTRACT (identical on every policy page):
+    - Font family .... Manrope everywhere (title, meta, headings, body,
+      bullets, links, tables). The stack can never fall back to a serif.
+    - Page title ..... clamp(32px, 3vw, 38px) / 700 / #111111, centered,
+      with a short red accent line underneath.
+    - Section headings  brand red #7d1515, 700, Manrope: h2 24px (light
+      divider above), h3 22px, h4 17px, h5 16px, h6 15px.
+    - Body text ...... 16px / 1.72 line-height / #1b1b1b.
+    - Lists, links, strong text and tables reuse the same red accent.
+  The font-family declarations that must survive the global heading rule
+  in critical.css (which forces the display serif on all h1-h6 with
+  !important) carry !important here.
 */
 
 /* =====================================================================
    FULL-WIDTH LAYOUT (overrides Shopify's injected policy stylesheet)
-   ----------------------------------------------------------------
+   ------------------------------------------------------------------
    Shopify renders /policies/* with its own markup AND injects its own
    <style> block into content_for_layout that constrains the container
    to a narrow ~700px centered column (e.g. max-width on
    .shopify-policy__container). Because that injected stylesheet loads
    after our <head> stylesheet, equal-specificity rules lose.
-   These rules therefore use higher specificity (body ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦) + !important
+   These rules therefore use higher specificity (body ...) + !important
    so the full-width design wins regardless of load order or nesting.
    ===================================================================== */
 body .ad-policy,
@@ -67,7 +82,7 @@ body .ad-policy {
   padding-right: clamp(24px, 4vw, 60px) !important;
 }
 
-/* The layout script moves the native container inside .ad-policy ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â then
+/* The layout script moves the native container inside .ad-policy -- then
    .ad-policy owns the padding and the native wrappers don't pad. */
 .ad-policy .shopify-policy__wrap,
 .ad-policy .shopify-policy__main,
@@ -97,8 +112,8 @@ body .ad-policy {
 
 /* ONE consistent premium sans-serif across the ENTIRE policy page
    (title, meta line, headings, body, bullets, links, tables).
-   Manrope is the AutoDrapes brand sans, loaded in layout/theme.liquid;
-   Inter and system sans-serif are fallbacks only - the stack can never
+   Manrope is the AutoDrape brand sans, loaded in layout/theme.liquid;
+   Inter and system sans-serif are fallbacks only -- the stack can never
    fall back to a serif font. */
 body .ad-policy,
 body .shopify-policy__container,
@@ -121,7 +136,7 @@ body .shopify-policy__main {
 .ad-policy__title {
   margin: 0 0 18px;
   color: #111111;
-  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important;
   font-size: clamp(32px, 3vw, 38px);
   font-weight: 700;
   line-height: 1.2;
@@ -152,11 +167,11 @@ body .shopify-policy__main {
   color: #8a8a8a;
 }
 
-/* Body typography ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dark, highly readable */
+/* Body typography -- dark, highly readable */
 .shopify-policy__body,
 .ad-policy__body {
   color: #1b1b1b;
-  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important;
   font-size: 16px;
   line-height: 1.72;
   overflow-wrap: break-word;
@@ -172,15 +187,21 @@ body .shopify-policy__main {
   margin: 0 0 16px;
 }
 
-/* Numbered section headings ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â AutoDrapes brand red, bold, with a subtle
-   light-gray divider under each major section */
+/* Numbered section headings and subheadings -- AutoDrape brand red, bold,
+   Manrope, with a subtle light-gray divider under each major (h2) section.
+   The font-family !important keeps the global heading rule in critical.css
+   (display serif) from leaking into policy pages. */
 .shopify-policy__body h2,
 .shopify-policy__body h3,
 .shopify-policy__body h4,
+.shopify-policy__body h5,
+.shopify-policy__body h6,
 .shopify-policy__body h1,
 .ad-policy__body h2,
 .ad-policy__body h3,
 .ad-policy__body h4,
+.ad-policy__body h5,
+.ad-policy__body h6,
 .ad-policy__body h1 {
   margin: 52px 0 18px;
   padding: 18px 0 0;
@@ -188,7 +209,7 @@ body .shopify-policy__main {
   border-bottom: 0;
   color: var(--ad-accent, #7d1515) !important;
   font-weight: 700;
-  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important;
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
@@ -200,10 +221,16 @@ body .shopify-policy__main {
   border-top: 0;
 }
 
+/* Sub-headings (h3-h6, e.g. "Conditions:") sit closer to their content and
+   carry no divider so they read as part of the section above. */
 .shopify-policy__body h3,
 .shopify-policy__body h4,
+.shopify-policy__body h5,
+.shopify-policy__body h6,
 .ad-policy__body h3,
-.ad-policy__body h4 {
+.ad-policy__body h4,
+.ad-policy__body h5,
+.ad-policy__body h6 {
   border-top: 0;
   padding-bottom: 0;
   padding-top: 0;
@@ -226,6 +253,16 @@ body .shopify-policy__main {
   font-size: 17px;
 }
 
+.shopify-policy__body h5,
+.ad-policy__body h5 {
+  font-size: 16px;
+}
+
+.shopify-policy__body h6,
+.ad-policy__body h6 {
+  font-size: 15px;
+}
+
 /* Cleanly indented bullet / numbered lists with red markers */
 .shopify-policy__body ul,
 .shopify-policy__body ol,
@@ -239,7 +276,6 @@ body .shopify-policy__main {
 .ad-policy__body ul {
   list-style: disc;
 }
-
 
 .shopify-policy__body ol,
 .ad-policy__body ol {
@@ -307,7 +343,7 @@ body .shopify-policy__main {
   font-weight: 700;
 }
 
-/* Responsive ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â tablet & mobile */
+/* Responsive -- tablet & mobile */
 @media screen and (max-width: 768px) {
   .ad-policy {
     padding: 28px 28px 68px;

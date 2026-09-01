@@ -1,0 +1,47 @@
+{% doc %}
+  Pins the shared Manrope heading font on every brand / vehicle / model page
+  heading so all of them match the typography established on the policy pages.
+
+  Why this snippet exists: assets/critical.css forces the display serif
+  (Cormorant Garamond) onto ALL h1-h6 through
+
+    body :is(h1, h2, h3, h4, h5, h6) {
+      font-family: var(--font-heading--family) !important;
+    }
+
+  That !important rule out-ranks any plain font-family declaration in the
+  component styles, so vehicle / brand / model headings silently rendered in
+  a serif. Every selector below pairs "body" with a component class and sets
+  !important, which gives it higher specificity than the global heading rule
+  and makes it independent of stylesheet load order -- Manrope can therefore
+  never be overridden by critical.css or any other global heading rule.
+
+  Renders no visible markup; it only contributes one shared stylesheet
+  ({% stylesheet %} content is de-duplicated when the snippet is rendered
+  more than once on a page). Only the font FAMILY is pinned here -- sizes,
+  weights, colors, spacing and layout stay owned by each component.
+
+  Include it from any snippet or section that renders brand, vehicle or
+  model headings:
+
+    {% render 'vehicle-heading-font' %}
+
+  Currently rendered by: all-brands-content, shop-by-car-content,
+  shop-by-car-models, car-results-content and the autodrape-car-models
+  section (All Brands, Shop by Car, every brand model page, every car
+  results page and the homepage brand strip).
+{% enddoc %}
+
+{% stylesheet %}
+  /* Shared Manrope heading typography for all brand & vehicle pages.
+     Same stack as assets/policy-page.css so the heading systems match. */
+  body .autodrape-all-brands__header h1,
+  body .shop-by-car-page__header h1,
+  body .shop-by-car-models__hero-title,
+  body .shop-by-car-models .shop-by-car-models__card-title,
+  body .car-results__model,
+  body .car-results__shade-heading,
+  body .ad-brands__heading h2 {
+    font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important;
+  }
+{% endstylesheet %}

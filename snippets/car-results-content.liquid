@@ -36,6 +36,8 @@
   @example
   {% render 'car-results-content' %}
 {% enddoc %}
+{% render 'vehicle-heading-font' %}
+
 
 <div class="car-results">
   <div class="car-results__container">
@@ -521,7 +523,7 @@
 
   @media screen and (min-width: 990px) {
     .car-results__grid {
-      grid-template-columns: minmax(0, 7fr) minmax(320px, 4fr);
+      grid-template-columns: minmax(0, 6.5fr) minmax(380px, 4.5fr);
       align-items: start;
     }
   }
@@ -682,7 +684,7 @@
 
   .car-results__model {
     margin: 0 0 6px;
-    font-family: var(--font-heading--family), Georgia, 'Times New Roman', serif;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
     font-size: clamp(30px, 3vw, 44px);
     font-weight: 700;
     line-height: 1.02;
@@ -759,8 +761,8 @@
   }
 
   .car-results__tabs-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
@@ -782,8 +784,9 @@
 
   .car-results__tab {
     min-height: 42px;
-    padding: 8px 10px;
+    padding: 8px 14px;
     border-radius: 999px;
+    white-space: nowrap;
   }
 
   .car-results__tab:hover,
@@ -825,9 +828,20 @@
   }
 
   @media screen and (max-width: 380px) {
-    .car-results__tabs-row,
+    .car-results__tabs-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .car-results__subtabs {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .car-results__tab {
+      font-size: 11px;
+      padding: 8px 12px;
     }
   }
 
