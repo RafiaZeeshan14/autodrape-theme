@@ -8,10 +8,6 @@
         Half Shades
       </h2>
       <p>Choose the shade that best fits your driving style and coverage needs.</p>
-      <a href="/collections/all" class="ad-comparison__button">
-        Choose Your Shade
-        <span>→</span>
-      </a>
     </div>
 
     <div class="ad-comparison__table-wrap">
@@ -68,7 +64,7 @@
 
       <div class="ad-comparison__promo-overlay">
         <h3>Drive <span>cooler.</span><br>Drive <span>better.</span></h3>
-        <a href="/collections/all">
+        <a href="/pages/all-products">
           Choose Your Shade
           <span>→</span>
         </a>
@@ -109,10 +105,12 @@
   .ad-comparison__intro h2 {
     margin: 0;
     color: var(--ad-text);
+    font-family: var(--font-ui--family) !important;
     font-size: clamp(30px, 3vw, 46px);
     line-height: 0.98;
-    font-weight: 600;
+    font-weight: 900;
     letter-spacing: -0.05em;
+    text-transform: uppercase;
   }
 
   .ad-comparison__intro h2 span {
@@ -120,9 +118,11 @@
   }
 
   .ad-comparison__intro p {
+    width: 100%;
+    max-width: 100px;
     margin: 18px 0 20px;
     color: var(--ad-text-soft);
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.7;
   }
 
@@ -140,13 +140,13 @@
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    box-shadow: 0 18px 30px rgba(216, 31, 25, 0.24);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: none;
+    transition: transform 0.2s ease;
   }
 
   .ad-comparison__button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 22px 34px rgba(216, 31, 25, 0.28);
+    box-shadow: none;
   }
 
   .ad-comparison__table-wrap {
@@ -320,7 +320,9 @@
     }
 
     .ad-comparison__intro p {
-      margin: 12px 0 16px;
+      width: 100%;
+      max-width: min(100%, 340px);
+      margin: 12px auto 16px;
     }
 
     .ad-comparison__table-wrap {

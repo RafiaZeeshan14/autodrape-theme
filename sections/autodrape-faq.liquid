@@ -2,7 +2,7 @@
   <div class="faq-container">
     <div class="faq-heading">
       <div class="faq-eyebrow">Need answers?</div>
-      <h2>{{ section.settings.heading }}</h2>
+      <h2>{{ section.settings.heading | replace: 'Questions', '<span>Questions</span>' }}</h2>
       <p>{{ section.settings.subheading }}</p>
     </div>
 
@@ -51,10 +51,16 @@
   .faq-heading h2 {
     margin: 0;
     color: var(--ad-text);
+    font-family: var(--font-ui--family) !important;
     font-size: clamp(28px, 3vw, 46px);
     line-height: 1.08;
-    font-weight: 600;
+    font-weight: 900;
     letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+
+  .faq-heading h2 span {
+    color: #d90000;
   }
 
   .faq-heading p {
@@ -126,7 +132,7 @@
     overflow: hidden;
     padding: 0 18px;
     color: var(--ad-text-soft);
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.7;
   }
 

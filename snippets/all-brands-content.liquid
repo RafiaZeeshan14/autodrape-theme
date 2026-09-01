@@ -19,6 +19,7 @@
   <div class="autodrape-all-brands__container">
 
     <div class="autodrape-all-brands__header">
+      {% render 'page-back-link' %}
       <h1>ALL <span>BRANDS</span></h1>
       <p>Choose your car brand to find the perfect fit.</p>
     </div>
@@ -72,21 +73,29 @@
   }
 
   .autodrape-all-brands__header {
+    position: relative;
     text-align: center;
     margin-bottom: 45px;
+  }
+
+  .autodrape-all-brands__header .ad-page-back {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .autodrape-all-brands__header h1 {
     margin: 0;
     font-family: var(--font-ui--family);
     font-size: 42px;
-    font-weight: 800;
+    font-weight: 900;
+    line-height: 1.05;
     letter-spacing: -1px;
     color: #111;
   }
 
   .autodrape-all-brands__header h1 span {
-    color: #a90000;
+    color: #d90000;
   }
 
   .autodrape-all-brands__header p {
@@ -152,12 +161,14 @@
   }
 
   @media screen and (max-width: 640px) {
-    .autodrape-all-brands {
-      padding: 45px 0 60px;
-    }
+
 
     .autodrape-all-brands__header h1 {
       font-size: 32px;
+    }
+
+    .autodrape-all-brands__header .ad-page-back {
+      top: -34px;
     }
 
     .autodrape-brands-grid {
@@ -166,8 +177,25 @@
     }
 
     .autodrape-brand-card {
-      min-height: 100px;
-      padding: 16px;
+      min-height: 126px;
+      padding: 14px 10px;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .autodrape-brand-card__logo {
+      width: 72px;
+      height: 54px;
+    }
+
+    .autodrape-brand-card__name {
+      max-width: 100%;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 </style>

@@ -21,7 +21,7 @@
         High quality, custom-fit sunshades for a cooler and more comfortable drive.
       </p>
 
-      <a href="/collections/all" class="ad-showcase__button">
+      <a href="/pages/all-products" class="ad-showcase__button">
         Shop Now
         <span>→</span>
       </a>
@@ -180,7 +180,7 @@
   @media screen and (max-width: 600px) {
     .ad-showcase__container {
       min-height: 420px;
-      align-items: flex-end;
+      align-items: center;
     }
 
     .ad-showcase__image {
@@ -189,20 +189,55 @@
 
     .ad-showcase__overlay {
       background:
-        linear-gradient(180deg, rgba(9, 9, 11, 0.14) 0%, rgba(9, 9, 11, 0.7) 45%, rgba(9, 9, 11, 0.98) 100%);
+        radial-gradient(circle at 18% 20%, rgba(169, 0, 0, 0.18), transparent 32%),
+        linear-gradient(180deg, rgba(9, 9, 11, 0.34) 0%, rgba(9, 9, 11, 0.68) 45%, rgba(9, 9, 11, 0.99) 100%);
     }
 
     .ad-showcase__content {
       width: calc(100% - 28px);
-      padding: 38px 0 30px;
+      padding: 24px 0;
+      text-align: center;
+    }
+
+    .ad-showcase__eyebrow {
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 12px 28px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .ad-showcase__content h2 {
       font-size: clamp(28px, 8vw, 38px);
+      line-height: 0.98;
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .ad-showcase__content h2 span {
+      display: block;
+      margin-top: 4px;
+      color: #f05a54;
     }
 
     .ad-showcase__content p {
-      font-size: 12px;
+      max-width: 330px;
+      margin-top: 18px;
+      margin-right: auto;
+      margin-left: auto;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .ad-showcase__button {
+      min-width: 0;
+      min-height: 0;
+      margin-top: 0;
+      padding: 12px 20px;
+      background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+      box-shadow: 0 18px 30px rgba(216, 31, 25, 0.28);
     }
 
     .ad-showcase__tab {

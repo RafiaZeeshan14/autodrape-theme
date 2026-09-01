@@ -18,7 +18,8 @@
 <section class="autodrape-all-products">
   <div class="autodrape-all-products__inner">
     <header class="autodrape-all-products__header">
-      <h1>ALL PRODUCTS</h1>
+      {% render 'page-back-link' %}
+      <h1>ALL <span>PRODUCTS</span></h1>
       <p class="autodrape-all-products__intro">Premium car shades &amp; accessories for every drive.</p>
     </header>
 
@@ -49,17 +50,28 @@
   }
 
   .autodrape-all-products__header {
+    position: relative;
     margin: 0 auto 38px;
     text-align: center;
   }
 
   .autodrape-all-products__header h1 {
     margin: 0;
-    font-family: var(--font-heading--family);
-    font-size: clamp(38px, 5vw, 62px);
-    font-weight: 700;
-    line-height: .95;
+    font-family: var(--font-ui--family) !important;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.05;
     text-transform: uppercase;
+  }
+
+  .autodrape-all-products__header h1 span {
+    color: #d90000;
+  }
+
+  .autodrape-all-products__header .ad-page-back {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .autodrape-all-products__intro {
@@ -82,7 +94,7 @@
   .product-card__name { margin:0; font-family:var(--font-ui--family); font-size:13px; font-weight:700; line-height:1.3; color:#222; }
   .product-card__desc { margin:0; font-family:var(--font-ui--family); font-size:12px; line-height:1.45; color:#666; }
   .product-card__price { margin:0; margin-top:auto; font-family:var(--font-ui--family); font-size:15px; font-weight:800; color:#a90000; }
-  .product-card__btn { display:inline-block; padding:8px 10px; border-radius:6px; background:#a90000; color:#fff; font-family:var(--font-ui--family); font-size:13px; font-weight:700; text-align:center; text-decoration:none; }
+  .product-card__btn { display:inline-block; padding:8px 10px; border-radius:6px; background:#d90000; color:#fff; font-family:var(--font-ui--family); font-size:13px; font-weight:700; text-align:center; text-decoration:none; }
 
   @media screen and (max-width: 1100px) {
     .autodrape-all-products__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -90,6 +102,13 @@
 
   @media screen and (max-width: 700px) {
     .autodrape-all-products { padding: 52px 14px 72px; }
+    .autodrape-all-products__header h1 { font-size: 32px; line-height: 1.05; }
+    .autodrape-all-products__header .ad-page-back {
+      position: static;
+      display: flex;
+      width: max-content;
+      margin: 0 0 22px;
+    }
     .autodrape-all-products__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .product-card__image { padding: 8px; }
   }

@@ -75,51 +75,48 @@
         {% endcomment %}
         <div class="car-results__rail" role="group" aria-label="{{ 'car_results.shades_heading' | t }}">
 
-          <!-- DEMO PRICE -->
           <button type="button" class="car-results__shade is-active" aria-pressed="true"
             data-shade-key="full"
-            data-shade-name="{{ 'car_results.shade_full_name' | t }}"
-            data-shade-price="$89.00"
+            data-shade-name="4-Side Shades (Full Window / Half Window)"
+            data-shade-price="Rs. 2,999"
             data-shade-image="{{ 'shade-placeholder-full.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-full.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">{{ 'car_results.shade_full_name' | t }}</span>
+            <span class="car-results__shade-name">4-Side Shades (Full Window / Half Window)</span>
           </button>
 
-          <!-- DEMO PRICE -->
           <button type="button" class="car-results__shade" aria-pressed="false"
             data-shade-key="half"
-            data-shade-name="{{ 'car_results.shade_half_name' | t }}"
-            data-shade-price="$59.00"
+            data-shade-name="4-Side Shades (Full Window / Half Window)"
+            data-shade-price="Rs. 2,999"
             data-shade-image="{{ 'shade-placeholder-half.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-half.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">{{ 'car_results.shade_half_name' | t }}</span>
+            <span class="car-results__shade-name">4-Side Shades (Full Window / Half Window)</span>
           </button>
 
           <button type="button" class="car-results__shade" aria-pressed="false"
             data-shade-key="front"
-            data-shade-name="{{ 'car_results.shade_windshield_name' | t }}"
-            data-shade-price="$69.00"
+            data-shade-name="Front Window Shield"
+            data-shade-price="Rs. 4,000"
             data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-windshield.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">{{ 'car_results.shade_windshield_name' | t }}</span>
+            <span class="car-results__shade-name">Front Window Shield</span>
           </button>
 
-          <!-- DEMO PRICE: rear window reuses the windshield placeholder -->
           <button type="button" class="car-results__shade" aria-pressed="false"
             data-shade-key="rear"
-            data-shade-name="{{ 'car_results.shade_set_name' | t }}"
-            data-shade-price="$149.00"
+            data-shade-name="Rear Window Shield"
+            data-shade-price="Rs. 3,000"
             data-shade-image="{{ 'shade-placeholder-windshield.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-windshield.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">{{ 'car_results.shade_set_name' | t }}</span>
+            <span class="car-results__shade-name">Rear Window Shield</span>
           </button>
 
         </div><!-- /.car-results__rail -->
@@ -139,7 +136,7 @@
         <hr class="car-results__rule">
 
         <p class="car-results__shade-label">{{ 'car_results.selected_shade_label' | t }}</p>
-        <h2 class="car-results__shade-heading" data-cr-shade-name>{{ 'car_results.shade_full_name' | t }}</h2>
+        <h2 class="car-results__shade-heading" data-cr-shade-name>4-Side Shades (Full Window / Half Window)</h2>
 
         <p class="car-results__desc" data-cr-desc>{{ 'car_results.shade_desc_full' | t }}</p>
 
@@ -172,8 +169,7 @@
             <output class="car-results__qty-value" data-cr-qty-value aria-live="polite">1</output>
             <button type="button" class="car-results__qty-btn" data-cr-qty-plus aria-label="{{ 'car_results.increase_qty_aria' | t }}">+</button>
           </div>
-          <!-- DEMO PRICE -->
-          <span class="car-results__price" data-cr-price>$89.00</span>
+          <span class="car-results__price" data-cr-price>Rs. 2,999</span>
           <button type="submit" class="car-results__add" data-cr-add>{{ 'car_results.add_to_cart' | t }}</button>
         </form>
 
@@ -623,8 +619,8 @@
   }
 
   .car-results__shade.is-active {
-    border-color: var(--ad-accent, #d90000);
-    box-shadow: 0 0 0 1px var(--ad-accent, #d90000) inset;
+    border-color: #d90000;
+    box-shadow: 0 0 0 1px #d90000 inset;
   }
 
   .car-results__shade-thumb {
@@ -664,7 +660,7 @@
 
   .car-results__eyebrow {
     margin: 0 0 6px;
-    color: var(--ad-accent, #d90000);
+    color: #111111;
     font-family: var(--font-ui--family), system-ui, sans-serif;
     font-size: 12px;
     font-weight: 700;
@@ -674,7 +670,7 @@
 
   .car-results__brand {
     margin: 0 0 4px;
-    color: var(--ad-accent, #d90000);
+    color: #d90000;
     font-family: var(--font-ui--family), system-ui, sans-serif;
     font-size: 14px;
     font-weight: 700;
@@ -688,7 +684,7 @@
     font-size: clamp(30px, 3vw, 44px);
     font-weight: 700;
     line-height: 1.02;
-    color: var(--ad-text, #141414);
+    color: #d90000;
   }
 
   .car-results__year {
@@ -696,7 +692,7 @@
     font-family: var(--font-ui--family), system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
-    color: var(--ad-muted, #6f695f);
+    color: #a90000;
   }
 
   .car-results__rule {
@@ -803,10 +799,10 @@
 
   .car-results__tab.is-active,
   .car-results__subtab.is-active {
-    border-color: var(--ad-accent, #d90000);
-    background: var(--ad-accent, #d90000);
+    border-color: #d90000;
+    background: #d90000;
     color: #ffffff;
-    box-shadow: 0 0 0 1px var(--ad-accent, #d90000) inset;
+    box-shadow: 0 0 0 1px #d90000 inset;
   }
 
   .car-results__subtabs {
@@ -900,7 +896,7 @@
     padding: 0 22px;
     border: none;
     border-radius: 999px;
-    background: var(--ad-accent, #d90000);
+    background: #d90000;
     color: #ffffff;
     font-family: var(--font-ui--family), system-ui, sans-serif;
     font-size: 14px;
@@ -934,6 +930,26 @@
 
     var root = document.querySelector('.car-results');
     if (!root) return;
+
+    // Customer-facing shade names and prices stay static in PKR. Live
+    // Shopify product data is still used below for images, descriptions and
+    // variant IDs so Add to Cart continues to work normally.
+    var staticShadeDetails = {
+      full: { name: '4-Side Shades (Full Window / Half Window)', amount: 2999 },
+      half: { name: '4-Side Shades (Full Window / Half Window)', amount: 2999 },
+      front: { name: 'Front Window Shield', amount: 4000 },
+      rear: { name: 'Rear Window Shield', amount: 3000 }
+    };
+
+    function staticShadeName(shadeKey) {
+      return staticShadeDetails[shadeKey] ? staticShadeDetails[shadeKey].name : '';
+    }
+
+    function staticShadePrice(shadeKey, qty) {
+      var details = staticShadeDetails[shadeKey];
+      var total = details ? details.amount * (qty || 1) : 0;
+      return 'Rs. ' + total.toLocaleString('en-US');
+    }
 
     var params = new URLSearchParams(window.location.search);
     var brandParam = (params.get('brand') || '').trim().toLowerCase();
@@ -1096,8 +1112,8 @@
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
 
-        if (entry.title) button.setAttribute('data-shade-name', entry.title);
-        if (entry.price) button.setAttribute('data-shade-price', entry.price);
+        button.setAttribute('data-shade-name', staticShadeName(shadeKey));
+        button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
         if (entry.image) button.setAttribute('data-shade-image', entry.image);
         var crLiveVariant = entry.availableVariantId || entry.variantId;
         if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
@@ -1109,7 +1125,7 @@
           thumbImg.alt = entry.title || '';
         }
         var nameEl = button.querySelector('.car-results__shade-name');
-        if (nameEl && entry.title) nameEl.textContent = entry.title;
+        if (nameEl) nameEl.textContent = staticShadeName(shadeKey);
 
         // If this card is the currently selected shade, reflect it in the
         // showcase + summary/pricing column right away.
@@ -1118,11 +1134,11 @@
             stageImg.src = entry.image;
             stageImg.alt = entry.title || '';
           }
-          if (entry.title && shadeName) shadeName.textContent = entry.title;
+          if (shadeName) shadeName.textContent = staticShadeName(shadeKey);
           if (entry.description && shadeDesc) shadeDesc.innerHTML = entry.description;
           var qtyEl = root.querySelector('[data-cr-qty-value]');
           var qty = parseInt(String(qtyEl ? qtyEl.textContent : '1').replace(/[^0-9]/g, ''), 10) || 1;
-          if (entry.price && shadePrice) shadePrice.textContent = formatMoney(entry.price, qty);
+          if (shadePrice) shadePrice.textContent = staticShadePrice(shadeKey, qty);
         }
       });
     }
@@ -1155,8 +1171,8 @@
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
 
-        if (entry.title) button.setAttribute('data-shade-name', entry.title);
-        if (entry.price) button.setAttribute('data-shade-price', entry.price);
+        button.setAttribute('data-shade-name', staticShadeName(shadeKey));
+        button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
         if (entry.image) button.setAttribute('data-shade-image', entry.image);
         var crLiveVariant = entry.availableVariantId || entry.variantId;
         if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
@@ -1168,7 +1184,7 @@
           thumbImg.alt = entry.title || '';
         }
         var nameEl = button.querySelector('.car-results__shade-name');
-        if (nameEl && entry.title) nameEl.textContent = entry.title;
+        if (nameEl) nameEl.textContent = staticShadeName(shadeKey);
 
         // If this card is the currently selected shade, reflect it in the
         // showcase + summary/pricing column right away.
@@ -1177,11 +1193,11 @@
             stageImg.src = entry.image;
             stageImg.alt = entry.title || '';
           }
-          if (entry.title && shadeName) shadeName.textContent = entry.title;
+          if (shadeName) shadeName.textContent = staticShadeName(shadeKey);
           if (entry.description && shadeDesc) shadeDesc.innerHTML = entry.description;
           var qtyEl = root.querySelector('[data-cr-qty-value]');
           var qty = parseInt(String(qtyEl ? qtyEl.textContent : '1').replace(/[^0-9]/g, ''), 10) || 1;
-          if (entry.price && shadePrice) shadePrice.textContent = formatMoney(entry.price, qty);
+          if (shadePrice) shadePrice.textContent = staticShadePrice(shadeKey, qty);
         }
       });
     }
@@ -1318,7 +1334,8 @@
     }
 
     function refreshTotal() {
-      if (shadePrice) shadePrice.textContent = formatMoney(activeShadeMoney(), quantity);
+      var shade = activeShade();
+      if (shadePrice) shadePrice.textContent = staticShadePrice(shade ? shade.getAttribute('data-shade-key') : '', quantity);
     }
 
     function setQuantity(next) {
@@ -1340,7 +1357,7 @@
           stageImg.src = shadeImage;
           stageImg.alt = button.getAttribute('data-shade-name') || '';
         }
-        if (shadeName) shadeName.textContent = button.getAttribute('data-shade-name') || '';
+        if (shadeName) shadeName.textContent = staticShadeName(button.getAttribute('data-shade-key'));
 
         // Full/Half live products show their Shopify description; all other
         // shades keep the static demo description.

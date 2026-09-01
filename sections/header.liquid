@@ -1,4 +1,4 @@
-<header class="ad-header">
+<header class="ad-header{% unless request.page_type == 'index' %} ad-header--inner{% endunless %}">
   <div class="ad-header__inner">
 
     <!-- LOGO -->
@@ -18,7 +18,7 @@
         href="{{ routes.root_url }}"
         class="ad-header__link {% if request.page_type == 'index' %}ad-header__link--active{% endif %}"
       >
-        HOME
+        Home
       </a>
 
             <!-- SHOP BY BRAND -->
@@ -26,7 +26,7 @@
         href="/pages/shop-by-brand"
         class="ad-header__link {% if request.path == '/pages/shop-by-brand' %}ad-header__link--active{% endif %}"
       >
-        SHOP BY BRAND
+        Shop By Brand
       </a>
 
       <!-- SHOP BY CAR -->
@@ -34,7 +34,7 @@
         href="/pages/shop-by-car"
         class="ad-header__link {% if request.path == '/pages/shop-by-car' %}ad-header__link--active{% endif %}"
       >
-        SHOP BY CAR
+        Shop By Car
       </a>
 
       <!-- ALL PRODUCTS -->
@@ -42,7 +42,7 @@
         href="/pages/all-products"
         class="ad-header__link {% if request.path == '/pages/all-products' %}ad-header__link--active{% endif %}"
       >
-        ALL PRODUCTS
+        All Products
       </a>
 
       <!-- ABOUT -->
@@ -50,7 +50,7 @@
         href="/pages/about-us"
         class="ad-header__link {% if request.path == '/pages/about-us' %}ad-header__link--active{% endif %}"
       >
-        ABOUT US
+        About Us
       </a>
 
       <!-- CONTACT -->
@@ -58,7 +58,7 @@
         href="/pages/contact"
         class="ad-header__link {% if request.path == '/pages/contact' %}ad-header__link--active{% endif %}"
       >
-        CONTACT US
+        Contact Us
       </a>
 
     </nav>
@@ -129,42 +129,42 @@
       href="{{ routes.root_url }}"
       class="{% if request.page_type == 'index' %}active{% endif %}"
     >
-      HOME
+      Home
     </a>
 
         <a
       href="/pages/shop-by-brand"
       class="{% if request.path == '/pages/shop-by-brand' %}active{% endif %}"
     >
-      SHOP BY BRAND
+      Shop By Brand
     </a>
 
     <a
       href="/pages/shop-by-car"
       class="{% if request.path == '/pages/shop-by-car' %}active{% endif %}"
     >
-      SHOP BY CAR
+      Shop By Car
     </a>
 
     <a
       href="/pages/all-products"
       class="{% if request.path == '/pages/all-products' %}active{% endif %}"
     >
-      ALL PRODUCTS
+      All Products
     </a>
 
     <a
       href="/pages/about-us"
       class="{% if request.path == '/pages/about-us' %}active{% endif %}"
     >
-      ABOUT US
+      About Us
     </a>
 
     <a
       href="/pages/contact"
       class="{% if request.path == '/pages/contact' %}active{% endif %}"
     >
-      CONTACT US
+      Contact Us
     </a>
 
   </div>
@@ -172,21 +172,37 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  function initAutoDrapeMobileMenu() {
     const menuButton = document.querySelector('.ad-header__menu');
     const mobileMenu = document.querySelector('.ad-header__mobile');
 
     if (!menuButton || !mobileMenu) return;
 
+    if (menuButton.dataset.menuReady === 'true') return;
+    menuButton.dataset.menuReady = 'true';
+
     menuButton.addEventListener('click', function () {
       const isOpen = mobileMenu.classList.toggle('is-open');
+
+      menuButton.classList.toggle('is-open', isOpen);
 
       menuButton.setAttribute(
         'aria-expanded',
         isOpen ? 'true' : 'false'
       );
+
+      menuButton.setAttribute(
+        'aria-label',
+        isOpen ? 'Close menu' : 'Open menu'
+      );
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAutoDrapeMobileMenu);
+  } else {
+    initAutoDrapeMobileMenu();
+  }
 </script>
 
 

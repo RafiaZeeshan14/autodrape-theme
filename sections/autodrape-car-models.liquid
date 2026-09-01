@@ -5,7 +5,7 @@
 
     <div class="ad-brands__heading">
       <div class="ad-brands__heading-left">
-        <h2>Select your car brand</h2>
+        <h2>Select your <br/> <span>car brand</span></h2>
         <p>Find sunshades for 97+ car brands.</p>
       </div>
 
@@ -90,6 +90,14 @@
     text-transform: uppercase;
   }
 
+  .ad-brands__heading h2 span {
+    color: #d90000;
+  }
+
+  .ad-brands__heading h2 br {
+    display: none;
+  }
+
   .ad-brands__heading p {
     margin: 8px 0 0;
     color: var(--ad-text-soft);
@@ -106,7 +114,7 @@
     gap: 6px;
     flex-shrink: 0;
     padding-bottom: 4px;
-    color: var(--ad-accent, #7d1515);
+    color: #d90000;
     font-size: 12px;
     font-weight: 900;
     letter-spacing: 0.05em;
@@ -117,7 +125,7 @@
   }
 
   .ad-brands__view-all:hover {
-    color: var(--ad-accent-strong, #5f1010);
+    color: #850000;
     transform: translateX(3px);
   }
 
@@ -179,12 +187,21 @@
     .ad-brands__heading {
       position: static;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
     }
 
     .ad-brands__view-all {
       position: static;
+      align-self: center;
+    }
+
+    .ad-brands__heading h2 br {
+      display: block;
+    }
+
+    .ad-brand span {
+      color: var(--ad-text);
     }
 
     .ad-brands__grid {

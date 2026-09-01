@@ -51,10 +51,26 @@
 {% elsif is_policy_page %}
   {% render 'policy-page', policy: page %}
 {% else %}
-  <h1>{{ page.title }}</h1>
+  <div class="ad-generic-page">
+    {% render 'page-back-link' %}
+    <h1>{{ page.title }}</h1>
 
-  {{ page.content }}
+    {{ page.content }}
+  </div>
 {% endif %}
+
+<style>
+  .ad-generic-page {
+    position: relative;
+    padding: 72px 24px 96px;
+  }
+
+  .ad-generic-page > .ad-page-back {
+    position: absolute;
+    top: 28px;
+    left: 24px;
+  }
+</style>
 
 {% schema %}
 {

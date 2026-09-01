@@ -333,7 +333,7 @@
     border: 0;
     border-radius: 7px;
 
-    background: #a50000;
+    background: #d90000;
     color: #fff;
 
     font-family: var(--font-ui--family);
@@ -372,44 +372,104 @@
   @media (max-width: 749px) {
 
     .autodrape-car-selector {
-      padding: 20px;
-      border-radius: 14px;
+      padding: 22px 20px 24px;
+      border-radius: 16px;
     }
 
 
     .autodrape-car-selector__steps {
-      gap: 7px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      align-items: center;
+      position: relative;
+      margin-bottom: 20px;
     }
 
 
     .autodrape-car-selector__divider {
-      margin: 0 5px;
+      display: none;
     }
 
 
     .autodrape-car-selector__step {
-      gap: 5px;
-      font-size: 9px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 4px;
+      font-size: clamp(9px, 2.5vw, 11px);
+      letter-spacing: .01em;
+      line-height: 1.15;
+      text-align: center;
+      white-space: normal;
+    }
+
+    .autodrape-car-selector__step:nth-child(1)::after,
+    .autodrape-car-selector__step:nth-child(3)::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      top: 15px;
+      left: calc(50% + 15px);
+      width: calc(100% - 30px);
+      height: 1px;
+      background: linear-gradient(90deg, #d2d2d2, #e7e7e7);
     }
 
 
     .autodrape-car-selector__number {
-      width: 25px;
-      height: 25px;
-      font-size: 10px;
+      position: relative;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
     }
 
 
     .autodrape-car-selector__fields {
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 14px;
+    }
+
+    .autodrape-car-selector__field label {
+      margin-bottom: 7px;
+      font-size: 11px;
+    }
+
+    .autodrape-car-selector__select-wrap select {
+      height: 52px;
+      font-size: 14px;
     }
 
 
     .autodrape-car-selector__button {
-      margin-top: 14px;
+      height: 54px;
+      margin-top: 16px;
+      border-radius: 9px;
+      font-size: 14px;
     }
 
+  }
+
+  @media (max-width: 360px) {
+    .autodrape-car-selector {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+
+    .autodrape-car-selector__step {
+      padding: 0 2px;
+      font-size: 8px;
+      text-align: center;
+    }
+
+    .autodrape-car-selector__number {
+      width: 28px;
+      height: 28px;
+      font-size: 11px;
+    }
   }
 
 </style>
@@ -430,6 +490,21 @@
 
     const findButton =
       document.getElementById('autodrape-find-products');
+
+    const selectorRoot =
+      document.querySelector('.autodrape-car-selector');
+
+    const stepItems = selectorRoot
+      ? selectorRoot.querySelectorAll('.autodrape-car-selector__step')
+      : [];
+
+    function setActiveStep(stepNumber) {
+      stepItems.forEach(function (step, index) {
+        step.classList.toggle('is-active', index === stepNumber - 1);
+      });
+    }
+
+    setActiveStep(1);
 
 
     /*
@@ -500,6 +575,8 @@
 
     brandSelect.addEventListener('change', function () {
 
+      setActiveStep(1);
+
       const brandId =
         this.options[this.selectedIndex].dataset.brandId;
 
@@ -562,6 +639,12 @@
      */
 
     modelSelect.addEventListener('change', function () {
+
+      if (this.value) {
+        setActiveStep(2);
+      } else if (brandSelect.value) {
+        setActiveStep(1);
+      }
 
       const selectedOption =
         this.options[this.selectedIndex];
@@ -664,6 +747,19 @@
     });
 
 
+    yearSelect.addEventListener('change', function () {
+
+      if (this.value) {
+        setActiveStep(3);
+      } else if (modelSelect.value) {
+        setActiveStep(2);
+      } else if (brandSelect.value) {
+        setActiveStep(1);
+      }
+
+    });
+
+
     /*
      * FIND PRODUCTS
      *
@@ -745,6 +841,7 @@
 
         if (yearOption) {
           yearSelect.value = urlYear;
+          yearSelect.dispatchEvent(new Event('change'));
         }
       }
 

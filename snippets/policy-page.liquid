@@ -20,6 +20,7 @@
 
 <div class="ad-policy">
   <div class="ad-policy__container">
+    {% render 'page-back-link' %}
     <h1 class="ad-policy__title">{{ policy.title }}</h1>
 
     <div class="ad-policy__body">
@@ -27,4 +28,16 @@
     </div>
   </div>
 </div>
+
+<style>
+  .ad-policy__container {
+    position: relative;
+  }
+
+  .ad-policy__container > .ad-page-back {
+    position: absolute;
+    top: -34px;
+    left: 0;
+  }
+</style>
 

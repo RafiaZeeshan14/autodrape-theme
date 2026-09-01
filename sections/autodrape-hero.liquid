@@ -5,12 +5,18 @@
          HERO BACKGROUND / CAR
          ========================= -->
     <div class="autodrape-hero__visual">
-      <img
-        src="{{ 'heroimage.png' | asset_url }}"
-        alt="AutoDrape premium car sunshades"
-        class="autodrape-hero__car"
-        loading="eager"
-      >
+      <picture>
+        <source
+          media="(max-width: 749px)"
+          srcset="{{ 'Autodrapes.png' | asset_url }}"
+        >
+        <img
+          src="{{ 'heroimage.png' | asset_url }}"
+          alt="AutoDrape premium car sunshades"
+          class="autodrape-hero__car"
+          loading="eager"
+        >
+      </picture>
     </div>
 
 
@@ -33,7 +39,7 @@
         Engineered for Comfort. Built for Protection.
       </p>
 
-      <a href="/collections/all" class="autodrape-hero__shop-button">
+      <a href="/pages/all-products" class="autodrape-hero__shop-button">
         SHOP NOW <span aria-hidden="true">&#8594;</span>
       </a>
 
@@ -105,6 +111,14 @@
   height: 100%;
 
   pointer-events: none;
+}
+
+
+.autodrape-hero__visual picture {
+  display: block;
+
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -201,7 +215,7 @@
 
   margin-top: 8px;
 
-  color: #a90000;
+  color: #d90000;
 
   font-family: var(--font-heading--family);
 
@@ -215,15 +229,15 @@
 }
 
 
-.autodrape-hero__shop-button {
-  display: inline-flex;
+  .autodrape-hero__shop-button {
+    display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin-top: 26px;
   padding: 14px 22px;
   border-radius: 999px;
-  background: #a90000;
+  background: #d90000;
   color: #fff;
   font-family: var(--font-ui--family);
   font-size: 12px;
@@ -587,6 +601,15 @@
 
 @media screen and (max-width: 749px) {
 
+  .autodrape-hero__shop-button {
+    display: none;
+  }
+
+  .autodrape-hero__eyebrow,
+  .autodrape-hero__title {
+    display: none;
+  }
+
   .autodrape-hero {
     min-height: auto;
 
@@ -604,7 +627,7 @@
   .autodrape-hero__content {
     width: 100%;
 
-    padding: 45px 22px 0;
+    padding: 20px 16px 0;
 
     text-align: center;
   }
@@ -618,9 +641,10 @@
 
 
   .autodrape-hero__title {
-    font-size: clamp(40px, 11vw, 58px);
+    font-size: clamp(34px, 10vw, 48px);
 
-    line-height: .95;
+    line-height: .98;
+    letter-spacing: -.035em;
   }
 
 
@@ -631,11 +655,11 @@
 
 
   .autodrape-hero__description {
-    margin-top: 22px;
+    margin-top: 18px;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
 
@@ -646,21 +670,31 @@
 
     width: 100%;
 
-    height: 280px;
+    height: auto;
+    min-height: 0;
 
-    margin-top: 15px;
+    margin-top: 0;
+    background: #080808;
+    overflow: hidden;
+  }
+
+
+  .autodrape-hero__visual picture {
+    width: 100%;
+    height: auto;
   }
 
 
   .autodrape-hero__car {
-    position: absolute;
+    position: static;
 
     inset: 0;
 
     width: 100%;
-    height: 100%;
+    height: auto;
 
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center top;
   }
 
 
@@ -670,11 +704,11 @@
     right: auto;
     bottom: auto;
 
-    width: calc(100% - 30px);
+    width: calc(100% - 28px);
 
     max-width: none;
 
-    margin: -30px auto 0;
+    margin: 18px auto 0;
   }
 
 

@@ -20,7 +20,8 @@
   <!-- Generic selector — visible when no brand is selected -->
   <div class="shop-by-car-page__selector" data-ad-sbc-selector>
     <div class="shop-by-car-page__header">
-      <h1>SHOP BY CAR</h1>
+      {% render 'page-back-link' %}
+      <h1>SHOP BY <span>CAR</span></h1>
       <p>Select your car brand, model and year to find compatible products.</p>
     </div>
 
@@ -35,12 +36,13 @@
 <style>
   .shop-by-car-page {
     width: 100%;
-    padding: 60px 20px 80px;
+    padding: 52px 20px 64px;
     background: #fff;
     color: var(--ad-text);
   }
 
   .shop-by-car-page__header {
+    position: relative;
     text-align: center;
     margin-bottom: 30px;
   }
@@ -49,9 +51,20 @@
     margin: 0;
     font-family: var(--font-ui--family);
     font-size: 42px;
-    font-weight: 800;
+    font-weight: 900;
+    line-height: 1.05;
     letter-spacing: -1px;
     color: #111;
+  }
+
+  .shop-by-car-page__header h1 span {
+    color: #d90000;
+  }
+
+  .shop-by-car-page__header .ad-page-back {
+    position: absolute;
+    top: 0;
+    left: 24px;
   }
 
   .shop-by-car-page__header p {
@@ -72,6 +85,13 @@
 
     .shop-by-car-page__header h1 {
       font-size: 32px;
+    }
+
+    .shop-by-car-page__header .ad-page-back {
+      position: static;
+      display: flex;
+      width: max-content;
+      margin: 0 0 22px;
     }
   }
 </style>

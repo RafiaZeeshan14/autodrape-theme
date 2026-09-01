@@ -38,10 +38,11 @@
     .autodrape-why__inner { max-width: 1400px; margin: 0 auto; display:grid; grid-template-columns: 1fr 1.4fr; gap: 28px; align-items:center; }
 
     .why-left { padding: 12px 8px; }
-    .why-title { font-family: var(--font-heading--family); font-size: 28px; margin: 0 0 14px; }
-    .why-title span { color: #a90000; }
+    .why-title { font-family: var(--font-ui--family) !important; font-size: clamp(28px, 2.8vw, 42px); line-height: 1.08; font-weight: 900; letter-spacing: -.05em; text-transform: uppercase; margin: 0 0 14px; }
+    .why-title span { color: #d90000; }
     .why-copy { color: #666; font-size: 15px; line-height:1.6; margin-bottom: 18px; max-width: 460px; }
-    .btn-learn { display:inline-block; background:#a90000; color:#fff; padding:12px 20px; border-radius:8px; text-decoration:none; font-weight:700; }
+    .btn-learn { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 20px; border:0; border-radius:999px; background:linear-gradient(180deg, #f23f38, var(--ad-accent)); color:#fff; text-decoration:none; font-family:var(--font-ui--family); font-size:11px; font-weight:800; letter-spacing:.12em; line-height:1; text-transform:uppercase; box-shadow:none; transition:transform .2s ease; }
+    .btn-learn:hover { transform:translateY(-2px); box-shadow:none; }
 
     .why-right { display:flex; gap:18px; }
     .why-card { position: relative; flex:1 1 0; border-radius:8px; overflow:hidden; min-height:220px; }
@@ -51,8 +52,10 @@
     .why-card__sub { font-size:13px; opacity:0.9; margin-top:6px; }
 
     @media screen and (max-width:1100px) { .autodrape-why__inner { grid-template-columns: 1fr 1fr; } }
-    @media screen and (max-width:749px) { .autodrape-why__inner { grid-template-columns: 1fr; } .why-right { flex-direction:row; overflow-x:auto; padding-bottom:8px; } .why-card { min-width:220px; flex:0 0 220px; }
-    .why-left { text-align:center; }
+    @media screen and (max-width:749px) { .autodrape-why__inner { grid-template-columns: 1fr; min-width:0; } .why-right { flex-direction:row; overflow-x:auto; padding-bottom:8px; } .why-card { min-width:220px; flex:0 0 220px; }
+    .why-left { min-width:0; text-align:center; }
+    .why-copy { width:100%; max-width:100%; overflow-wrap:anywhere; }
+    .btn-learn { display:inline-flex; width:auto; min-width:0 !important; height:auto !important; min-height:0 !important; padding:12px 20px !important; box-sizing:border-box; }
     }
   </style>
 

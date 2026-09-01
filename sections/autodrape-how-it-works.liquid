@@ -1,7 +1,7 @@
 <section class="ad-how">
   <div class="ad-how__container">
     <div class="ad-how__heading">
-      <h2>HOW IT WORKS</h2>
+      <h2>HOW IT <span>WORKS</span></h2>
       <p>Get the perfect sunshades for your car in 3 simple steps.</p>
     </div>
 
@@ -88,10 +88,16 @@
   .ad-how__heading h2 {
     margin: 0;
     color: var(--ad-text);
-    font-size: clamp(28px, 2.6vw, 44px);
+    font-family: var(--font-ui--family) !important;
+    font-size: clamp(28px, 2.8vw, 42px);
     line-height: 1.08;
-    font-weight: 600;
+    font-weight: 900;
     letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+
+  .ad-how__heading h2 span {
+    color: #d90000;
   }
 
   .ad-how__heading p {
@@ -136,11 +142,11 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: linear-gradient(180deg, #f23f38, var(--ad-accent));
+    background: linear-gradient(180deg, #d90000, var(--ad-accent));
     color: #ffffff;
     font-size: 12px;
     font-weight: 800;
-    box-shadow: 0 16px 30px rgba(216, 31, 25, 0.22);
+    box-shadow: 0 16px 30px rgba(169, 0, 0, 0.22);
   }
 
   .ad-how__icon {
@@ -151,7 +157,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(216, 31, 25, 0.08);
+    background: rgba(169, 0, 0, 0.08);
   }
 
   .ad-how__icon svg {
@@ -166,12 +172,13 @@
 
   .ad-how__step h3 {
     margin: 0;
+    font-family: var(--font-ui--family) !important;
     color: var(--ad-text);
     font-size: 18px;
     line-height: 1.2;
-    font-weight: 600;
-    letter-spacing: -0.04em;
-    text-transform: none;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
   }
 
   .ad-how__step p {
