@@ -42,7 +42,7 @@
     {{ content_for_header }}
   </head>
 
-  <body>
+  <body class="{% if request.page_type == 'index' %}template-index{% endif %}">
     {% sections 'header-group' %}
 
     {{ content_for_layout }}

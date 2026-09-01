@@ -10,11 +10,11 @@
 {
   "sections": {
     "hero": { "type": "autodrape-hero", "settings": {} },
-        "car_models": { "type": "autodrape-car-models", "settings": {} },
+    "how_it_works": { "type": "autodrape-how-it-works", "settings": {} },
+    "car_models": { "type": "autodrape-car-models", "settings": {} },
     // "car_selector": { "type": "autodrape-car-selector", "settings": {} },
     "features": { "type": "autodrape-features", "settings": {} },
     "top_products": { "type": "autodrape-top-products", "settings": {} },
-    "how_it_works": { "type": "autodrape-how-it-works", "settings": {} },
 
     "product_showcase": { "type": "autodrape-showcase", "settings": {} },
     "comparison": { "type": "autodrape-comparison", "settings": {} },
@@ -136,5 +136,5 @@
 },
     "final_cta": { "type": "autodrape-final-cta", "settings": {} }
   },
-  "order": ["hero", "car_models","features", "top_products", "how_it_works", "product_showcase", "comparison", "reviews", "faq", "final_cta"]
+  "order": ["hero", "how_it_works", "car_models", "features", "top_products", "product_showcase", "comparison", "reviews", "faq", "final_cta"]
 }

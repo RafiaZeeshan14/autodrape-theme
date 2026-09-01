@@ -3,6 +3,19 @@
   Loaded after critical.css so it can override any older section styles.
 */
 
+/* Keep homepage sections separated with one consistent vertical gap. */
+body.template-index .ad-brands,
+body.template-index .autodrape-why,
+body.template-index .autodrape-top-products,
+body.template-index .ad-how,
+body.template-index .ad-showcase,
+body.template-index .ad-comparison,
+body.template-index .autodrape-reviews,
+body.template-index .autodrape-faq,
+body.template-index .ad-final-cta {
+  margin-top: 40px;
+}
+
 .ad-header {
   position: sticky;
   top: 0;
