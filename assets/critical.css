@@ -20,9 +20,7 @@ body {
   margin: 0;
   overflow-x: hidden;
   font-family: var(--font-body--family);
-  background:
-    radial-gradient(circle at top left, rgba(125, 21, 21, 0.07), transparent 22%),
-    linear-gradient(180deg, #ffffff 0%, #fbfaf8 100%);
+  background: #ffffff;
   color: var(--ad-text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

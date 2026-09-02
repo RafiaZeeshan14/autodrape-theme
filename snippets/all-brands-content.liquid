@@ -19,7 +19,6 @@
   <div class="autodrape-all-brands__container">
 
     <div class="autodrape-all-brands__header">
-      {% render 'page-back-link' %}
       <h1>ALL <span>BRANDS</span></h1>
       <p>Choose your car brand to find the perfect fit.</p>
     </div>
@@ -64,30 +63,24 @@
   .autodrape-all-brands {
     width: 100%;
     background: #fff;
-    padding: 70px 0 90px;
+    padding: 52px 24px 96px;
   }
 
   .autodrape-all-brands__container {
-    width: min(1200px, 92%);
+    width: min(1600px, 100%);
     margin: 0 auto;
   }
 
   .autodrape-all-brands__header {
     position: relative;
     text-align: center;
-    margin-bottom: 45px;
-  }
-
-  .autodrape-all-brands__header .ad-page-back {
-    position: absolute;
-    top: 0;
-    left: 0;
+    margin-bottom: 52px;
   }
 
   .autodrape-all-brands__header h1 {
     margin: 0;
     font-family: var(--font-ui--family);
-    font-size: 42px;
+    font-size: clamp(42px, 4vw, 60px);
     font-weight: 900;
     line-height: 1.05;
     letter-spacing: -1px;
@@ -101,19 +94,19 @@
   .autodrape-all-brands__header p {
     margin: 10px 0 0;
     font-family: var(--font-ui--family);
-    font-size: 15px;
+    font-size: 17px;
     color: #666;
   }
 
   .autodrape-brands-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
+    gap: 24px;
   }
 
   .autodrape-brand-card {
-    min-height: 125px;
-    padding: 20px 25px;
+    min-height: 138px;
+    padding: 20px 24px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -133,8 +126,8 @@
   }
 
   .autodrape-brand-card__logo {
-    width: 80px;
-    height: 65px;
+    width: 86px;
+    height: 66px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,13 +155,12 @@
 
   @media screen and (max-width: 640px) {
 
+    .autodrape-all-brands {
+      padding: 52px 14px 72px;
+    }
 
     .autodrape-all-brands__header h1 {
       font-size: 32px;
-    }
-
-    .autodrape-all-brands__header .ad-page-back {
-      top: -34px;
     }
 
     .autodrape-brands-grid {

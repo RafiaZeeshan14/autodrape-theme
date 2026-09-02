@@ -7,7 +7,6 @@
 
 <section class="ad-about-page">
   <div class="ad-about-page__hero" style="--about-hero-image: url('{{ 'about.png' | asset_url }}'); --about-mobile-image: url('{{ 'image.png' | asset_url }}');">
-    <a class="ad-about-page__back" href="{{ routes.root_url }}">&#8592; Back</a>
     <div class="ad-about-page__hero-copy">
       <p class="ad-about-page__eyebrow">The AutoDrape standard</p>
       <h1>Made for your car.<br><span>Built for the journey.</span></h1>
@@ -122,15 +121,15 @@
   .ad-about-page__hero,
   .ad-about-page__story,
   .ad-about-page__values,
-  .ad-about-page__closing { max-width: 1180px; margin-right: auto; margin-left: auto; }
+  .ad-about-page__closing { max-width: 1600px; margin-right: auto; margin-left: auto; }
 
   .ad-about-page__hero {
     position: relative;
-    min-height: 430px;
+    min-height: 540px;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
-    padding: clamp(30px, 5vw, 68px);
+    padding: clamp(40px, 5vw, 84px);
     box-sizing: border-box;
     border-radius: 28px;
     color: #111;
@@ -145,11 +144,10 @@
   }
 
   .ad-about-page__hero::after { display: none; }
-  .ad-about-page__back { position: absolute; top: 30px; left: clamp(30px, 5vw, 68px); color: #d90000; font: 800 13px/1 var(--font-ui--family), sans-serif; text-decoration: none; }
-  .ad-about-page__hero-copy { position: relative; z-index: 1; max-width: 720px; }
+  .ad-about-page__hero-copy { position: relative; z-index: 1; max-width: 900px; }
   .ad-about-page__eyebrow { margin: 0 0 15px; color: #d90000; font: 800 12px/1 var(--font-ui--family), sans-serif; letter-spacing: .16em; text-transform: uppercase; }
   .ad-about-page__hero .ad-about-page__eyebrow { color: #d90000; }
-  .ad-about-page h1 { max-width: 700px; margin: 0; color: #111; font-family: 'Manrope', Arial, sans-serif !important; font-size: clamp(40px, 5vw, 68px); font-weight: 800; line-height: 1.02; letter-spacing: -.065em; }
+  .ad-about-page h1 { max-width: 900px; margin: 0; color: #111; font-family: 'Manrope', Arial, sans-serif !important; font-size: clamp(44px, 5vw, 82px); font-weight: 800; line-height: 1.02; letter-spacing: -.065em; }
   .ad-about-page h1 span { color: #d90000; }
   .ad-about-page__hero-copy > p:last-child { max-width: 500px; margin: 26px 0 0; color: #69635d; font: 400 17px/1.6 var(--font-ui--family), sans-serif; }
   .ad-about-page__hero-mark { display: none; }
@@ -158,7 +156,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    max-width: 1180px;
+    max-width: 1600px;
     margin: 56px auto 0;
     padding: 0;
     border-bottom: 1px solid rgba(17, 17, 17, .16);
@@ -257,7 +255,7 @@
   .ad-about-page__story-band,
   .ad-about-page__commitment,
   .ad-about-page__stats {
-    max-width: 1180px;
+    max-width: 1600px;
     margin-right: auto;
     margin-left: auto;
   }
@@ -267,7 +265,7 @@
     padding: 0;
   }
 
-  .ad-about-page__section-heading { max-width: 670px; margin: 0 auto 52px; text-align: center; }
+  .ad-about-page__section-heading { max-width: 900px; margin: 0 auto 52px; text-align: center; }
   .ad-about-page__section-heading .ad-about-page__eyebrow,
   .ad-about-page__commitment-copy .ad-about-page__eyebrow { margin-bottom: 18px; }
   .ad-about-page__section-heading .ad-about-page__eyebrow,
@@ -290,7 +288,7 @@
     margin: 0;
     color: #111;
     font-family: 'Manrope', Arial, sans-serif !important;
-    font-size: clamp(32px, 4vw, 54px);
+    font-size: clamp(36px, 4vw, 64px);
     font-weight: 650;
     line-height: 1.04;
     letter-spacing: -.055em;
@@ -323,7 +321,7 @@
   }
   .ad-about-page__story-number { display: block; margin-bottom: 28px; color: #d90000; font: 700 12px/1 var(--font-ui--family), sans-serif; letter-spacing: .14em; }
   .ad-about-page__story-item h3 { margin: 0 0 10px; color: #111; font-family: 'Manrope', Arial, sans-serif !important; font-size: 15px; font-weight: 750; line-height: 1.2; letter-spacing: .04em; text-transform: uppercase; }
-  .ad-about-page__story-item p { margin: 0; color: #635c55; font: 400 14px/1.6 'Manrope', Arial, sans-serif; }
+  .ad-about-page__story-item p { margin: 0; color: #635c55; font: 400 16px/1.6 'Manrope', Arial, sans-serif; }
 
   .ad-about-page__commitment {
     display: flex;
@@ -361,7 +359,6 @@
       background-position: center top;
       background-size: 100% 100%;
     }
-    .ad-about-page__back { display: none; }
     .ad-about-page__hero-mark { display: none; }
     .ad-about-page__hero-copy { display: none; }
 

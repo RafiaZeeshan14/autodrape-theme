@@ -1,4 +1,4 @@
-{% comment %}
+﻿{% comment %}
   This section is used in the page template to render store pages like About us
   or Contact us.
 
@@ -56,7 +56,6 @@
   {% render 'policy-page', policy: page %}
 {% else %}
   <div class="ad-generic-page">
-    {% render 'page-back-link' %}
     <h1>{{ page.title }}</h1>
 
     {{ page.content }}
@@ -69,11 +68,6 @@
     padding: 72px 24px 96px;
   }
 
-  .ad-generic-page > .ad-page-back {
-    position: absolute;
-    top: 28px;
-    left: 24px;
-  }
 </style>
 
 {% schema %}

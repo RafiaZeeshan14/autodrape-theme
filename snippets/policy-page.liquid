@@ -1,4 +1,4 @@
-{% doc %}
+﻿{% doc %}
   Renders a shared, premium policy-page layout for the store's legal pages
   (Privacy Policy, Return & Exchange / Refund Policy, Terms & Conditions,
   Shipping & Delivery Policy).
@@ -20,7 +20,6 @@
 
 <div class="ad-policy">
   <div class="ad-policy__container">
-    {% render 'page-back-link' %}
     <h1 class="ad-policy__title">{{ policy.title }}</h1>
 
     <div class="ad-policy__body">
@@ -32,12 +31,6 @@
 <style>
   .ad-policy__container {
     position: relative;
-  }
-
-  .ad-policy__container > .ad-page-back {
-    position: absolute;
-    top: -34px;
-    left: 0;
   }
 </style>
 

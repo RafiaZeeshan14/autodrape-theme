@@ -1,4 +1,4 @@
-{% doc %}
+﻿{% doc %}
   Renders the Car Results experience for `/pages/car-results`.
 
   The customer's selection is carried in the URL query string by the car
@@ -41,10 +41,6 @@
 
 <div class="car-results">
   <div class="car-results__container">
-
-    <nav class="car-results__breadcrumb" aria-label="Breadcrumb">
-      <a href="/pages/shop-by-car">&#8592;&nbsp;{{ 'car_results.back_to_selector' | t }}</a>
-    </nav>
 
     <div class="car-results__grid">
 
@@ -493,24 +489,6 @@
     margin: 0 auto;
   }
 
-  .car-results__breadcrumb {
-    margin-bottom: clamp(14px, 2vw, 22px);
-    font-family: var(--font-ui--family), system-ui, sans-serif;
-  }
-
-  .car-results__breadcrumb a {
-    color: #d90000;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .car-results__breadcrumb a:hover {
-    color: #a90000;
-  }
-
   .car-results__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -531,9 +509,7 @@
     margin: 0;
     border-radius: calc(var(--ad-radius-lg, 20px));
     border: 1px solid var(--ad-border, #e9e2d8);
-    background:
-      radial-gradient(circle at 70% 18%, rgba(125, 21, 21, 0.05), transparent 42%),
-      linear-gradient(165deg, #fbfaf8 0%, #f3eee6 100%);
+    background: #ffffff;
     box-shadow: var(--ad-shadow-soft, 0 22px 50px -30px rgba(20, 20, 20, 0.35));
   }
 

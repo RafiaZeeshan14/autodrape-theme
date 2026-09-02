@@ -7,7 +7,6 @@
 
 <section class="ad-contact-page">
   <div class="ad-contact-page__hero">
-    <a class="ad-contact-page__back" href="{{ routes.root_url }}">&#8592; Back</a>
     <p class="ad-contact-page__eyebrow">Get in touch</p>
     <h1>Let&rsquo;s talk <span>about your car.</span></h1>
     <p class="ad-contact-page__hero-lead">Have a question about fit, coverage or your order? Our team is ready to help you find the right shade.</p>
@@ -25,7 +24,7 @@
       <p class="ad-contact-page__panel-intro">Fill out the form and our team will get back to you as soon as possible.</p>
       {% form 'contact', class: 'ad-contact-page__form' %}
         {% if form.posted_successfully? %}<p class="ad-contact-page__form-status" role="status">Thanks — your message has been sent.</p>{% endif %}
-        {{ form.errors | default_errors }}
+        {% if form.errors %}<div class="ad-contact-page__form-errors" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
         <div class="ad-contact-page__form-grid">
           <input type="text" name="contact[name]" placeholder="Full name" autocomplete="name" required>
           <input type="email" name="contact[email]" placeholder="Email address" autocomplete="email" required>
@@ -54,12 +53,11 @@
 </section>
 
 {% stylesheet %}
-  .ad-contact-page { padding: clamp(34px, 5vw, 68px) 20px clamp(64px, 8vw, 110px); color: #111; background: #fff; font-family: 'Manrope', Arial, sans-serif; }
+  .ad-contact-page { padding: clamp(12px, 1.8vw, 24px) 20px clamp(64px, 8vw, 110px); color: #111; background: #fff; font-family: 'Manrope', Arial, sans-serif; }
   .ad-contact-page__hero, .ad-contact-page__contact-card, .ad-contact-page__trust-strip { max-width: 1440px; margin-right: auto; margin-left: auto; }
-  .ad-contact-page__hero { position: relative; padding: clamp(54px, 7vw, 86px) 24px 42px; text-align: center; }
-  .ad-contact-page__back { position: absolute; top: 12px; left: 0; color: #d90000; font: 800 14px/1 'Manrope', Arial, sans-serif; text-decoration: none; }
+  .ad-contact-page__hero { position: relative; padding: clamp(24px, 3vw, 40px) 24px 42px; text-align: center; }
   .ad-contact-page__eyebrow { display: table; margin: 0 auto 18px; color: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
-  .ad-contact-page__eyebrow::before, .ad-contact-page__eyebrow::after { content: ""; display: inline-block; width: 30px; height: 1px; margin: 0 14px 4px; background: #d90000; }
+  .ad-contact-page__eyebrow::before, .ad-contact-page__eyebrow::after { display: none; }
   .ad-contact-page h1 { margin: 0; color: #111; font: 800 clamp(38px, 6vw, 76px)/1 'Manrope', Arial, sans-serif !important; letter-spacing: -.07em; }
   .ad-contact-page h1 span { color: #d90000; }
   .ad-contact-page__hero-lead { max-width: 650px; margin: 22px auto 0; color: #635c55; font: 400 18px/1.65 'Manrope', Arial, sans-serif; }
@@ -81,7 +79,9 @@
   .ad-contact-page__form textarea { display: block; margin-top: 12px; resize: vertical; }
   .ad-contact-page__form button { margin-top: 14px; padding: 14px 20px; border: 0; border-radius: 7px; color: #fff; background: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
   .ad-contact-page__form button span { margin-left: 14px; font-size: 16px; }
-  .ad-contact-page__form-status { padding: 12px; color: #27764a; background: #edf8f1; font-size: 13px; }
+  .ad-contact-page__form-status, .ad-contact-page__form-errors { margin: 0 0 14px; padding: 12px; font: 400 13px/1.5 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__form-status { color: #27764a; background: #edf8f1; }
+  .ad-contact-page__form-errors { color: #a81717; background: #fff1f1; }
   .ad-contact-page__channel { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 15px; margin-top: 14px; padding: 17px; border: 1px solid #e3ded8; border-radius: 12px; color: #222; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
   .ad-contact-page__channel:hover { border-color: #d90000; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17, 17, 17, .07); }
   .ad-contact-page__channel-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #d90000; background: rgba(217, 0, 0, .07); font-size: 23px; }
@@ -94,9 +94,8 @@
   .ad-contact-page__trust-icon { display: grid; place-items: center; width: 54px; height: 54px; flex: 0 0 54px; color: #d90000; }
   .ad-contact-page__trust-icon svg { width: 48px; height: 48px; }
   @media screen and (max-width: 800px) {
-    .ad-contact-page { padding: 28px 14px 60px; }
-    .ad-contact-page__hero { padding-top: 62px; }
-    .ad-contact-page__back { left: 8px; }
+    .ad-contact-page { padding: 14px 14px 60px; }
+    .ad-contact-page__hero { padding-top: 24px; }
     .ad-contact-page__highlights { grid-template-columns: 1fr; gap: 18px; }
     .ad-contact-page__highlight { justify-content: flex-start; padding: 0; }
     .ad-contact-page__highlight + .ad-contact-page__highlight { padding-top: 18px; border-top: 1px solid rgba(17, 17, 17, .12); border-left: 0; }
