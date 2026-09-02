@@ -48,6 +48,10 @@
   {% render 'all-brands-content' %}
 {% elsif page.handle == 'all-products' %}
   {% render 'all-products-content' %}
+{% elsif page.handle == 'contact' or page.handle == 'contact-us' %}
+  {% render 'contact-page-content' %}
+{% elsif page.handle == 'about-us' or page.handle == 'about' %}
+  {% render 'about-page-content' %}
 {% elsif is_policy_page %}
   {% render 'policy-page', policy: page %}
 {% else %}

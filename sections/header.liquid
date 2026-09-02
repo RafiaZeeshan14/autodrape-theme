@@ -47,8 +47,8 @@
 
       <!-- ABOUT -->
       <a
-        href="/pages/about-us"
-        class="ad-header__link {% if request.path == '/pages/about-us' %}ad-header__link--active{% endif %}"
+        href="{{ pages.about.url }}"
+        class="ad-header__link {% if request.path == pages.about.url %}ad-header__link--active{% endif %}"
       >
         About Us
       </a>
@@ -154,8 +154,8 @@
     </a>
 
     <a
-      href="/pages/about-us"
-      class="{% if request.path == '/pages/about-us' %}active{% endif %}"
+      href="{{ pages.about.url }}"
+      class="{% if request.path == pages.about.url %}active{% endif %}"
     >
       About Us
     </a>

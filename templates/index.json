@@ -1,18 +1,8 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero": { "type": "autodrape-hero", "settings": {} },
     "how_it_works": { "type": "autodrape-how-it-works", "settings": {} },
     "car_models": { "type": "autodrape-car-models", "settings": {} },
-    // "car_selector": { "type": "autodrape-car-selector", "settings": {} },
     "features": { "type": "autodrape-features", "settings": {} },
     "top_products": { "type": "autodrape-top-products", "settings": {} },
 

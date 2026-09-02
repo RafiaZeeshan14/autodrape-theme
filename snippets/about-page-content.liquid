@@ -1,0 +1,415 @@
+{% doc %}
+  Renders the premium About Us page for AutoDrape.
+
+  @example
+  {% render 'about-page-content' %}
+{% enddoc %}
+
+<section class="ad-about-page">
+  <div class="ad-about-page__hero" style="--about-hero-image: url('{{ 'about.png' | asset_url }}'); --about-mobile-image: url('{{ 'image.png' | asset_url }}');">
+    <a class="ad-about-page__back" href="{{ routes.root_url }}">&#8592; Back</a>
+    <div class="ad-about-page__hero-copy">
+      <p class="ad-about-page__eyebrow">The AutoDrape standard</p>
+      <h1>Made for your car.<br><span>Built for the journey.</span></h1>
+      <p>Premium car sunshades and accessories designed around the way you drive.</p>
+    </div>
+    <div class="ad-about-page__hero-mark" aria-hidden="true">AD</div>
+  </div>
+
+  <div class="ad-about-page__story-band">
+    <div class="ad-about-page__section-heading">
+      <p class="ad-about-page__eyebrow">Our story</p>
+      <h2>Thoughtful protection.<br><span>Beautifully made.</span></h2>
+      <p>AutoDrape was founded with one simple idea: your car deserves protection that feels as considered as the drive itself.</p>
+    </div>
+
+    <div class="ad-about-page__story-grid">
+      <div class="ad-about-page__story-item">
+        <span class="ad-about-page__story-number">01</span>
+        <h3>Perfect fit</h3>
+        <p>Designed around your vehicle for a clean, secure finish.</p>
+      </div>
+      <div class="ad-about-page__story-item">
+        <span class="ad-about-page__story-number">02</span>
+        <h3>UV protection</h3>
+        <p>Helps block heat and harmful sunlight from your cabin.</p>
+      </div>
+      <div class="ad-about-page__story-item">
+        <span class="ad-about-page__story-number">03</span>
+        <h3>Premium quality</h3>
+        <p>Durable materials selected for everyday performance.</p>
+      </div>
+      <div class="ad-about-page__story-item">
+        <span class="ad-about-page__story-number">04</span>
+        <h3>Built to last</h3>
+        <p>Reliable comfort for every route, season after season.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ad-about-page__info-grid">
+    <div class="ad-about-page__mission">
+      <p class="ad-about-page__eyebrow ad-about-page__eyebrow--mission">Our mission</p>
+      <h2>To provide custom-fit sunshades that combine quality, precision, and reliability ensuring protection and comfort for every journey.</h2>
+    </div>
+
+    <div class="ad-about-page__value-card">
+      <div class="ad-about-page__icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <path d="M32 8 48 20 40 52 32 56 24 52 16 20 32 8Z" fill="none" stroke="currentColor" stroke-width="3.3" stroke-linejoin="round"/>
+          <path d="M20 20h24M32 8v48" fill="none" stroke="currentColor" stroke-width="3.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="ad-about-page__value-label">Our values</p>
+      <p>We believe in quality, integrity, and customer satisfaction above all else.</p>
+    </div>
+
+    <div class="ad-about-page__value-card">
+      <div class="ad-about-page__icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <circle cx="22" cy="22" r="9" fill="none" stroke="currentColor" stroke-width="3.2"/>
+          <circle cx="42" cy="22" r="8" fill="none" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 52c2-8 9-12 14-12s12 4 14 12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M32 52c2-7 8-11 14-11s12 4 14 11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="ad-about-page__value-label">Our commitment</p>
+      <p>We are committed to innovation, continuous improvement, and delivering the best for our customers.</p>
+    </div>
+
+    <div class="ad-about-page__value-card">
+      <div class="ad-about-page__icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <path d="M32 9 38 18l10 2-7 8 2 10-10-5-10 5 2-10-7-8 10-2 6-9Z" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round"/>
+          <path d="M21 43h22" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="ad-about-page__value-label">Why choose us?</p>
+      <p>Because your car deserves the best protection, and you deserve the best experience.</p>
+    </div>
+  </div>
+
+  <div class="ad-about-page__commitment">
+    <div class="ad-about-page__commitment-media">
+      <div class="ad-about-page__commitment-main" style="background-image: url('{{ 'precisefit.png' | asset_url }}');"></div>
+      <div class="ad-about-page__commitment-stack">
+        <div style="background-image: url('{{ 'premiumaterials.png' | asset_url }}');"></div>
+        <div style="background-image: url('{{ 'style.png' | asset_url }}');"></div>
+      </div>
+    </div>
+    <div class="ad-about-page__commitment-copy">
+      <p class="ad-about-page__eyebrow">Our commitment</p>
+      <h2>Designed around<br><span>the way you drive.</span></h2>
+      <p>From first fit to final finish, every detail is made to bring more comfort, confidence and calm to the road.</p>
+      <a href="/pages/all-products" class="ad-about-page__text-link">Explore the collection <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+
+  <div class="ad-about-page__stats">
+    <div><strong>10K<span>+</span></strong><small>Happy customers</small></div>
+    <div><strong>50<span>+</span></strong><small>Car models covered</small></div>
+    <div><strong>5K<span>+</span></strong><small>Vehicles covered</small></div>
+    <div><strong>4.9<span>/5</span></strong><small>Customer rating</small></div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ad-about-page {
+    padding: clamp(24px, 4vw, 52px) 20px clamp(64px, 8vw, 110px);
+    color: #111;
+  }
+
+  .ad-about-page__hero,
+  .ad-about-page__story,
+  .ad-about-page__values,
+  .ad-about-page__closing { max-width: 1180px; margin-right: auto; margin-left: auto; }
+
+  .ad-about-page__hero {
+    position: relative;
+    min-height: 430px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: clamp(30px, 5vw, 68px);
+    box-sizing: border-box;
+    border-radius: 28px;
+    color: #111;
+    background-image:
+      linear-gradient(90deg, rgba(247,244,239,.96) 0%, rgba(247,244,239,.88) 38%, rgba(247,244,239,.28) 72%, rgba(247,244,239,.1) 100%),
+      var(--about-hero-image);
+    background-color: #f7f4ef;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 24px 70px rgba(17, 17, 17, .14);
+  }
+
+  .ad-about-page__hero::after { display: none; }
+  .ad-about-page__back { position: absolute; top: 30px; left: clamp(30px, 5vw, 68px); color: #d90000; font: 800 13px/1 var(--font-ui--family), sans-serif; text-decoration: none; }
+  .ad-about-page__hero-copy { position: relative; z-index: 1; max-width: 720px; }
+  .ad-about-page__eyebrow { margin: 0 0 15px; color: #d90000; font: 800 12px/1 var(--font-ui--family), sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+  .ad-about-page__hero .ad-about-page__eyebrow { color: #d90000; }
+  .ad-about-page h1 { max-width: 700px; margin: 0; color: #111; font-family: 'Manrope', Arial, sans-serif !important; font-size: clamp(40px, 5vw, 68px); font-weight: 800; line-height: 1.02; letter-spacing: -.065em; }
+  .ad-about-page h1 span { color: #d90000; }
+  .ad-about-page__hero-copy > p:last-child { max-width: 500px; margin: 26px 0 0; color: #69635d; font: 400 17px/1.6 var(--font-ui--family), sans-serif; }
+  .ad-about-page__hero-mark { display: none; }
+
+  .ad-about-page__info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    max-width: 1180px;
+    margin: 56px auto 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(17, 17, 17, .16);
+    align-items: stretch;
+  }
+
+  .ad-about-page__mission {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-column: 1 / -1;
+    align-items: center;
+    padding: 42px 28px 46px;
+    border-bottom: 1px solid rgba(17, 17, 17, .16);
+    text-align: center;
+  }
+
+  .ad-about-page__eyebrow--mission {
+    display: table;
+    margin: 0 auto 24px;
+    color: #d90000;
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .ad-about-page__eyebrow--mission::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 1px;
+    margin: 10px auto 0;
+    background: #d90000;
+  }
+
+  .ad-about-page__mission h2 {
+    max-width: 560px;
+    margin: 0;
+    color: #111;
+    font-family: 'Manrope', Arial, sans-serif !important;
+    font-size: clamp(25px, 2.15vw, 40px);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -.045em;
+  }
+
+  .ad-about-page__value-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 268px;
+    padding: 42px clamp(20px, 2.1vw, 32px) 34px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .ad-about-page__value-card + .ad-about-page__value-card {
+    border-left: 1px solid rgba(17, 17, 17, .16);
+  }
+
+  .ad-about-page__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin: 0 0 28px;
+    border: 1px solid rgba(217, 0, 0, .32);
+    border-radius: 14px;
+    background: rgba(217, 0, 0, .045);
+    color: #d90000;
+  }
+
+  .ad-about-page__icon svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .ad-about-page__value-label {
+    margin: 0 0 12px;
+    color: #d90000;
+    font-family: 'Manrope', Arial, sans-serif !important;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  .ad-about-page__value-card p:last-child {
+    margin: 0;
+    color: #2d2d2d;
+    font: 400 14px/1.65 var(--font-ui--family), sans-serif;
+  }
+
+  .ad-about-page__story-band,
+  .ad-about-page__commitment,
+  .ad-about-page__stats {
+    max-width: 1180px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .ad-about-page__story-band {
+    margin-top: 72px;
+    padding: 0;
+  }
+
+  .ad-about-page__section-heading { max-width: 670px; margin: 0 auto 52px; text-align: center; }
+  .ad-about-page__section-heading .ad-about-page__eyebrow,
+  .ad-about-page__commitment-copy .ad-about-page__eyebrow { margin-bottom: 18px; }
+  .ad-about-page__section-heading .ad-about-page__eyebrow,
+  .ad-about-page__commitment-copy .ad-about-page__eyebrow {
+    display: table;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .ad-about-page__section-heading .ad-about-page__eyebrow::after,
+  .ad-about-page__commitment-copy .ad-about-page__eyebrow::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 1px;
+    margin: 10px auto 0;
+    background: #d90000;
+  }
+  .ad-about-page__section-heading h2,
+  .ad-about-page__commitment-copy h2 {
+    margin: 0;
+    color: #111;
+    font-family: 'Manrope', Arial, sans-serif !important;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 650;
+    line-height: 1.04;
+    letter-spacing: -.055em;
+  }
+  .ad-about-page__section-heading h2 span,
+  .ad-about-page__commitment-copy h2 span { color: #d90000; }
+  .ad-about-page__section-heading > p:last-child {
+    max-width: 570px;
+    margin: 22px auto 0;
+    color: #635c55;
+    font: 400 15px/1.65 'Manrope', Arial, sans-serif;
+  }
+
+  .ad-about-page__story-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .ad-about-page__story-item {
+    min-height: 190px;
+    padding: 30px 22px 26px;
+    border: 1px solid rgba(17, 17, 17, .12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .72);
+    box-shadow: 0 10px 28px rgba(17, 17, 17, .035);
+    text-align: center;
+    box-sizing: border-box;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .ad-about-page__story-item:hover {
+    transform: translateY(-4px);
+    border-color: rgba(217, 0, 0, .3);
+    box-shadow: 0 16px 32px rgba(17, 17, 17, .08);
+  }
+  .ad-about-page__story-number { display: block; margin-bottom: 28px; color: #d90000; font: 700 12px/1 var(--font-ui--family), sans-serif; letter-spacing: .14em; }
+  .ad-about-page__story-item h3 { margin: 0 0 10px; color: #111; font-family: 'Manrope', Arial, sans-serif !important; font-size: 15px; font-weight: 750; line-height: 1.2; letter-spacing: .04em; text-transform: uppercase; }
+  .ad-about-page__story-item p { margin: 0; color: #635c55; font: 400 14px/1.6 'Manrope', Arial, sans-serif; }
+
+  .ad-about-page__commitment {
+    display: flex;
+    flex-direction: column;
+    gap: 42px;
+    margin-top: 72px;
+  }
+  .ad-about-page__commitment-media { order: 2; display: grid; grid-template-columns: 1.5fr .8fr; gap: 8px; width: 100%; min-height: 420px; }
+  .ad-about-page__commitment-main,
+  .ad-about-page__commitment-stack > div { min-height: 0; border-radius: 20px; background-color: #e8e0d7; background-position: center; background-size: cover; }
+  .ad-about-page__commitment-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+  .ad-about-page__commitment-copy { order: 1; width: 100%; max-width: 670px; margin-right: auto; margin-left: auto; text-align: center; }
+  .ad-about-page__commitment-copy h2 { font-size: clamp(34px, 3.6vw, 50px); }
+  .ad-about-page__commitment-copy > p:not(.ad-about-page__eyebrow) { max-width: 570px; margin: 24px auto 26px; color: #635c55; font: 400 15px/1.7 'Manrope', Arial, sans-serif; }
+  .ad-about-page__text-link { color: #d90000; font: 750 13px/1 'Manrope', Arial, sans-serif; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+  .ad-about-page__text-link span { display: inline-block; margin-left: 8px; font-size: 17px; }
+
+  .ad-about-page__stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 72px; padding: 34px 0 12px; border-top: 1px solid rgba(17, 17, 17, .16); }
+  .ad-about-page__stats > div { padding: 0 28px; border-left: 1px solid rgba(17, 17, 17, .14); }
+  .ad-about-page__stats > div:first-child { padding-left: 0; border-left: 0; }
+  .ad-about-page__stats strong { display: block; color: #d90000; font: 650 clamp(30px, 3vw, 46px)/1 var(--font-ui--family), sans-serif; letter-spacing: -.06em; }
+  .ad-about-page__stats strong span { font-size: .55em; letter-spacing: 0; }
+  .ad-about-page__stats small { display: block; margin-top: 9px; color: #635c55; font: 400 12px/1.3 var(--font-ui--family), sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+
+  @media screen and (max-width: 900px) {
+    .ad-about-page { padding: 14px 14px 60px; }
+    .ad-about-page__hero {
+      min-height: 0;
+      aspect-ratio: 1024 / 1745;
+      align-items: flex-start;
+      padding: 30px 22px;
+      border-radius: 20px;
+      color: #fff;
+      background-image: linear-gradient(180deg, rgba(12,12,12,.12) 0%, rgba(12,12,12,.12) 100%), var(--about-mobile-image);
+      background-position: center top;
+      background-size: 100% 100%;
+    }
+    .ad-about-page__back { display: none; }
+    .ad-about-page__hero-mark { display: none; }
+    .ad-about-page__hero-copy { display: none; }
+
+    .ad-about-page__info-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin-top: 38px;
+    }
+
+    .ad-about-page__mission {
+      padding-right: 0;
+      border-right: 0;
+      border-bottom: 1px solid rgba(17, 17, 17, .15);
+      padding: 30px 0 34px;
+    }
+
+    .ad-about-page__mission h2 {
+      font-size: clamp(28px, 7vw, 42px);
+    }
+
+    .ad-about-page__value-card {
+      min-height: 0;
+      padding: 30px 0;
+    }
+
+    .ad-about-page__value-card + .ad-about-page__value-card {
+      border-left: 0;
+      border-top: 1px solid rgba(17, 17, 17, .16);
+    }
+
+    .ad-about-page__story-band,
+    .ad-about-page__commitment,
+    .ad-about-page__stats { margin-top: 52px; }
+    .ad-about-page__story-band { padding: 0; }
+    .ad-about-page__section-heading { margin-bottom: 38px; }
+    .ad-about-page__story-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ad-about-page__story-item { min-height: 175px; padding: 26px 16px 22px; }
+    .ad-about-page__story-number { margin-bottom: 16px; }
+    .ad-about-page__commitment { gap: 34px; }
+    .ad-about-page__commitment-media { min-height: 320px; }
+    .ad-about-page__commitment-copy { max-width: none; }
+    .ad-about-page__stats { grid-template-columns: 1fr 1fr; gap: 28px 0; padding-top: 28px; }
+    .ad-about-page__stats > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .ad-about-page__stats > div:nth-child(even) { padding-right: 0; }
+
+    .ad-about-page__icon svg {
+      width: 27px;
+      height: 27px;
+    }
+  }
+{% endstylesheet %}
