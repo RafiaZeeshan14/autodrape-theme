@@ -1,195 +1,118 @@
 {% doc %}
-  Renders the premium Contact Us page with contact details and support options.
+  Renders the modern Contact Us page for AutoDrape.
 
   @example
   {% render 'contact-page-content' %}
 {% enddoc %}
 
 <section class="ad-contact-page">
-  <div class="ad-contact-page__inner">
-    <div class="ad-contact-page__intro">
-      <a class="ad-contact-page__back" href="{{ routes.root_url }}">&#8592; Back</a>
-      <p class="ad-contact-page__eyebrow">Get in touch</p>
-      <h1>Let&rsquo;s talk about your car.</h1>
-      <p class="ad-contact-page__lead">Have a question about fit, coverage or your order? Our team is ready to help you find the right shade.</p>
+  <div class="ad-contact-page__hero">
+    <a class="ad-contact-page__back" href="{{ routes.root_url }}">&#8592; Back</a>
+    <p class="ad-contact-page__eyebrow">Get in touch</p>
+    <h1>Let&rsquo;s talk <span>about your car.</span></h1>
+    <p class="ad-contact-page__hero-lead">Have a question about fit, coverage or your order? Our team is ready to help you find the right shade.</p>
 
-      <div class="ad-contact-page__details">
-        <a href="tel:+923001234567">
-          <span class="ad-contact-page__detail-label">Call</span>
-          <span>+92 300 1234567</span>
-        </a>
-        <a href="mailto:info@autodrapes.com">
-          <span class="ad-contact-page__detail-label">Email</span>
-          <span>info@autodrapes.com</span>
-        </a>
-        <div>
-          <span class="ad-contact-page__detail-label">Visit</span>
-          <span>Karachi, Pakistan</span>
+    <div class="ad-contact-page__highlights">
+      <div class="ad-contact-page__highlight"><span class="ad-contact-page__highlight-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 22c0-7 7-12 16-12s16 5 16 12-7 12-16 12c-2 0-4 0-6-1l-7 5 2-7c-3-2-5-5-5-9Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M17 22h.01M24 22h.01M31 22h.01" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></span><span><strong>Quick response</strong><small>We reply within<br>24 hours.</small></span></div>
+      <div class="ad-contact-page__highlight"><span class="ad-contact-page__highlight-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 39 11v11c0 9-6 16-15 21-9-5-15-12-15-21V11l15-6Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m17 24 5 5 10-11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>Expert support</strong><small>Get help from our<br>product specialists.</small></span></div>
+      <div class="ad-contact-page__highlight"><span class="ad-contact-page__highlight-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 6 4 7 8 2-5 6 1 8-8-3-8 3 1-8-5-6 8-2 4-7Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M16 35h16M19 40h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span><strong>Customer first</strong><small>Your satisfaction<br>is our priority.</small></span></div>
+    </div>
+  </div>
+
+  <div class="ad-contact-page__contact-card">
+    <div class="ad-contact-page__form-panel">
+      <p class="ad-contact-page__panel-title"><span></span>Send us a message</p>
+      <p class="ad-contact-page__panel-intro">Fill out the form and our team will get back to you as soon as possible.</p>
+      {% form 'contact', class: 'ad-contact-page__form' %}
+        {% if form.posted_successfully? %}<p class="ad-contact-page__form-status" role="status">Thanks — your message has been sent.</p>{% endif %}
+        {{ form.errors | default_errors }}
+        <div class="ad-contact-page__form-grid">
+          <input type="text" name="contact[name]" placeholder="Full name" autocomplete="name" required>
+          <input type="email" name="contact[email]" placeholder="Email address" autocomplete="email" required>
+          <input type="tel" name="contact[phone]" placeholder="Phone number" autocomplete="tel">
+          <input type="text" name="contact[subject]" placeholder="Subject">
         </div>
-      </div>
+        <textarea name="contact[body]" rows="5" placeholder="Your message" required></textarea>
+        <button type="submit">Send message <span aria-hidden="true">&#8594;</span></button>
+      {% endform %}
     </div>
 
-    <div class="ad-contact-page__support-wrap">
-      <div class="ad-contact-page__form-heading">
-        <p class="ad-contact-page__eyebrow">Customer support</p>
-        <h2>Here when you need us.</h2>
-        <p>Choose the easiest way to reach our team.</p>
-      </div>
-
-      <div class="ad-contact-page__support-list">
-        <a class="ad-contact-page__support-card" href="tel:+923001234567">
-          <span class="ad-contact-page__support-icon">01</span>
-          <span>
-            <strong>Call our team</strong>
-            <small>+92 300 1234567</small>
-          </span>
-          <span class="ad-contact-page__support-arrow" aria-hidden="true">&#8594;</span>
-        </a>
-        <a class="ad-contact-page__support-card" href="mailto:info@autodrapes.com">
-          <span class="ad-contact-page__support-icon">02</span>
-          <span>
-            <strong>Email support</strong>
-            <small>info@autodrapes.com</small>
-          </span>
-          <span class="ad-contact-page__support-arrow" aria-hidden="true">&#8594;</span>
-        </a>
-      </div>
-
-      <div class="ad-contact-page__availability">
-        <span class="ad-contact-page__availability-dot"></span>
-        <span><strong>Support available</strong><small>We usually respond within one business day.</small></span>
-      </div>
+    <div class="ad-contact-page__channels">
+      <p class="ad-contact-page__panel-title"><span></span>Get in touch</p>
+      <p class="ad-contact-page__panel-intro">You can also reach us through the following channels.</p>
+      <a class="ad-contact-page__channel" href="tel:+923001234567"><span class="ad-contact-page__channel-icon">&#9742;</span><span><strong>Phone</strong><small>+92 300 1234567</small></span><small class="ad-contact-page__channel-meta">Mon – Sat&nbsp; | &nbsp;10:00 AM – 8:00 PM</small></a>
+      <a class="ad-contact-page__channel" href="mailto:info@autodrapes.com"><span class="ad-contact-page__channel-icon">&#9993;</span><span><strong>Email</strong><small>info@autodrapes.com</small></span><small class="ad-contact-page__channel-meta">We reply within 24 hours</small></a>
     </div>
+  </div>
+
+  <div class="ad-contact-page__trust-strip">
+    <div><span class="ad-contact-page__trust-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 13h25v22H5zM30 21h7l6 7v7H30zM12 35a4 4 0 1 0 8 0 4 4 0 0 0-8 0Zm24 0a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 9h12M5 5h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span><strong>Fast delivery</strong><small>Quick &amp; safe delivery<br>across Pakistan</small></span></div>
+    <div><span class="ad-contact-page__trust-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 22a14 14 0 0 1 24-8l3 4M37 26a14 14 0 0 1-24 8l-3-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="m30 18 8 0-2-8M18 30l-8 0 2 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>Easy returns</strong><small>Hassle-free returns<br>within 7 days</small></span></div>
+    <div><span class="ad-contact-page__trust-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="21" width="26" height="21" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M16 21v-6a8 8 0 0 1 16 0v6M24 29v6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span><strong>Secure payments</strong><small>100% secure payment<br>methods</small></span></div>
+    <div><span class="ad-contact-page__trust-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 40 11v11c0 10-6.7 17-16 21C14.7 39 8 32 8 22V11l16-6Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m16 24 5 5 11-12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>100% authentic</strong><small>Premium quality products<br>you can trust</small></span></div>
   </div>
 </section>
 
 {% stylesheet %}
-  .ad-contact-page {
-    padding: clamp(48px, 7vw, 96px) 20px clamp(64px, 8vw, 110px);
-    background: #f8f8f7;
-  }
-
-  .ad-contact-page__inner {
-    display: grid;
-    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-    max-width: 1180px;
-    min-height: 620px;
-    margin: 0 auto;
-    overflow: hidden;
-    border: 1px solid rgba(17, 17, 17, .08);
-    border-radius: 28px;
-    background: #fff;
-    box-shadow: 0 24px 70px rgba(17, 17, 17, .09);
-  }
-
-  .ad-contact-page__intro {
-    position: relative;
-    padding: clamp(34px, 5vw, 68px);
-    color: #fff;
-    background: radial-gradient(circle at 15% 15%, rgba(217, 0, 0, .3), transparent 30%), linear-gradient(145deg, #191919, #070707);
-  }
-
-  .ad-contact-page__back {
-    display: inline-flex;
-    margin-bottom: clamp(70px, 10vw, 140px);
-    color: #fff;
-    font: 800 13px/1 var(--font-ui--family), sans-serif;
-    letter-spacing: .04em;
-    text-decoration: none;
-  }
-
-  .ad-contact-page__eyebrow {
-    margin: 0 0 14px;
-    color: #d90000;
-    font: 800 12px/1 var(--font-ui--family), sans-serif;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
-
-  .ad-contact-page__intro h1 {
-    max-width: 440px;
-    margin: 0;
-    color: #fff;
-    font: 900 clamp(40px, 5vw, 72px)/.98 var(--font-ui--family), sans-serif;
-    letter-spacing: -.065em;
-  }
-
-  .ad-contact-page__lead {
-    max-width: 430px;
-    margin: 24px 0 0;
-    color: rgba(255, 255, 255, .7);
-    font: 400 16px/1.65 var(--font-ui--family), sans-serif;
-  }
-
-  .ad-contact-page__details {
-    display: grid;
-    gap: 18px;
-    margin-top: 58px;
-  }
-
-  .ad-contact-page__details a,
-  .ad-contact-page__details div {
-    display: grid;
-    gap: 5px;
-    color: #fff;
-    font: 500 15px/1.4 var(--font-ui--family), sans-serif;
-    text-decoration: none;
-  }
-
-  .ad-contact-page__detail-label {
-    color: rgba(255, 255, 255, .48);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
-
-  .ad-contact-page__support-wrap {
-    padding: clamp(34px, 5vw, 68px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .ad-contact-page__form-heading h2 {
-    margin: 0;
-    color: #111;
-    font: 900 clamp(28px, 3vw, 42px)/1.05 var(--font-ui--family), sans-serif;
-    letter-spacing: -.05em;
-  }
-
-  .ad-contact-page__form-heading > p:last-child {
-    margin: 12px 0 34px;
-    color: #707070;
-    font: 400 15px/1.5 var(--font-ui--family), sans-serif;
-  }
-
-  .ad-contact-page__support-list { display: grid; gap: 12px; }
-  .ad-contact-page__support-card {
-    display: grid;
-    grid-template-columns: 42px 1fr auto;
-    align-items: center;
-    gap: 15px;
-    padding: 18px;
-    border: 1px solid #e2e2e2;
-    border-radius: 12px;
-    color: #111;
-    text-decoration: none;
-    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
-  }
-  .ad-contact-page__support-card:hover { border-color: #d90000; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17, 17, 17, .08); }
-  .ad-contact-page__support-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #fff; background: #d90000; font: 800 11px/1 var(--font-ui--family), sans-serif; }
-  .ad-contact-page__support-card strong, .ad-contact-page__availability strong { display: block; font: 800 13px/1.3 var(--font-ui--family), sans-serif; }
-  .ad-contact-page__support-card small, .ad-contact-page__availability small { display: block; margin-top: 4px; color: #777; font: 400 13px/1.4 var(--font-ui--family), sans-serif; }
-  .ad-contact-page__support-arrow { color: #d90000; font-size: 22px; }
-  .ad-contact-page__availability { display: flex; align-items: center; gap: 11px; margin-top: 30px; padding-top: 22px; border-top: 1px solid #e5e5e5; }
-  .ad-contact-page__availability-dot { width: 9px; height: 9px; border-radius: 50%; background: #1d9b5a; box-shadow: 0 0 0 5px rgba(29, 155, 90, .12); }
-
-  @media screen and (max-width: 700px) {
+  .ad-contact-page { padding: clamp(34px, 5vw, 68px) 20px clamp(64px, 8vw, 110px); color: #111; background: #fff; font-family: 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__hero, .ad-contact-page__contact-card, .ad-contact-page__trust-strip { max-width: 1440px; margin-right: auto; margin-left: auto; }
+  .ad-contact-page__hero { position: relative; padding: clamp(54px, 7vw, 86px) 24px 42px; text-align: center; }
+  .ad-contact-page__back { position: absolute; top: 12px; left: 0; color: #d90000; font: 800 14px/1 'Manrope', Arial, sans-serif; text-decoration: none; }
+  .ad-contact-page__eyebrow { display: table; margin: 0 auto 18px; color: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+  .ad-contact-page__eyebrow::before, .ad-contact-page__eyebrow::after { content: ""; display: inline-block; width: 30px; height: 1px; margin: 0 14px 4px; background: #d90000; }
+  .ad-contact-page h1 { margin: 0; color: #111; font: 800 clamp(38px, 6vw, 76px)/1 'Manrope', Arial, sans-serif !important; letter-spacing: -.07em; }
+  .ad-contact-page h1 span { color: #d90000; }
+  .ad-contact-page__hero-lead { max-width: 650px; margin: 22px auto 0; color: #635c55; font: 400 18px/1.65 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__highlights { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 760px; margin: 44px auto 0; }
+  .ad-contact-page__highlight { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 0 28px; text-align: left; }
+  .ad-contact-page__highlight + .ad-contact-page__highlight { border-left: 1px solid rgba(17, 17, 17, .12); }
+  .ad-contact-page__highlight-icon { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 48px; border-radius: 50%; color: #d90000; background: rgba(217, 0, 0, .07); font-size: 23px; }
+  .ad-contact-page__highlight-icon svg { width: 30px; height: 30px; }
+  .ad-contact-page__highlight strong, .ad-contact-page__trust-strip strong { display: block; color: #222; font: 750 14px/1.25 'Manrope', Arial, sans-serif; text-transform: uppercase; }
+  .ad-contact-page__highlight small, .ad-contact-page__trust-strip small { display: block; margin-top: 5px; color: #635c55; font: 400 13px/1.45 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__contact-card { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(30px, 5vw, 72px); padding: clamp(28px, 4vw, 52px); border: 1px solid rgba(17, 17, 17, .1); border-radius: 24px; background: #fff; box-shadow: 0 18px 48px rgba(17, 17, 17, .07); }
+  .ad-contact-page__channels { padding-left: clamp(0px, 4vw, 46px); border-left: 1px solid rgba(17, 17, 17, .12); }
+  .ad-contact-page__panel-title { display: flex; align-items: center; gap: 14px; margin: 0; color: #222; font: 800 20px/1 'Manrope', Arial, sans-serif; letter-spacing: 0; text-transform: uppercase; }
+  .ad-contact-page__panel-title span { width: 28px; height: 2px; background: #d90000; }
+  .ad-contact-page__panel-intro { margin: 12px 0 24px; color: #635c55; font: 400 15px/1.5 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ad-contact-page__form input, .ad-contact-page__form textarea { width: 100%; box-sizing: border-box; border: 1px solid #e3ded8; border-radius: 9px; padding: 15px 16px; color: #222; background: #fff; font: 400 15px/1.4 'Manrope', Arial, sans-serif; outline: none; }
+  .ad-contact-page__form input:focus, .ad-contact-page__form textarea:focus { border-color: #d90000; }
+  .ad-contact-page__form textarea { display: block; margin-top: 12px; resize: vertical; }
+  .ad-contact-page__form button { margin-top: 14px; padding: 14px 20px; border: 0; border-radius: 7px; color: #fff; background: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+  .ad-contact-page__form button span { margin-left: 14px; font-size: 16px; }
+  .ad-contact-page__form-status { padding: 12px; color: #27764a; background: #edf8f1; font-size: 13px; }
+  .ad-contact-page__channel { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 15px; margin-top: 14px; padding: 17px; border: 1px solid #e3ded8; border-radius: 12px; color: #222; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .ad-contact-page__channel:hover { border-color: #d90000; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17, 17, 17, .07); }
+  .ad-contact-page__channel-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #d90000; background: rgba(217, 0, 0, .07); font-size: 23px; }
+  .ad-contact-page__channel strong { display: block; font: 800 14px/1.3 'Manrope', Arial, sans-serif; text-transform: uppercase; }
+  .ad-contact-page__channel small { display: block; margin-top: 4px; color: #635c55; font: 400 14px/1.4 'Manrope', Arial, sans-serif; }
+  .ad-contact-page__channel-meta { text-align: right; }
+  .ad-contact-page__trust-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 18px; padding: 25px 20px; border: 1px solid rgba(17, 17, 17, .1); border-radius: 16px; background: #fff; box-shadow: 0 12px 32px rgba(17, 17, 17, .04); }
+  .ad-contact-page__trust-strip > div { display: flex; align-items: center; gap: 13px; padding: 0 22px; }
+  .ad-contact-page__trust-strip > div + div { border-left: 1px solid rgba(17, 17, 17, .12); }
+  .ad-contact-page__trust-icon { display: grid; place-items: center; width: 54px; height: 54px; flex: 0 0 54px; color: #d90000; }
+  .ad-contact-page__trust-icon svg { width: 48px; height: 48px; }
+  @media screen and (max-width: 800px) {
     .ad-contact-page { padding: 28px 14px 60px; }
-    .ad-contact-page__inner { display: block; border-radius: 20px; }
-    .ad-contact-page__intro, .ad-contact-page__support-wrap { padding: 30px 22px; }
-    .ad-contact-page__back { margin-bottom: 64px; }
-    .ad-contact-page__details { margin-top: 40px; }
+    .ad-contact-page__hero { padding-top: 62px; }
+    .ad-contact-page__back { left: 8px; }
+    .ad-contact-page__highlights { grid-template-columns: 1fr; gap: 18px; }
+    .ad-contact-page__highlight { justify-content: flex-start; padding: 0; }
+    .ad-contact-page__highlight + .ad-contact-page__highlight { padding-top: 18px; border-top: 1px solid rgba(17, 17, 17, .12); border-left: 0; }
+    .ad-contact-page__contact-card { grid-template-columns: 1fr; gap: 36px; padding: 24px 18px; border-radius: 20px; }
+    .ad-contact-page__channels { padding: 36px 0 0; border-top: 1px solid rgba(17, 17, 17, .12); border-left: 0; }
+    .ad-contact-page__channel { grid-template-columns: 46px 1fr; }
+    .ad-contact-page__channel-meta { display: none !important; }
+    .ad-contact-page__trust-strip { grid-template-columns: 1fr 1fr; gap: 22px 0; padding: 22px 12px; }
+    .ad-contact-page__trust-strip > div { padding: 0 10px; }
+    .ad-contact-page__trust-strip > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .ad-contact-page__trust-strip > div:nth-child(even) { padding-right: 0; }
+  }
+  @media screen and (max-width: 480px) {
+    .ad-contact-page__form-grid { grid-template-columns: 1fr; }
+    .ad-contact-page__trust-strip { grid-template-columns: 1fr; }
+    .ad-contact-page__trust-strip > div { padding: 0; }
+    .ad-contact-page__trust-strip > div + div { border-left: 0; }
   }
 {% endstylesheet %}
