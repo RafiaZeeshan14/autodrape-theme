@@ -222,15 +222,27 @@
       different generation range through that metafield. Every product that
       carries at least one compatible-car reference is collected below and
       serialised into the `data-car-compat-test` island; the client then
-      picks - per shade role (full/half, detected from the product title) -
+      picks - per shade role (full/half, detected from the product's Shade Type metafield) -
       the product whose references include the resolved selected model. The
       chosen product's live title, price, image, description and variant are
       what its card shows. If no candidate references the selected model the
       static card stays exactly as it is.
     {% endcomment %}
 
-    {% assign compat_full_candidate_handles = '' %}
-    {% assign compat_half_candidate_handles = '' %}
+    {% assign compat_full_entry_json = '' %}
+    {% assign compat_half_entry_json = '' %}
+
+    {% comment %}
+      Candidate product data is captured straight from the scan iteration
+      below (the product object is already in scope there), because the
+      previous island re-looked every candidate up via `all_products[handle]`
+      and Shopify caps that object at 20 unique handles per page - once ~20
+      compatible products were active the lookups that ran last (the half
+      list, serialized after full) silently returned empty and those
+      candidates vanished from `data-car-compat-test`. Collection iteration
+      is not subject to that limit. Fragments are joined with commas only
+      between successfully captured entries, so the island JSON stays valid.
+    {% endcomment %}
 
     {% paginate collections.all.products by 250 %}
       {% for compat_candidate in collections.all.products %}
@@ -243,20 +255,37 @@
         {% endif %}
 
         {% if compat_candidate_refs %}
-          {% assign compat_candidate_title = compat_candidate.title | strip | downcase %}
-          {% if compat_candidate_title contains 'full window' %}
-            {% if compat_full_candidate_handles != '' %}{% assign compat_full_candidate_handles = compat_full_candidate_handles | append: ',' %}{% endif %}
-            {% assign compat_full_candidate_handles = compat_full_candidate_handles | append: compat_candidate.handle %}
-          {% elsif compat_candidate_title contains 'half window' %}
-            {% if compat_half_candidate_handles != '' %}{% assign compat_half_candidate_handles = compat_half_candidate_handles | append: ',' %}{% endif %}
-            {% assign compat_half_candidate_handles = compat_half_candidate_handles | append: compat_candidate.handle %}
+          {% assign compat_candidate_shade_type = compat_candidate.metafields.custom.shade_type.value | strip | downcase %}
+          {% assign compat_entry_role = 'none' %}
+          {% if compat_candidate_shade_type contains 'full window' %}
+            {% assign compat_entry_role = 'full' %}
+          {% elsif compat_candidate_shade_type contains 'half window' %}
+            {% assign compat_entry_role = 'half' %}
           {% endif %}
+          {% unless compat_entry_role == 'none' %}
+            {% assign compat_candidate_feat_url = compat_candidate.featured_image | image_url: width: 1100 %}
+            {% assign compat_candidate_image = '' %}
+            {% for compat_img in compat_candidate.images %}
+              {% if compat_candidate_image == '' %}
+                {% assign compat_img_url = compat_img | image_url: width: 1100 %}
+                {% if compat_img_url != compat_candidate_feat_url %}{% assign compat_candidate_image = compat_img_url %}{% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
+            {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
+            {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
+            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
+            {% if compat_entry_role == 'full' %}
+              {% if compat_full_entry_json != '' %}{% assign compat_full_entry_json = compat_full_entry_json | append: ',' %}{% endif %}
+              {% assign compat_full_entry_json = compat_full_entry_json | append: compat_entry_json %}
+            {% else %}
+              {% if compat_half_entry_json != '' %}{% assign compat_half_entry_json = compat_half_entry_json | append: ',' %}{% endif %}
+              {% assign compat_half_entry_json = compat_half_entry_json | append: compat_entry_json %}
+            {% endif %}
+          {% endunless %}
         {% endif %}
       {% endfor %}
     {% endpaginate %}
-
-    {% assign compat_full_candidates = compat_full_candidate_handles | split: ',' %}
-    {% assign compat_half_candidates = compat_half_candidate_handles | split: ',' %}
 
     {% comment %}
       UNIVERSAL FRONT/REAR PRODUCTS - dynamic for every selected car.
@@ -349,92 +378,12 @@
     <script type="application/json" data-car-compat-test>
       {
         "full": {
-          "found": {% if compat_full_candidates.size > 0 %}true{% else %}false{% endif %},
-          "candidates": [
-            {% for compat_candidate_handle in compat_full_candidates %}
-              {% assign compat_candidate = all_products[compat_candidate_handle] %}
-              {% if compat_candidate %}
-              {% assign compat_candidate_feat_url = compat_candidate.featured_image | image_url: width: 1100 %}
-              {% assign compat_candidate_image = '' %}
-              {% for compat_img in compat_candidate.images %}
-                {% if compat_candidate_image == '' %}
-                  {% assign compat_img_url = compat_img | image_url: width: 1100 %}
-                  {% if compat_img_url != compat_candidate_feat_url %}{% assign compat_candidate_image = compat_img_url %}{% endif %}
-                {% endif %}
-              {% endfor %}
-              {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
-              {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.value %}
-              {% unless compat_candidate_refs %}
-                {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.references %}
-              {% endunless %}
-              {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
-              {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
-              {
-                "title": {{ compat_candidate.title | json }},
-                "handle": {{ compat_candidate.handle | json }},
-                "price": {{ compat_candidate.price | money | json }},
-                "description": {{ compat_candidate.description | json }},
-                "image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},
-                "variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},
-                "availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},
-                "available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},
-                "compatibleModels": [
-                  {% for compat_ref in compat_candidate_refs %}
-                    {
-                      "id": {{ compat_ref.system.id | json }},
-                      "handle": {{ compat_ref.system.handle | json }},
-                      "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
-                    }{% unless forloop.last %},{% endunless %}
-                  {% endfor %}
-                ]
-              }{% unless forloop.last %},{% endunless %}
-              {% endif %}
-            {% endfor %}
-          ]
+          "found": {% if compat_full_entry_json != '' %}true{% else %}false{% endif %},
+          "candidates": [{{ compat_full_entry_json }}]
         },
         "half": {
-          "found": {% if compat_half_candidates.size > 0 %}true{% else %}false{% endif %},
-          "candidates": [
-            {% for compat_candidate_handle in compat_half_candidates %}
-              {% assign compat_candidate = all_products[compat_candidate_handle] %}
-              {% if compat_candidate %}
-              {% assign compat_candidate_feat_url = compat_candidate.featured_image | image_url: width: 1100 %}
-              {% assign compat_candidate_image = '' %}
-              {% for compat_img in compat_candidate.images %}
-                {% if compat_candidate_image == '' %}
-                  {% assign compat_img_url = compat_img | image_url: width: 1100 %}
-                  {% if compat_img_url != compat_candidate_feat_url %}{% assign compat_candidate_image = compat_img_url %}{% endif %}
-                {% endif %}
-              {% endfor %}
-              {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
-              {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.value %}
-              {% unless compat_candidate_refs %}
-                {% assign compat_candidate_refs = compat_candidate.metafields.custom.compatible_car_models.references %}
-              {% endunless %}
-              {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
-              {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
-              {
-                "title": {{ compat_candidate.title | json }},
-                "handle": {{ compat_candidate.handle | json }},
-                "price": {{ compat_candidate.price | money | json }},
-                "description": {{ compat_candidate.description | json }},
-                "image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},
-                "variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},
-                "availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},
-                "available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},
-                "compatibleModels": [
-                  {% for compat_ref in compat_candidate_refs %}
-                    {
-                      "id": {{ compat_ref.system.id | json }},
-                      "handle": {{ compat_ref.system.handle | json }},
-                      "name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}
-                    }{% unless forloop.last %},{% endunless %}
-                  {% endfor %}
-                ]
-              }{% unless forloop.last %},{% endunless %}
-              {% endif %}
-            {% endfor %}
-          ]
+          "found": {% if compat_half_entry_json != '' %}true{% else %}false{% endif %},
+          "candidates": [{{ compat_half_entry_json }}]
         }
       }
     </script>
