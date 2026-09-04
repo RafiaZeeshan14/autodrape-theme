@@ -274,7 +274,14 @@
             {% if compat_candidate_image == '' %}{% assign compat_candidate_image = compat_candidate_feat_url %}{% endif %}
             {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
             {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
-            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
+            {% assign compat_candidate_buyable_variant_id = null %}
+            {% for compat_candidate_variant_option in compat_candidate.variants limit: 50 %}
+              {% if compat_candidate_variant_option.available %}
+                {% assign compat_candidate_buyable_variant_id = compat_candidate_variant_option.id %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"buyableVariantId": {% if compat_candidate_buyable_variant_id %}{{ compat_candidate_buyable_variant_id | json }}{% else %}null{% endif %},"productAvailable": {{ compat_candidate.available | json }},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
             {% if compat_entry_role == 'full' %}
               {% if compat_full_entry_json != '' %}{% assign compat_full_entry_json = compat_full_entry_json | append: ',' %}{% endif %}
               {% assign compat_full_entry_json = compat_full_entry_json | append: compat_entry_json %}
@@ -364,15 +371,29 @@
     {% endif %}
 
     {% assign universal_front_variant = null %}
+    {% assign universal_front_buyable_variant_id = null %}
     {% if universal_front_found %}
       {% assign universal_front_variant = universal_front_product.selected_or_first_available_variant %}
       {% assign universal_front_available_variant = universal_front_product.first_available_variant %}
+      {% for universal_front_variant_option in universal_front_product.variants limit: 50 %}
+        {% if universal_front_variant_option.available %}
+          {% assign universal_front_buyable_variant_id = universal_front_variant_option.id %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
 
     {% assign universal_rear_variant = null %}
+    {% assign universal_rear_buyable_variant_id = null %}
     {% if universal_rear_found %}
       {% assign universal_rear_variant = universal_rear_product.selected_or_first_available_variant %}
       {% assign universal_rear_available_variant = universal_rear_product.first_available_variant %}
+      {% for universal_rear_variant_option in universal_rear_product.variants limit: 50 %}
+        {% if universal_rear_variant_option.available %}
+          {% assign universal_rear_buyable_variant_id = universal_rear_variant_option.id %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
     {% endif %}
 
     <script type="application/json" data-car-compat-test>
@@ -405,6 +426,8 @@
           "description": {% if universal_front_found %}{{ universal_front_product.description | json }}{% else %}null{% endif %},
           "image": {% if universal_front_image %}{{ universal_front_image | json }}{% else %}null{% endif %},
           "availableVariantId": {% if universal_front_available_variant %}{{ universal_front_available_variant.id | json }}{% else %}null{% endif %},
+          "buyableVariantId": {% if universal_front_buyable_variant_id %}{{ universal_front_buyable_variant_id | json }}{% else %}null{% endif %},
+          "productAvailable": {% if universal_front_found %}{{ universal_front_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_front_variant %}{{ universal_front_variant.id | json }}{% else %}null{% endif %},
           "available": {% if universal_front_variant %}{{ universal_front_variant.available | json }}{% else %}null{% endif %}
         },
@@ -416,6 +439,8 @@
           "description": {% if universal_rear_found %}{{ universal_rear_product.description | json }}{% else %}null{% endif %},
           "image": {% if universal_rear_image %}{{ universal_rear_image | json }}{% else %}null{% endif %},
           "availableVariantId": {% if universal_rear_available_variant %}{{ universal_rear_available_variant.id | json }}{% else %}null{% endif %},
+          "buyableVariantId": {% if universal_rear_buyable_variant_id %}{{ universal_rear_buyable_variant_id | json }}{% else %}null{% endif %},
+          "productAvailable": {% if universal_rear_found %}{{ universal_rear_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_rear_variant %}{{ universal_rear_variant.id | json }}{% else %}null{% endif %},
           "available": {% if universal_rear_variant %}{{ universal_rear_variant.available | json }}{% else %}null{% endif %}
         }
@@ -1040,9 +1065,12 @@
         button.setAttribute('data-shade-name', staticShadeName(shadeKey));
         button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
         if (entry.image) button.setAttribute('data-shade-image', entry.image);
-        var crLiveVariant = entry.availableVariantId || entry.variantId;
+        // Prefer a confirmed buyable variant (scanned from the variant list,
+        // then first_available_variant) over the default variant so a
+        // sold-out first/default variant never blocks a buyable product.
+        var crLiveVariant = entry.buyableVariantId || entry.availableVariantId || entry.variantId;
         if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
-        button.setAttribute('data-cr-available', (entry.availableVariantId || entry.available) ? 'true' : 'false');
+        button.setAttribute('data-cr-available', (entry.buyableVariantId || entry.availableVariantId || entry.productAvailable || entry.available) ? 'true' : 'false');
 
         var thumbImg = button.querySelector('.car-results__shade-thumb img');
         if (thumbImg && entry.image) {
@@ -1099,9 +1127,12 @@
         button.setAttribute('data-shade-name', staticShadeName(shadeKey));
         button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
         if (entry.image) button.setAttribute('data-shade-image', entry.image);
-        var crLiveVariant = entry.availableVariantId || entry.variantId;
+        // Prefer a confirmed buyable variant (scanned from the variant list,
+        // then first_available_variant) over the default variant so a
+        // sold-out first/default variant never blocks a buyable product.
+        var crLiveVariant = entry.buyableVariantId || entry.availableVariantId || entry.variantId;
         if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
-        button.setAttribute('data-cr-available', (entry.availableVariantId || entry.available) ? 'true' : 'false');
+        button.setAttribute('data-cr-available', (entry.buyableVariantId || entry.availableVariantId || entry.productAvailable || entry.available) ? 'true' : 'false');
 
         var thumbImg = button.querySelector('.car-results__shade-thumb img');
         if (thumbImg && entry.image) {
@@ -1465,11 +1496,15 @@
           islandEntry = (universalIslandData && universalIslandData[key]) || null;
         }
 
-        // The islands also flag the single variant Shopify confirms as
-        // available for the product (first_available_variant). Prefer it over
-        // the default variant so a sold-out first/default variant never blocks
-        // a genuinely-buyable product.
-        var buyableVariant = islandEntry ? (islandEntry.availableVariantId || '') : '';
+        // The islands flag the variants Shopify confirms as buyable for the
+        // product: `buyableVariantId` is scanned straight from the variant
+        // list (first variant with available == true) and
+        // `availableVariantId` is the product's first_available_variant.
+        // Prefer a confirmed buyable variant over the default variant so a
+        // sold-out first/default variant never blocks a genuinely-buyable
+        // product. When no buyable variant exists the availability gate
+        // below keeps rejecting - nothing is force-added.
+        var buyableVariant = islandEntry ? String(islandEntry.buyableVariantId || islandEntry.availableVariantId || '') : '';
         if (!variantId) {
           variantId = String(buyableVariant || (islandEntry && islandEntry.variantId) || '');
         }
