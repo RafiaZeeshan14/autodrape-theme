@@ -166,6 +166,10 @@
             <button type="button" class="car-results__qty-btn" data-cr-qty-plus aria-label="{{ 'car_results.increase_qty_aria' | t }}">+</button>
           </div>
           <span class="car-results__price" data-cr-price>Rs. 2,999</span>
+          <p class="car-results__stock" data-cr-stock hidden>
+            <span class="car-results__stock-badge">{{ 'car_results.available_on_order' | t }}</span>
+            <span class="car-results__stock-note">{{ 'car_results.available_on_order_note' | t }}</span>
+          </p>
           <button type="submit" class="car-results__add" data-cr-add>{{ 'car_results.add_to_cart' | t }}</button>
         </form>
 
@@ -275,13 +279,32 @@
             {% assign compat_candidate_variant = compat_candidate.selected_or_first_available_variant %}
             {% assign compat_candidate_available_variant = compat_candidate.first_available_variant %}
             {% assign compat_candidate_buyable_variant_id = null %}
+            {% assign compat_candidate_inventory_quantity = null %}
+            {% assign compat_candidate_inventory_policy = null %}
+            {% assign compat_candidate_inventory_management = null %}
             {% for compat_candidate_variant_option in compat_candidate.variants limit: 50 %}
               {% if compat_candidate_variant_option.available %}
                 {% assign compat_candidate_buyable_variant_id = compat_candidate_variant_option.id %}
+                {% assign compat_candidate_inventory_quantity = compat_candidate_variant_option.inventory_quantity %}
+                {% assign compat_candidate_inventory_policy = compat_candidate_variant_option.inventory_policy %}
+                {% assign compat_candidate_inventory_management = compat_candidate_variant_option.inventory_management %}
                 {% break %}
               {% endif %}
             {% endfor %}
-            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"buyableVariantId": {% if compat_candidate_buyable_variant_id %}{{ compat_candidate_buyable_variant_id | json }}{% else %}null{% endif %},"productAvailable": {{ compat_candidate.available | json }},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
+            {% comment %}
+              Inventory presentation fallback: when the scan above did not
+              reach the product's buyable variant, describe the variant
+              first_available_variant instead (the same variant the Add to
+              cart chain falls back to).
+            {% endcomment %}
+            {% if compat_candidate_inventory_quantity == blank %}
+              {% if compat_candidate_available_variant %}
+                {% assign compat_candidate_inventory_quantity = compat_candidate_available_variant.inventory_quantity %}
+                {% assign compat_candidate_inventory_policy = compat_candidate_available_variant.inventory_policy %}
+                {% assign compat_candidate_inventory_management = compat_candidate_available_variant.inventory_management %}
+              {% endif %}
+            {% endif %}
+            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"buyableVariantId": {% if compat_candidate_buyable_variant_id %}{{ compat_candidate_buyable_variant_id | json }}{% else %}null{% endif %},"inventoryQuantity": {% if compat_candidate_inventory_quantity != blank %}{{ compat_candidate_inventory_quantity | json }}{% else %}null{% endif %},"inventoryPolicy": {{ compat_candidate_inventory_policy | json }},"inventoryManagement": {{ compat_candidate_inventory_management | json }},"productAvailable": {{ compat_candidate.available | json }},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
             {% if compat_entry_role == 'full' %}
               {% if compat_full_entry_json != '' %}{% assign compat_full_entry_json = compat_full_entry_json | append: ',' %}{% endif %}
               {% assign compat_full_entry_json = compat_full_entry_json | append: compat_entry_json %}
@@ -372,28 +395,54 @@
 
     {% assign universal_front_variant = null %}
     {% assign universal_front_buyable_variant_id = null %}
+    {% assign universal_front_inventory_quantity = null %}
+    {% assign universal_front_inventory_policy = null %}
+    {% assign universal_front_inventory_management = null %}
     {% if universal_front_found %}
       {% assign universal_front_variant = universal_front_product.selected_or_first_available_variant %}
       {% assign universal_front_available_variant = universal_front_product.first_available_variant %}
       {% for universal_front_variant_option in universal_front_product.variants limit: 50 %}
         {% if universal_front_variant_option.available %}
           {% assign universal_front_buyable_variant_id = universal_front_variant_option.id %}
+          {% assign universal_front_inventory_quantity = universal_front_variant_option.inventory_quantity %}
+          {% assign universal_front_inventory_policy = universal_front_variant_option.inventory_policy %}
+          {% assign universal_front_inventory_management = universal_front_variant_option.inventory_management %}
           {% break %}
         {% endif %}
       {% endfor %}
+      {% if universal_front_inventory_quantity == blank %}
+        {% if universal_front_available_variant %}
+          {% assign universal_front_inventory_quantity = universal_front_available_variant.inventory_quantity %}
+          {% assign universal_front_inventory_policy = universal_front_available_variant.inventory_policy %}
+          {% assign universal_front_inventory_management = universal_front_available_variant.inventory_management %}
+        {% endif %}
+      {% endif %}
     {% endif %}
 
     {% assign universal_rear_variant = null %}
     {% assign universal_rear_buyable_variant_id = null %}
+    {% assign universal_rear_inventory_quantity = null %}
+    {% assign universal_rear_inventory_policy = null %}
+    {% assign universal_rear_inventory_management = null %}
     {% if universal_rear_found %}
       {% assign universal_rear_variant = universal_rear_product.selected_or_first_available_variant %}
       {% assign universal_rear_available_variant = universal_rear_product.first_available_variant %}
       {% for universal_rear_variant_option in universal_rear_product.variants limit: 50 %}
         {% if universal_rear_variant_option.available %}
           {% assign universal_rear_buyable_variant_id = universal_rear_variant_option.id %}
+          {% assign universal_rear_inventory_quantity = universal_rear_variant_option.inventory_quantity %}
+          {% assign universal_rear_inventory_policy = universal_rear_variant_option.inventory_policy %}
+          {% assign universal_rear_inventory_management = universal_rear_variant_option.inventory_management %}
           {% break %}
         {% endif %}
       {% endfor %}
+      {% if universal_rear_inventory_quantity == blank %}
+        {% if universal_rear_available_variant %}
+          {% assign universal_rear_inventory_quantity = universal_rear_available_variant.inventory_quantity %}
+          {% assign universal_rear_inventory_policy = universal_rear_available_variant.inventory_policy %}
+          {% assign universal_rear_inventory_management = universal_rear_available_variant.inventory_management %}
+        {% endif %}
+      {% endif %}
     {% endif %}
 
     <script type="application/json" data-car-compat-test>
@@ -427,6 +476,9 @@
           "image": {% if universal_front_image %}{{ universal_front_image | json }}{% else %}null{% endif %},
           "availableVariantId": {% if universal_front_available_variant %}{{ universal_front_available_variant.id | json }}{% else %}null{% endif %},
           "buyableVariantId": {% if universal_front_buyable_variant_id %}{{ universal_front_buyable_variant_id | json }}{% else %}null{% endif %},
+          "inventoryQuantity": {% if universal_front_inventory_quantity != blank %}{{ universal_front_inventory_quantity | json }}{% else %}null{% endif %},
+          "inventoryPolicy": {{ universal_front_inventory_policy | json }},
+          "inventoryManagement": {{ universal_front_inventory_management | json }},
           "productAvailable": {% if universal_front_found %}{{ universal_front_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_front_variant %}{{ universal_front_variant.id | json }}{% else %}null{% endif %},
           "available": {% if universal_front_variant %}{{ universal_front_variant.available | json }}{% else %}null{% endif %}
@@ -440,6 +492,9 @@
           "image": {% if universal_rear_image %}{{ universal_rear_image | json }}{% else %}null{% endif %},
           "availableVariantId": {% if universal_rear_available_variant %}{{ universal_rear_available_variant.id | json }}{% else %}null{% endif %},
           "buyableVariantId": {% if universal_rear_buyable_variant_id %}{{ universal_rear_buyable_variant_id | json }}{% else %}null{% endif %},
+          "inventoryQuantity": {% if universal_rear_inventory_quantity != blank %}{{ universal_rear_inventory_quantity | json }}{% else %}null{% endif %},
+          "inventoryPolicy": {{ universal_rear_inventory_policy | json }},
+          "inventoryManagement": {{ universal_rear_inventory_management | json }},
           "productAvailable": {% if universal_rear_found %}{{ universal_rear_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_rear_variant %}{{ universal_rear_variant.id | json }}{% else %}null{% endif %},
           "available": {% if universal_rear_variant %}{{ universal_rear_variant.available | json }}{% else %}null{% endif %}
@@ -872,6 +927,59 @@
     font-size: 13px;
     color: var(--ad-muted, #7a746a);
   }
+
+  /* "Available on order" status - shown when the selected shade resolves to
+     a product Shopify still sells while its tracked inventory is 0
+     (custom-made on order). Sits on its own full-width row inside the buy
+     form, between the quantity/price row and the Add to cart button; hidden
+     for every other availability state. */
+  .car-results__stock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1 1 100%;
+    margin: 0;
+  }
+
+  .car-results__stock[hidden] {
+    display: none;
+  }
+
+  .car-results__stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    border: 1px solid rgba(20, 20, 20, 0.14);
+    border-radius: 999px;
+    background: #faf8f6;
+    color: var(--ad-text, #141414);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .car-results__stock-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #d90000;
+    box-shadow: 0 0 0 3px rgba(217, 0, 0, 0.12);
+  }
+
+  .car-results__stock-note {
+    margin: 0;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--ad-muted, #7a746a);
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -1061,6 +1169,7 @@
         // Record the live entry so the selection handler can reuse it
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
+        stockModes[shadeKey] = availabilityMode(entry);
 
         button.setAttribute('data-shade-name', staticShadeName(shadeKey));
         button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
@@ -1094,6 +1203,8 @@
           if (shadePrice) shadePrice.textContent = staticShadePrice(shadeKey, qty);
         }
       });
+
+      refreshStockStatus();
     }
 
     // Run once the rest of this script has queried the DOM references this
@@ -1123,6 +1234,7 @@
         // Record the live entry so the selection handler can reuse it
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
+        stockModes[shadeKey] = availabilityMode(entry);
 
         button.setAttribute('data-shade-name', staticShadeName(shadeKey));
         button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
@@ -1156,6 +1268,8 @@
           if (shadePrice) shadePrice.textContent = staticShadePrice(shadeKey, qty);
         }
       });
+
+      refreshStockStatus();
     }
 
     window.setTimeout(renderUniversalShades, 0);
@@ -1250,6 +1364,31 @@
     // shadeKey -> matched live product entry (full/half)
     var dynamicShades = {};
 
+    // shadeKey -> availability presentation mode of the selected shade:
+    //   'in-stock'    - Shopify confirms a buyable variant with stock on hand
+    //   'on-order'    - Shopify confirms a buyable variant at 0 tracked
+    //                   inventory (custom-made on order) - shows the
+    //                   AVAILABLE ON ORDER status
+    //   'unavailable' / 'none' - existing unavailable behavior (gate only)
+    var stockModes = {};
+    var stockStatus = root.querySelector('[data-cr-stock]');
+
+    function availabilityMode(entry) {
+      if (!entry) return 'none';
+      var buyableId = entry.buyableVariantId || entry.availableVariantId;
+      if (!buyableId) return 'unavailable';
+      var tracked = String(entry.inventoryManagement || '').toLowerCase() === 'shopify';
+      var stock = typeof entry.inventoryQuantity === 'number' ? entry.inventoryQuantity : null;
+      if (tracked && stock !== null && stock <= 0) return 'on-order';
+      return 'in-stock';
+    }
+
+    function refreshStockStatus() {
+      var active = activeShade();
+      var key = active ? (active.getAttribute('data-shade-key') || '') : '';
+      if (stockStatus) stockStatus.hidden = stockModes[key] !== 'on-order';
+    }
+
     // Shade tab UI references - the "side" group tab owns the Full/Half
     // sub-tabs; "rear"/"front" are single-shade tabs.
     var tabButtons = Array.prototype.slice.call(root.querySelectorAll('[data-cr-tab]'));
@@ -1327,6 +1466,7 @@
         reflectTabsForShadeKey(button.getAttribute('data-shade-key'));
 
         refreshTotal();
+        refreshStockStatus();
       });
     });
 
@@ -1604,6 +1744,7 @@
     }
 
     refreshTotal();
+    refreshStockStatus();
   })();
 {% endjavascript %}
 
