@@ -73,24 +73,24 @@
 
           <button type="button" class="car-results__shade is-active" aria-pressed="true"
             data-shade-key="full"
-            data-shade-name="4-Side Shades (Full Window / Half Window)"
-            data-shade-price="Rs. 2,999"
+            data-shade-name="4-Side (Full Window Coverage Sunshades)"
+            data-shade-price="Rs. 2,799"
             data-shade-image="{{ 'shade-placeholder-full.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-full.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">4-Side Shades (Full Window / Half Window)</span>
+            <span class="car-results__shade-name">4-Side (Full Window Coverage Sunshades)</span>
           </button>
 
           <button type="button" class="car-results__shade" aria-pressed="false"
             data-shade-key="half"
-            data-shade-name="4-Side Shades (Full Window / Half Window)"
-            data-shade-price="Rs. 2,999"
+            data-shade-name="4-Side (Half Window Coverage Sunshades)"
+            data-shade-price="Rs. 2,799"
             data-shade-image="{{ 'shade-placeholder-half.svg' | asset_url }}">
             <span class="car-results__shade-thumb">
               <img src="{{ 'shade-placeholder-half.svg' | asset_url }}" alt="" loading="lazy" width="128" height="96">
             </span>
-            <span class="car-results__shade-name">4-Side Shades (Full Window / Half Window)</span>
+            <span class="car-results__shade-name">4-Side (Half Window Coverage Sunshades)</span>
           </button>
 
           <button type="button" class="car-results__shade" aria-pressed="false"
@@ -132,7 +132,7 @@
         <hr class="car-results__rule">
 
         <p class="car-results__shade-label">{{ 'car_results.selected_shade_label' | t }}</p>
-        <h2 class="car-results__shade-heading" data-cr-shade-name>4-Side Shades (Full Window / Half Window)</h2>
+        <h2 class="car-results__shade-heading" data-cr-shade-name>4-Side (Full Window)</h2>
 
         <p class="car-results__desc" data-cr-desc>{{ 'car_results.shade_desc_full' | t }}</p>
 
@@ -165,7 +165,7 @@
             <output class="car-results__qty-value" data-cr-qty-value aria-live="polite">1</output>
             <button type="button" class="car-results__qty-btn" data-cr-qty-plus aria-label="{{ 'car_results.increase_qty_aria' | t }}">+</button>
           </div>
-          <span class="car-results__price" data-cr-price>Rs. 2,999</span>
+          <span class="car-results__price" data-cr-price>Rs. 2,799</span>
           <p class="car-results__stock" data-cr-stock hidden>
             <span class="car-results__stock-badge">{{ 'car_results.available_on_order' | t }}</span>
             <span class="car-results__stock-note">{{ 'car_results.available_on_order_note' | t }}</span>
@@ -993,8 +993,8 @@
     // Shopify product data is still used below for images, descriptions and
     // variant IDs so Add to Cart continues to work normally.
     var staticShadeDetails = {
-      full: { name: '4-Side Shades (Full Window / Half Window)', amount: 2999 },
-      half: { name: '4-Side Shades (Full Window / Half Window)', amount: 2999 },
+      full: { name: '4-Side (Full Window Coverage Sunshades)', amount: 2799 },
+      half: { name: '4-Side (Half Window Coverage Sunshades)', amount: 2799 },
       front: { name: 'Front Window Shield', amount: 4000 },
       rear: { name: 'Rear Window Shield', amount: 3000 }
     };
