@@ -40,6 +40,16 @@
     color: var(--ad-text);
   }
 
+  /* The brand-specific model directory is nested inside this page wrapper.
+     Remove the wrapper's duplicate top padding once that view is active. */
+  .shop-by-car-page.has-model-results {
+    padding-top: 0;
+  }
+
+  .shop-by-car-page.has-model-results .shop-by-car-models {
+    padding-top: 28px;
+  }
+
   .shop-by-car-page__header {
     position: relative;
     text-align: center;

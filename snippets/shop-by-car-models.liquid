@@ -123,6 +123,8 @@
     if (!brandHandle) return;
     if (selector) selector.hidden = true;
     root.hidden = false;
+    var page = root.closest('.shop-by-car-page');
+    if (page) page.classList.add('has-model-results');
     heroBrand.textContent = brandName.toUpperCase();
     heroDesc.textContent = 'Select your ' + brandName + ' model to find the perfect sunshades for your car.';
     if (brandNode && brandNode.getAttribute('data-logo')) {

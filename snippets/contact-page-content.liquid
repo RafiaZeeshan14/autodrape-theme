@@ -32,14 +32,21 @@
           <input type="text" name="contact[subject]" placeholder="Subject">
         </div>
         <textarea name="contact[body]" rows="5" placeholder="Your message" required></textarea>
-        <button type="submit">Send message <span aria-hidden="true">&#8594;</span></button>
+        <a
+          class="ad-contact-page__send-button"
+          href="https://wa.me/923091305993"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Send message <span aria-hidden="true">&#8594;</span>
+        </a>
       {% endform %}
     </div>
 
     <div class="ad-contact-page__channels">
       <p class="ad-contact-page__panel-title"><span></span>Get in touch</p>
       <p class="ad-contact-page__panel-intro">You can also reach us through the following channels.</p>
-      <a class="ad-contact-page__channel" href="tel:+923001234567"><span class="ad-contact-page__channel-icon">&#9742;</span><span><strong>Phone</strong><small>+92 300 1234567</small></span><small class="ad-contact-page__channel-meta">Mon – Sat&nbsp; | &nbsp;10:00 AM – 8:00 PM</small></a>
+      <a class="ad-contact-page__channel" href="tel:03091305993"><span class="ad-contact-page__channel-icon">&#9742;</span><span><strong>Phone</strong><small>03091305993</small></span><small class="ad-contact-page__channel-meta">Mon – Sat&nbsp; | &nbsp;10:00 AM – 8:00 PM</small></a>
       <a class="ad-contact-page__channel" href="mailto:info@autodrapes.com"><span class="ad-contact-page__channel-icon">&#9993;</span><span><strong>Email</strong><small>info@autodrapes.com</small></span><small class="ad-contact-page__channel-meta">We reply within 24 hours</small></a>
     </div>
   </div>
@@ -77,8 +84,8 @@
   .ad-contact-page__form input, .ad-contact-page__form textarea { width: 100%; box-sizing: border-box; border: 1px solid #e3ded8; border-radius: 9px; padding: 15px 16px; color: #222; background: #fff; font: 400 15px/1.4 'Manrope', Arial, sans-serif; outline: none; }
   .ad-contact-page__form input:focus, .ad-contact-page__form textarea:focus { border-color: #d90000; }
   .ad-contact-page__form textarea { display: block; margin-top: 12px; resize: vertical; }
-  .ad-contact-page__form button { margin-top: 14px; padding: 14px 20px; border: 0; border-radius: 7px; color: #fff; background: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
-  .ad-contact-page__form button span { margin-left: 14px; font-size: 16px; }
+  .ad-contact-page__send-button { display: inline-block; margin-top: 14px; padding: 14px 20px; border-radius: 7px; color: #fff; background: #d90000; font: 800 12px/1 'Manrope', Arial, sans-serif; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+  .ad-contact-page__send-button span { margin-left: 14px; font-size: 16px; }
   .ad-contact-page__form-status, .ad-contact-page__form-errors { margin: 0 0 14px; padding: 12px; font: 400 13px/1.5 'Manrope', Arial, sans-serif; }
   .ad-contact-page__form-status { color: #27764a; background: #edf8f1; }
   .ad-contact-page__form-errors { color: #a81717; background: #fff1f1; }

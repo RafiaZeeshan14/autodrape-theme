@@ -1,0 +1,77 @@
+{% doc %}
+  Renders the site-wide scroll-to-top button.
+
+  The button appears after the visitor scrolls down and smoothly returns the
+  page to the top when activated.
+{% enddoc %}
+
+<button type="button" class="ad-scroll-top" data-scroll-top aria-label="Scroll to top" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6 14l6-6 6 6"></path>
+  </svg>
+</button>
+
+{% stylesheet %}
+  .ad-scroll-top[hidden] { display: none; }
+  .ad-scroll-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 250;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 50%;
+    background: #d90000;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .ad-scroll-top:hover,
+  .ad-scroll-top:focus-visible {
+    background: #8c0000;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .24);
+    outline: none;
+    transform: translateY(-2px);
+  }
+  .ad-scroll-top svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (max-width: 749px) {
+    .ad-scroll-top {
+      right: 14px;
+      bottom: 14px;
+      width: 38px;
+      height: 38px;
+    }
+    .ad-scroll-top svg { width: 17px; height: 17px; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var button = document.querySelector('[data-scroll-top]');
+    if (!button) return;
+
+    function updateVisibility() {
+      button.hidden = window.scrollY < 300;
+    }
+
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    button.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    updateVisibility();
+  })();
+{% endjavascript %}
