@@ -304,7 +304,7 @@
                 {% assign compat_candidate_inventory_management = compat_candidate_available_variant.inventory_management %}
               {% endif %}
             {% endif %}
-            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"buyableVariantId": {% if compat_candidate_buyable_variant_id %}{{ compat_candidate_buyable_variant_id | json }}{% else %}null{% endif %},"inventoryQuantity": {% if compat_candidate_inventory_quantity != blank %}{{ compat_candidate_inventory_quantity | json }}{% else %}null{% endif %},"inventoryPolicy": {{ compat_candidate_inventory_policy | json }},"inventoryManagement": {{ compat_candidate_inventory_management | json }},"productAvailable": {{ compat_candidate.available | json }},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
+            {% capture compat_entry_json %}{"title": {{ compat_candidate.title | json }},"handle": {{ compat_candidate.handle | json }},"price": {{ compat_candidate.price | money | json }},"description": {{ compat_candidate.description | json }},"image": {% if compat_candidate_image %}{{ compat_candidate_image | json }}{% else %}null{% endif %},"variantId": {% if compat_candidate_variant %}{{ compat_candidate_variant.id | json }}{% else %}null{% endif %},"buyableVariantId": {% if compat_candidate_buyable_variant_id %}{{ compat_candidate_buyable_variant_id | json }}{% else %}null{% endif %},"inventoryQuantity": {% if compat_candidate_inventory_quantity != blank %}{{ compat_candidate_inventory_quantity | json }}{% else %}null{% endif %},"inventoryPolicy": {{ compat_candidate_inventory_policy | json }},"inventoryManagement": {{ compat_candidate_inventory_management | json }},"productAvailable": {{ compat_candidate.available | json }},"availableVariantId": {% if compat_candidate_available_variant %}{{ compat_candidate_available_variant.id | json }}{% else %}null{% endif %},"available": {% if compat_candidate_variant %}{{ compat_candidate_variant.available | json }}{% else %}null{% endif %},"variants": [{% for compat_variant_option in compat_candidate.variants limit: 50 %}{"id": {{ compat_variant_option.id | json }},"title": {{ compat_variant_option.title | json }},"option1": {{ compat_variant_option.option1 | json }},"option2": {{ compat_variant_option.option2 | json }},"option3": {{ compat_variant_option.option3 | json }},"available": {{ compat_variant_option.available | json }} }{% unless forloop.last %},{% endunless %}{% endfor %}],"compatibleModels": [{% for compat_ref in compat_candidate_refs %}{"id": {{ compat_ref.system.id | json }},"handle": {{ compat_ref.system.handle | json }},"name": {{ compat_ref.model_name.value | default: compat_ref.model_name | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% endcapture %}
             {% if compat_entry_role == 'full' %}
               {% if compat_full_entry_json != '' %}{% assign compat_full_entry_json = compat_full_entry_json | append: ',' %}{% endif %}
               {% assign compat_full_entry_json = compat_full_entry_json | append: compat_entry_json %}
@@ -394,6 +394,7 @@
     {% endif %}
 
     {% assign universal_front_variant = null %}
+    {% assign universal_front_vehicle_option_position = 0 %}
     {% assign universal_front_buyable_variant_id = null %}
     {% assign universal_front_inventory_quantity = null %}
     {% assign universal_front_inventory_policy = null %}
@@ -401,6 +402,11 @@
     {% if universal_front_found %}
       {% assign universal_front_variant = universal_front_product.selected_or_first_available_variant %}
       {% assign universal_front_available_variant = universal_front_product.first_available_variant %}
+      {% for universal_front_option_name in universal_front_product.options %}
+        {% if universal_front_option_name == 'Vehicle' %}
+          {% assign universal_front_vehicle_option_position = forloop.index %}
+        {% endif %}
+      {% endfor %}
       {% for universal_front_variant_option in universal_front_product.variants limit: 50 %}
         {% if universal_front_variant_option.available %}
           {% assign universal_front_buyable_variant_id = universal_front_variant_option.id %}
@@ -420,6 +426,7 @@
     {% endif %}
 
     {% assign universal_rear_variant = null %}
+    {% assign universal_rear_vehicle_option_position = 0 %}
     {% assign universal_rear_buyable_variant_id = null %}
     {% assign universal_rear_inventory_quantity = null %}
     {% assign universal_rear_inventory_policy = null %}
@@ -427,6 +434,11 @@
     {% if universal_rear_found %}
       {% assign universal_rear_variant = universal_rear_product.selected_or_first_available_variant %}
       {% assign universal_rear_available_variant = universal_rear_product.first_available_variant %}
+      {% for universal_rear_option_name in universal_rear_product.options %}
+        {% if universal_rear_option_name == 'Vehicle' %}
+          {% assign universal_rear_vehicle_option_position = forloop.index %}
+        {% endif %}
+      {% endfor %}
       {% for universal_rear_variant_option in universal_rear_product.variants limit: 50 %}
         {% if universal_rear_variant_option.available %}
           {% assign universal_rear_buyable_variant_id = universal_rear_variant_option.id %}
@@ -481,7 +493,9 @@
           "inventoryManagement": {{ universal_front_inventory_management | json }},
           "productAvailable": {% if universal_front_found %}{{ universal_front_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_front_variant %}{{ universal_front_variant.id | json }}{% else %}null{% endif %},
-          "available": {% if universal_front_variant %}{{ universal_front_variant.available | json }}{% else %}null{% endif %}
+          "available": {% if universal_front_variant %}{{ universal_front_variant.available | json }}{% else %}null{% endif %},
+          "vehicleOptionPosition": {{ universal_front_vehicle_option_position | json }},
+          "variants": [{% if universal_front_found %}{% for universal_front_variant_option in universal_front_product.variants limit: 100 %}{% assign universal_front_vehicle_value = '' %}{% case universal_front_vehicle_option_position %}{% when 1 %}{% assign universal_front_vehicle_value = universal_front_variant_option.option1 %}{% when 2 %}{% assign universal_front_vehicle_value = universal_front_variant_option.option2 %}{% when 3 %}{% assign universal_front_vehicle_value = universal_front_variant_option.option3 %}{% endcase %}{"id": {{ universal_front_variant_option.id | json }},"title": {{ universal_front_variant_option.title | json }},"vehicleValue": {{ universal_front_vehicle_value | json }},"available": {{ universal_front_variant_option.available | json }},"price": {{ universal_front_variant_option.price | money | json }},"inventoryQuantity": {% if universal_front_variant_option.inventory_quantity != blank %}{{ universal_front_variant_option.inventory_quantity | json }}{% else %}null{% endif %},"inventoryPolicy": {{ universal_front_variant_option.inventory_policy | json }},"inventoryManagement": {{ universal_front_variant_option.inventory_management | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}{% endif %}]
         },
         "rear": {
           "found": {{ universal_rear_found | json }},
@@ -497,7 +511,9 @@
           "inventoryManagement": {{ universal_rear_inventory_management | json }},
           "productAvailable": {% if universal_rear_found %}{{ universal_rear_product.available | json }}{% else %}null{% endif %},
           "variantId": {% if universal_rear_variant %}{{ universal_rear_variant.id | json }}{% else %}null{% endif %},
-          "available": {% if universal_rear_variant %}{{ universal_rear_variant.available | json }}{% else %}null{% endif %}
+          "available": {% if universal_rear_variant %}{{ universal_rear_variant.available | json }}{% else %}null{% endif %},
+          "vehicleOptionPosition": {{ universal_rear_vehicle_option_position | json }},
+          "variants": [{% if universal_rear_found %}{% for universal_rear_variant_option in universal_rear_product.variants limit: 100 %}{% assign universal_rear_vehicle_value = '' %}{% case universal_rear_vehicle_option_position %}{% when 1 %}{% assign universal_rear_vehicle_value = universal_rear_variant_option.option1 %}{% when 2 %}{% assign universal_rear_vehicle_value = universal_rear_variant_option.option2 %}{% when 3 %}{% assign universal_rear_vehicle_value = universal_rear_variant_option.option3 %}{% endcase %}{"id": {{ universal_rear_variant_option.id | json }},"title": {{ universal_rear_variant_option.title | json }},"vehicleValue": {{ universal_rear_vehicle_value | json }},"available": {{ universal_rear_variant_option.available | json }},"price": {{ universal_rear_variant_option.price | money | json }},"inventoryQuantity": {% if universal_rear_variant_option.inventory_quantity != blank %}{{ universal_rear_variant_option.inventory_quantity | json }}{% else %}null{% endif %},"inventoryPolicy": {{ universal_rear_variant_option.inventory_policy | json }},"inventoryManagement": {{ universal_rear_variant_option.inventory_management | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}{% endif %}]
         }
       }
     </script>
@@ -995,8 +1011,8 @@
     var staticShadeDetails = {
       full: { name: '4-Side (Full Window Coverage Sunshades)', amount: 2799 },
       half: { name: '4-Side (Half Window Coverage Sunshades)', amount: 2799 },
-      front: { name: 'Front Window Shield', amount: 4000 },
-      rear: { name: 'Rear Window Shield', amount: 3000 }
+      front: { name: 'Front Window Shield', amount: 3800 },
+      rear: { name: 'Rear Window Shield', amount: 2800 }
     };
 
     function staticShadeName(shadeKey) {
@@ -1158,6 +1174,58 @@
       return null;
     }
 
+    function selectedVehicleLabel() {
+      if (!selectedModel) return '';
+      var brandName = brandRecord && brandRecord.name ? String(brandRecord.name).trim() : '';
+      var modelName = selectedModel.cleanName || selectedModel.name || '';
+      var years = selectedModel.yearRange ? normalizeRange(selectedModel.yearRange) : '';
+      var vehicle = [brandName, modelName].filter(Boolean).join(' ');
+      return vehicle + (years ? ' (' + years + ')' : '');
+    }
+
+    // Vehicle product variants use the model/year value without the brand
+    // prefix. Keep this separate from selectedVehicleLabel(), which is also
+    // used by the existing Full/Half matching and cart diagnostics.
+    function selectedVehicleOptionLabel() {
+      if (!selectedModel) return '';
+      var modelName = selectedModel.cleanName || selectedModel.name || '';
+      var years = selectedModel.yearRange ? normalizeRange(selectedModel.yearRange) : '';
+      return modelName + (years ? ' (' + years + ')' : '');
+    }
+
+    function normalizeVehicleOption(value) {
+      return normalizeRange(value).replace(/\s*-\s*/g, '-').replace(/\s+/g, ' ').trim();
+    }
+
+    function matchedVehicleVariant(entry) {
+      var expected = selectedVehicleLabel();
+      if (!expected || !entry || !Array.isArray(entry.variants)) return null;
+
+      var normalizedExpected = normalizeVehicleOption(expected);
+      for (var v = 0; v < entry.variants.length; v++) {
+        var variant = entry.variants[v];
+        var optionValues = [variant.option1, variant.option2, variant.option3];
+        for (var o = 0; o < optionValues.length; o++) {
+          if (optionValues[o] && normalizeVehicleOption(optionValues[o]) === normalizedExpected) {
+            return variant;
+          }
+        }
+      }
+      return null;
+    }
+
+    function matchedUniversalVehicleVariant(entry) {
+      var expected = selectedVehicleOptionLabel();
+      if (!expected || !entry || !Array.isArray(entry.variants)) return null;
+      var normalizedExpected = normalizeVehicleOption(expected);
+      for (var v = 0; v < entry.variants.length; v++) {
+        if (entry.variants[v].vehicleValue && normalizeVehicleOption(entry.variants[v].vehicleValue) === normalizedExpected) {
+          return entry.variants[v];
+        }
+      }
+      return null;
+    }
+
     function renderDynamicShades() {
       ['full', 'half'].forEach(function (shadeKey) {
         var entry = matchedCompatEntry(shadeKey);
@@ -1234,7 +1302,10 @@
         // Record the live entry so the selection handler can reuse it
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
-        stockModes[shadeKey] = availabilityMode(entry);
+        var universalVehicleVariant = matchedUniversalVehicleVariant(entry);
+        stockModes[shadeKey] = universalVehicleVariant
+          ? availabilityModeForVariant(universalVehicleVariant)
+          : 'unavailable';
 
         button.setAttribute('data-shade-name', staticShadeName(shadeKey));
         button.setAttribute('data-shade-price', staticShadePrice(shadeKey, 1));
@@ -1242,9 +1313,13 @@
         // Prefer a confirmed buyable variant (scanned from the variant list,
         // then first_available_variant) over the default variant so a
         // sold-out first/default variant never blocks a buyable product.
-        var crLiveVariant = entry.buyableVariantId || entry.availableVariantId || entry.variantId;
-        if (crLiveVariant) button.setAttribute('data-cr-variant-id', String(crLiveVariant));
-        button.setAttribute('data-cr-available', (entry.buyableVariantId || entry.availableVariantId || entry.productAvailable || entry.available) ? 'true' : 'false');
+        if (universalVehicleVariant && universalVehicleVariant.id) {
+          button.setAttribute('data-cr-variant-id', String(universalVehicleVariant.id));
+          button.setAttribute('data-cr-available', universalVehicleVariant.available ? 'true' : 'false');
+        } else {
+          button.removeAttribute('data-cr-variant-id');
+          button.setAttribute('data-cr-available', 'false');
+        }
 
         var thumbImg = button.querySelector('.car-results__shade-thumb img');
         if (thumbImg && entry.image) {
@@ -1379,6 +1454,14 @@
       if (!buyableId) return 'unavailable';
       var tracked = String(entry.inventoryManagement || '').toLowerCase() === 'shopify';
       var stock = typeof entry.inventoryQuantity === 'number' ? entry.inventoryQuantity : null;
+      if (tracked && stock !== null && stock <= 0) return 'on-order';
+      return 'in-stock';
+    }
+
+    function availabilityModeForVariant(variant) {
+      if (!variant || !variant.id || variant.available === false) return 'unavailable';
+      var tracked = String(variant.inventoryManagement || '').toLowerCase() === 'shopify';
+      var stock = typeof variant.inventoryQuantity === 'number' ? variant.inventoryQuantity : null;
       if (tracked && stock !== null && stock <= 0) return 'on-order';
       return 'in-stock';
     }
@@ -1629,11 +1712,19 @@
         var variantId = active.getAttribute('data-cr-variant-id') || '';
         var availableAttr = active.getAttribute('data-cr-available');
         var islandEntry = null;
+        var vehicleVariant = null;
 
         if (key === 'full' || key === 'half') {
           islandEntry = matchedCompatEntry(key);
+          vehicleVariant = matchedVehicleVariant(islandEntry);
+          if (vehicleVariant && vehicleVariant.id) variantId = String(vehicleVariant.id);
         } else if (key === 'front' || key === 'rear') {
           islandEntry = (universalIslandData && universalIslandData[key]) || null;
+          vehicleVariant = matchedUniversalVehicleVariant(islandEntry);
+          // Universal products must never fall back to a different vehicle's
+          // variant. If the selected vehicle is not provisioned yet, leave
+          // the request without a variant so the availability gate rejects it.
+          variantId = vehicleVariant && vehicleVariant.id ? String(vehicleVariant.id) : '';
         }
 
         // The islands flag the variants Shopify confirms as buyable for the
@@ -1645,14 +1736,26 @@
         // product. When no buyable variant exists the availability gate
         // below keeps rejecting - nothing is force-added.
         var buyableVariant = islandEntry ? String(islandEntry.buyableVariantId || islandEntry.availableVariantId || '') : '';
-        if (!variantId) {
+        var requiresVehicleVariant = key === 'front' || key === 'rear';
+        if (!requiresVehicleVariant && !variantId) {
           variantId = String(buyableVariant || (islandEntry && islandEntry.variantId) || '');
         }
 
-        var isAvailable = Boolean(buyableVariant) ||
+        var isAvailable = requiresVehicleVariant
+          ? Boolean(vehicleVariant && vehicleVariant.id)
+          : (Boolean(buyableVariant) ||
           ((availableAttr === null || availableAttr === undefined || availableAttr === '')
             ? (islandEntry ? islandEntry.available !== false : true)
-            : availableAttr !== 'false');
+            : availableAttr !== 'false'));
+
+        if (vehicleVariant) isAvailable = vehicleVariant.available !== false;
+
+        console.debug('[Car Results] Vehicle variant match', {
+          selectedVehicle: selectedVehicleLabel(),
+          selectedVehicleOption: selectedVehicleOptionLabel(),
+          matchedVariantTitle: vehicleVariant ? vehicleVariant.title : null,
+          matchedVariantId: vehicleVariant ? vehicleVariant.id : null
+        });
 
         console.debug('[Car Results] Add to cart trace', {
           shadeKey: key,
