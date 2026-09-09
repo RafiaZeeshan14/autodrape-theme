@@ -1,0 +1,163 @@
+{% doc %}
+  Renders the AutoDrape car-model search overlay.
+
+  The searchable records are generated from the active car model and car brand
+  metaobjects. Search results link to the existing Car Results page using the
+  same brand, model slug, and year-range contract as the car selector.
+{% enddoc %}
+
+<div id="ad-car-search" class="ad-car-search" data-car-search hidden>
+  <div class="ad-car-search__backdrop" data-car-search-close></div>
+  <section
+    class="ad-car-search__dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ad-car-search-title"
+    tabindex="-1"
+    data-car-search-dialog
+  >
+    <div class="ad-car-search__header">
+      <div>
+        <p class="ad-car-search__eyebrow">SEARCH YOUR CAR</p>
+        <h2 id="ad-car-search-title">Find your perfect fit</h2>
+      </div>
+      <button type="button" class="ad-car-search__close" aria-label="Close car search" data-car-search-close>
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <label class="ad-car-search__label" for="ad-car-search-input">Search car model</label>
+    <div class="ad-car-search__input-wrap">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5"></circle>
+        <path d="M16 16L21 21"></path>
+      </svg>
+      <input id="ad-car-search-input" type="search" placeholder="Search car model..." autocomplete="off" spellcheck="false" data-car-search-input>
+    </div>
+
+    <div class="ad-car-search__status" aria-live="polite" data-car-search-status>Search by brand or model name.</div>
+    <div class="ad-car-search__results" data-car-search-results></div>
+  </section>
+</div>
+
+<script type="application/json" data-car-search-models>
+[
+  {% paginate metaobjects.car_model.values by 250 %}
+  {% for search_model in metaobjects.car_model.values %}
+    {% assign search_brand = search_model.brand.value %}
+    {% assign search_image = search_model.image.value | default: search_model.model_image.value %}
+    {
+      "name": {{ search_model.model_name.value | default: search_model.model_name | json }},
+      "yearRange": {{ search_model.year_range.value | default: search_model.year_range | json }},
+      "brandHandle": {% if search_brand %}{{ search_brand.system.handle | handleize | json }}{% else %}null{% endif %},
+      "brandName": {% if search_brand %}{{ search_brand.brand_name.value | default: search_brand.title | json }}{% else %}null{% endif %},
+      "image": {% if search_image %}{{ search_image | image_url: width: 500 | json }}{% else %}null{% endif %}
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+  {% endpaginate %}
+]
+</script>
+
+{% stylesheet %}
+  .ad-header__icon[data-car-search-trigger] { appearance: none; display: flex !important; border: 0; padding: 0; background: transparent; cursor: pointer; }
+  .ad-header__icon[data-car-search-trigger] { color: #111; }
+  .ad-car-search[hidden] { display: none; }
+  .ad-car-search { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: start center; box-sizing: border-box; padding: 10vh 20px 24px; }
+  .ad-car-search__backdrop { position: absolute; inset: 0; background: rgba(15, 15, 15, .54); }
+  .ad-car-search__dialog { position: relative; box-sizing: border-box; width: min(680px, 100%); max-height: 80vh; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #c7c7c7 transparent; padding: 32px; border: 1px solid #e7e7e7; border-radius: 16px; background: #fff; box-shadow: 0 24px 70px rgba(0, 0, 0, .2); color: #111; }
+  .ad-car-search__dialog::-webkit-scrollbar { width: 8px; }
+  .ad-car-search__dialog::-webkit-scrollbar-track { background: transparent; margin: 10px 0; }
+  .ad-car-search__dialog::-webkit-scrollbar-thumb { border: 2px solid #fff; border-radius: 999px; background: #c7c7c7; }
+  .ad-car-search__dialog::-webkit-scrollbar-thumb:hover { background: #999; }
+  .ad-car-search__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
+  .ad-car-search__eyebrow { margin: 0 0 7px; color: #d90000; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+  .ad-car-search__header h2 { margin: 0; font-size: clamp(25px, 4vw, 34px); line-height: 1.05; }
+  .ad-car-search__close { width: 36px; height: 36px; border: 1px solid #ddd; border-radius: 50%; background: #fff; color: #222; font-size: 25px; line-height: 1; cursor: pointer; }
+  .ad-car-search__close:hover, .ad-car-search__close:focus-visible { border-color: #d90000; color: #d90000; }
+  .ad-car-search__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ad-car-search__input-wrap { display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 17px; border: 1px solid #d8d8d8; border-radius: 9px; background: #fff; }
+  .ad-car-search__input-wrap:focus-within { border-color: #a50000; box-shadow: 0 0 0 3px rgba(165, 0, 0, .1); }
+  .ad-car-search__input-wrap svg { width: 21px; height: 21px; flex: 0 0 auto; fill: none; stroke: #666; stroke-width: 1.8; stroke-linecap: round; }
+  .ad-car-search__input-wrap input { width: 100%; border: 0; outline: 0; color: #111; font: inherit; font-size: 16px; }
+  .ad-car-search__status { margin: 18px 2px 10px; color: #666; font-size: 13px; }
+  .ad-car-search__result { display: flex; align-items: center; gap: 15px; width: 100%; padding: 12px; border: 1px solid #ededed; border-radius: 10px; background: #fff; color: inherit; text-align: left; text-decoration: none; transition: border-color .15s ease, box-shadow .15s ease; }
+  .ad-car-search__result + .ad-car-search__result { margin-top: 9px; }
+  .ad-car-search__result:hover, .ad-car-search__result:focus-visible { border-color: #d90000; box-shadow: 0 5px 18px rgba(0, 0, 0, .07); outline: 0; }
+  .ad-car-search__image { width: 66px; height: 54px; flex: 0 0 66px; border-radius: 7px; background: #f5f5f5; object-fit: cover; }
+  .ad-car-search__image--empty { display: grid; place-items: center; color: #aaa; font-size: 20px; }
+  .ad-car-search__brand { display: block; margin-bottom: 2px; color: #777; font-size: 12px; font-weight: 700; }
+  .ad-car-search__model { display: block; font-size: 16px; font-weight: 800; }
+  .ad-car-search__year { display: block; margin-top: 4px; color: #d90000; font-size: 13px; font-weight: 700; }
+  @media (max-width: 749px) {
+    .ad-header:not(.ad-header--inner) .ad-header__icon[data-car-search-trigger] { color: #fff; }
+    .ad-car-search { top: 78px; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); }
+    .ad-car-search__dialog { width: 100%; max-height: calc(100dvh - 88px); padding: 17px 14px 14px; border-radius: 12px; }
+    .ad-car-search__header { gap: 10px; margin-bottom: 14px; }
+    .ad-car-search__eyebrow { margin-bottom: 4px; font-size: 9px; }
+    .ad-car-search__header h2 { max-width: 210px; font-size: 22px; line-height: 1.05; }
+    .ad-car-search__close { width: 34px; height: 34px; flex: 0 0 34px; font-size: 21px; }
+    .ad-car-search__input-wrap { height: 46px; gap: 9px; padding: 0 11px; }
+    .ad-car-search__input-wrap svg { width: 18px; height: 18px; }
+    .ad-car-search__input-wrap input { font-size: 14px; }
+    .ad-car-search__status { margin: 11px 1px 8px; font-size: 11px; }
+    .ad-car-search__result { gap: 9px; padding: 8px; }
+    .ad-car-search__image { width: 48px; height: 42px; flex-basis: 48px; }
+    .ad-car-search__brand { font-size: 10px; }
+    .ad-car-search__model { font-size: 13px; }
+    .ad-car-search__year { margin-top: 2px; font-size: 11px; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var trigger = document.querySelector('[data-car-search-trigger]');
+    var overlay = document.querySelector('[data-car-search]');
+    var dialog = document.querySelector('[data-car-search-dialog]');
+    var input = document.querySelector('[data-car-search-input]');
+    var results = document.querySelector('[data-car-search-results]');
+    var status = document.querySelector('[data-car-search-status]');
+    var modelNode = document.querySelector('[data-car-search-models]');
+    if (!trigger || !overlay || !dialog || !input || !results || !status || !modelNode) return;
+
+    var models = [];
+    try { models = JSON.parse(modelNode.textContent) || []; } catch (error) { models = []; }
+
+    function slug(value) { return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+    function cleanModelName(value, brandHandle) {
+      var name = String(value || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+      name = name.replace(/\s+(?:19|20)\d{2}\s*-\s*(?:19|20)\d{2}$/i, '').replace(/\s+(?:19|20)\d{2}$/i, '');
+      if (brandHandle) name = name.replace(new RegExp('^(?:' + String(brandHandle).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\s+', 'i'), '');
+      return name.replace(/\s+/g, ' ').trim();
+    }
+    function ranges(value) { return String(value || '').replace(/[\u2013\u2014]/g, '-').split(',').map(function (item) { return item.trim(); }).filter(Boolean); }
+    function openSearch() { overlay.hidden = false; document.body.style.overflow = 'hidden'; input.value = ''; render(''); window.setTimeout(function () { input.focus(); }, 0); }
+    function closeSearch() { overlay.hidden = true; document.body.style.overflow = ''; trigger.focus(); }
+    function render(value) {
+      var query = String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+      results.innerHTML = '';
+      if (!query) { status.textContent = 'Search by brand or model name.'; return; }
+      var matches = [];
+      models.forEach(function (model) {
+        var brand = String(model.brandName || '').trim();
+        var cleaned = cleanModelName(model.name, model.brandHandle);
+        var haystack = (String(model.name || '') + ' ' + brand + ' ' + brand + ' ' + cleaned).toLowerCase();
+        if (haystack.indexOf(query) === -1) return;
+        ranges(model.yearRange).forEach(function (yearRange) { matches.push({ model: model, brand: brand, name: cleaned, year: yearRange }); });
+      });
+      status.textContent = matches.length + (matches.length === 1 ? ' result found' : ' results found');
+      if (!matches.length) { results.innerHTML = '<p class="ad-car-search__status">No matching cars found.</p>'; return; }
+      matches.forEach(function (match) {
+        var link = document.createElement('a');
+        link.className = 'ad-car-search__result';
+        link.href = '/pages/car-results?brand=' + encodeURIComponent(String(match.model.brandHandle || '')) + '&model=' + encodeURIComponent(slug(match.name)) + '&year=' + encodeURIComponent(String(match.year).replace(/\s+/g, ''));
+        var image = match.model.image ? '<img class="ad-car-search__image" src="' + match.model.image + '" alt="" loading="lazy">' : '<span class="ad-car-search__image ad-car-search__image--empty" aria-hidden="true">⌁</span>';
+        link.innerHTML = image + '<span><span class="ad-car-search__brand">' + match.brand.replace(/</g, '&lt;') + '</span><span class="ad-car-search__model">' + match.name.replace(/</g, '&lt;') + '</span><span class="ad-car-search__year">' + match.year.replace(/</g, '&lt;') + '</span></span>';
+        results.appendChild(link);
+      });
+    }
+    trigger.addEventListener('click', function () { openSearch(); });
+    overlay.querySelectorAll('[data-car-search-close]').forEach(function (node) { node.addEventListener('click', closeSearch); });
+    input.addEventListener('input', function () { render(input.value); });
+    document.addEventListener('keydown', function (event) { if (!overlay.hidden && event.key === 'Escape') closeSearch(); });
+  })();
+{% endjavascript %}
