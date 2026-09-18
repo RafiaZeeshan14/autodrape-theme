@@ -19,8 +19,12 @@
   Product wiring: Full/Half coverage cards resolve the compatible Shopify
   product through the existing `Compatible Car Models` metafield; Front
   Windshield Shade and Rear Windshield Shade cards resolve their universal
-  Shopify products for every vehicle. Titles, prices and variants come
-  live from those product records.
+  Shopify products, gated exclusively by the client-editable
+  `front_windshield_shade` / `rear_windshield_shade` boolean fields on the
+  Car Model metaobject (and, only when an exact matching Front/Rear vehicle
+  variant exists - Front/Rear is never fulfilled by another vehicle's
+  variant). Titles, prices and variants come live from those product
+  records.
 
   Routing contract: the `brand`/`model`/`year` parameters are consumed here
   only for display and image resolution - they are never rewritten,
@@ -178,6 +182,16 @@
       </aside>
 
     </div><!-- /.car-results__grid -->
+    <div class="car-results__modal" data-cr-ood-modal hidden role="dialog" aria-modal="true" aria-labelledby="cr-ood-title" aria-describedby="cr-ood-desc">
+      <div class="car-results__modal-overlay" data-cr-ood-overlay></div>
+      <div class="car-results__modal-card">
+        <button type="button" class="car-results__modal-close" data-cr-ood-close aria-label="{{ 'general.close' | t }}">&times;</button>
+        <span class="car-results__modal-icon" aria-hidden="true">!</span>
+        <h3 class="car-results__modal-title" id="cr-ood-title" data-cr-ood-title>{{ 'car_results.out_of_stock' | t }}</h3>
+        <p class="car-results__modal-text" id="cr-ood-desc">{{ 'car_results.out_of_stock_for_vehicle' | t }}</p>
+        <button type="button" class="car-results__modal-ok" data-cr-ood-ok>{{ 'car_results.ok' | t }}</button>
+      </div>
+    </div>
 
     {% comment %}
       Client-side resolution data - mirrors the metaobject sources of
@@ -209,6 +223,8 @@
             "name": {{ cr_model.model_name.value | default: cr_model.model_name | json }},
             "yearRange": {{ cr_model.year_range.value | default: cr_model.year_range | json }},
             "brand": {% if cr_model_brand %}{{ cr_model_brand.system.handle | handleize | json }}{% else %}null{% endif %},
+            "frontWindshieldShade": {{ cr_model.front_windshield_shade.value | json }},
+            "rearWindshieldShade": {{ cr_model.rear_windshield_shade.value | json }},
             "image": {% if cr_model_image %}{{ cr_model_image | image_url: width: 1100 | json }}{% else %}null{% endif %}
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
@@ -996,6 +1012,165 @@
     line-height: 1.4;
     color: var(--ad-muted, #7a746a);
   }
+
+  /* "Out of Stock" - shown on the Front/Rear Windshield Shade cards when the
+     selected car's Car Model metaobject has the Front/Rear Windshield Shade
+     boolean off (or has no exact Front/Rear vehicle variant). Sits on its own
+     full-width row inside the buy form; the Add to cart button is disabled
+     and re-labelled alongside.
+     Hidden for every other availability state. */
+  .car-results__unavailable {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1 1 100%;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(217, 0, 0, 0.06);
+    border: 1px solid rgba(217, 0, 0, 0.22);
+    color: #d90000;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  .car-results__unavailable[hidden] {
+    display: none;
+  }
+
+  .car-results__add[disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .car-results__add[disabled]:hover {
+    filter: none;
+    transform: none;
+  }
+
+  /* Out of Stock modal - opens when an unavailable Front/Rear Windshield
+     Shade card/tab is clicked. Fixed, high z-index, centered, with a dark
+     backdrop, white rounded card, red warning accent and a single OK action.
+     body scroll is locked by the component script while it is open. */
+  .car-results__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  .car-results__modal[hidden] {
+    display: none;
+  }
+
+  .car-results__modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.6);
+  }
+
+  .car-results__modal-card {
+    position: relative;
+    z-index: 1;
+    width: min(420px, 100%);
+    padding: 40px 32px 32px;
+    border-radius: calc(var(--ad-radius-lg, 20px));
+    background: #ffffff;
+    box-shadow: var(--ad-shadow-soft, 0 22px 50px -30px rgba(20, 20, 20, 0.35)), 0 30px 90px -20px rgba(20, 20, 20, 0.5);
+    text-align: center;
+  }
+
+  .car-results__modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ad-muted, #7a746a);
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .car-results__modal-close:hover,
+  .car-results__modal-close:focus-visible {
+    color: #d90000;
+    background: rgba(217, 0, 0, 0.08);
+  }
+
+  .car-results__modal-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: rgba(217, 0, 0, 0.1);
+    color: #d90000;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .car-results__modal-title {
+    margin: 0 0 10px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ad-text, #141414);
+  }
+
+  .car-results__modal-text {
+    margin: 0 0 24px;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ad-muted, #7a746a);
+  }
+
+  .car-results__modal-ok {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 999px;
+    background: #d90000;
+    color: #ffffff;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+  }
+
+  .car-results__modal-ok:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+  }
+
+  body.car-results-modal-open {
+    overflow: hidden;
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -1085,6 +1260,13 @@
 
     var brands = readIsland('[data-car-results-brands]');
     var models = readIsland('[data-car-results-models]');
+
+    // Front/Rear availability - client controlled from Shopify Admin only.
+    // Each model in the island carries `frontWindshieldShade` /
+    // `rearWindshieldShade` (true | false | null) mapped from the Car Model
+    // metaobject boolean fields `front_windshield_shade` /
+    // `rear_windshield_shade`. There is no hardcoded vehicle allowlist: those
+    // Admin fields are the single source of truth for Front/Rear availability.
 
     // Cached copies of the Shopify product data islands so the submit handler
     // can resolve the live variant id deterministically - even if the async
@@ -1226,6 +1408,21 @@
       return null;
     }
 
+    // Front/Rear availability decision - driven exclusively by the
+    // client-editable car_model boolean fields (Admin: Content > Metaobjects >
+    // Car Model > "Front Windshield Shade" / "Rear Windshield Shade"):
+    //   field TRUE  -> shade offered (an exact matching Front/Rear vehicle
+    //                  variant is still required - no fallback to another
+    //                  vehicle's variant)
+    //   field FALSE -> Out of Stock regardless of variant inventory
+    //   field unset (null) -> Out of Stock (no hardcoded fallback)
+    // Front and Rear are evaluated independently.
+    function frontRearEnabledFor(model, shadeKey) {
+      if (!model) return false;
+      var adminField = shadeKey === 'front' ? model.frontWindshieldShade : model.rearWindshieldShade;
+      return adminField === true;
+    }
+
     function renderDynamicShades() {
       ['full', 'half'].forEach(function (shadeKey) {
         var entry = matchedCompatEntry(shadeKey);
@@ -1302,7 +1499,14 @@
         // Record the live entry so the selection handler can reuse it
         // (description + currency-aware price).
         dynamicShades[shadeKey] = entry;
-        var universalVehicleVariant = matchedUniversalVehicleVariant(entry);
+        // Front/Rear availability: the Admin field on the selected Car Model
+        // (front_windshield_shade / rear_windshield_shade) must be TRUE AND an
+        // exact matching vehicle variant must exist. When the shade is not
+        // enabled we never resolve a variant, so another vehicle's Front/Rear
+        // variant can never be substituted.
+        var universalVehicleVariant = frontRearEnabledFor(selectedModel, shadeKey)
+          ? matchedUniversalVehicleVariant(entry)
+          : null;
         stockModes[shadeKey] = universalVehicleVariant
           ? availabilityModeForVariant(universalVehicleVariant)
           : 'unavailable';
@@ -1447,6 +1651,64 @@
     //   'unavailable' / 'none' - existing unavailable behavior (gate only)
     var stockModes = {};
     var stockStatus = root.querySelector('[data-cr-stock]');
+    var unavailableNote = root.querySelector('[data-cr-unavailable]');
+
+    // ------------------------------------------------------------------
+    // Out of Stock modal - unavailable Front/Rear Windshield Shade notice.
+    // The modal markup lives in this snippet; Liquid renders the translated
+    // strings into it and the script reuses the title text for the disabled
+    // Add to cart button label (script blocks cannot render Liquid).
+    // ------------------------------------------------------------------
+    var oodModal = root.querySelector('[data-cr-ood-modal]');
+    var oodModalCard = oodModal ? oodModal.querySelector('.car-results__modal-card') : null;
+    var oodModalTitle = root.querySelector('[data-cr-ood-title]');
+    var oodLastFocus = null;
+    var addBtnDefaultLabel = addBtn ? addBtn.textContent : '';
+
+    function oodShadeBlocked(shadeKey) {
+      if (shadeKey !== 'front' && shadeKey !== 'rear') return false;
+      var mode = stockModes[shadeKey];
+      return mode !== 'in-stock' && mode !== 'on-order';
+    }
+
+    function oodKeyHandler(event) {
+      if (event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27) {
+        event.preventDefault();
+        oodCloseModal();
+      }
+    }
+
+    function oodOpenModal() {
+      if (!oodModal || !oodModal.hidden) return;
+      oodLastFocus = document.activeElement;
+      oodModal.hidden = false;
+      document.body.classList.add('car-results-modal-open');
+      var okBtn = oodModal.querySelector('[data-cr-ood-ok]');
+      if (okBtn) okBtn.focus();
+      document.addEventListener('keydown', oodKeyHandler);
+    }
+
+    function oodCloseModal() {
+      if (!oodModal || oodModal.hidden) return;
+      oodModal.hidden = true;
+      document.body.classList.remove('car-results-modal-open');
+      document.removeEventListener('keydown', oodKeyHandler);
+      if (oodLastFocus && typeof oodLastFocus.focus === 'function') {
+        try { oodLastFocus.focus(); } catch (error) { /* focus restore is best-effort */ }
+      }
+      oodLastFocus = null;
+    }
+
+    if (oodModal) {
+      var oodOkBtn = oodModal.querySelector('[data-cr-ood-ok]');
+      var oodCloseBtn = oodModal.querySelector('[data-cr-ood-close]');
+      if (oodOkBtn) oodOkBtn.addEventListener('click', oodCloseModal);
+      if (oodCloseBtn) oodCloseBtn.addEventListener('click', oodCloseModal);
+      // Click outside the white card (dark overlay or padding) also closes.
+      oodModal.addEventListener('click', function (event) {
+        if (oodModalCard && !oodModalCard.contains(event.target)) oodCloseModal();
+      });
+    }
 
     function availabilityMode(entry) {
       if (!entry) return 'none';
@@ -1470,6 +1732,22 @@
       var active = activeShade();
       var key = active ? (active.getAttribute('data-shade-key') || '') : '';
       if (stockStatus) stockStatus.hidden = stockModes[key] !== 'on-order';
+
+      // Front/Rear unavailable for the selected vehicle: show the message and
+      // disable Add to Cart. Full/Half shades are never affected.
+      var frontRearBlocked = (key === 'front' || key === 'rear') &&
+        stockModes[key] !== 'in-stock' && stockModes[key] !== 'on-order';
+      if (unavailableNote) unavailableNote.hidden = !frontRearBlocked;
+      if (addBtn) addBtn.disabled = !!frontRearBlocked;
+
+      // Re-label the Add to cart button while a Front/Rear shade is blocked:
+      // "Out of Stock" instead of "Add to cart" (CSS uppercases it). Full/Half
+      // and available Front/Rear shades keep the normal label.
+      if (addBtn) {
+        var oodLabel = oodModalTitle ? oodModalTitle.textContent : 'Out of Stock';
+        var nextLabel = frontRearBlocked ? oodLabel : addBtnDefaultLabel;
+        if (nextLabel && addBtn.textContent !== nextLabel) addBtn.textContent = nextLabel;
+      }
     }
 
     // Shade tab UI references - the "side" group tab owns the Full/Half
@@ -1522,34 +1800,52 @@
       refreshTotal();
     }
 
+    // Normal shade selection: activates the clicked card/tab, swaps the
+    // showcase image/name/description and refreshes totals + availability.
+    // Shared by every shade click (available or not) so the selected-shade
+    // UI/state is always driven by this single code path.
+    function selectShade(button) {
+      shadeButtons.forEach(function (other) {
+        var isActive = other === button;
+        other.classList.toggle('is-active', isActive);
+        other.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      var shadeImage = button.getAttribute('data-shade-image');
+      if (shadeImage && stageImg) {
+        stageImg.src = shadeImage;
+        stageImg.alt = button.getAttribute('data-shade-name') || '';
+      }
+      if (shadeName) shadeName.textContent = staticShadeName(button.getAttribute('data-shade-key'));
+
+      // Full/Half live products show their Shopify description; all other
+      // shades keep the static demo description.
+      if (shadeDesc) {
+        var dynamicEntry = dynamicShades[button.getAttribute('data-shade-key')];
+        shadeDesc.innerHTML = (dynamicEntry && dynamicEntry.description)
+          ? dynamicEntry.description
+          : defaultShadeDesc;
+      }
+
+      reflectTabsForShadeKey(button.getAttribute('data-shade-key'));
+
+      refreshTotal();
+      refreshStockStatus();
+    }
+
     shadeButtons.forEach(function (button) {
       button.addEventListener('click', function () {
-        shadeButtons.forEach(function (other) {
-          var isActive = other === button;
-          other.classList.toggle('is-active', isActive);
-          other.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        });
+        var blocked = oodShadeBlocked(button.getAttribute('data-shade-key') || '');
 
-        var shadeImage = button.getAttribute('data-shade-image');
-        if (shadeImage && stageImg) {
-          stageImg.src = shadeImage;
-          stageImg.alt = button.getAttribute('data-shade-name') || '';
-        }
-        if (shadeName) shadeName.textContent = staticShadeName(button.getAttribute('data-shade-key'));
+        // Selection and availability are independent states: the clicked
+        // shade always becomes the selected one (same active styling,
+        // preview and content as a normal selection)...
+        selectShade(button);
 
-        // Full/Half live products show their Shopify description; all other
-        // shades keep the static demo description.
-        if (shadeDesc) {
-          var dynamicEntry = dynamicShades[button.getAttribute('data-shade-key')];
-          shadeDesc.innerHTML = (dynamicEntry && dynamicEntry.description)
-            ? dynamicEntry.description
-            : defaultShadeDesc;
-        }
-
-        reflectTabsForShadeKey(button.getAttribute('data-shade-key'));
-
-        refreshTotal();
-        refreshStockStatus();
+        // ...then an unavailable Front/Rear shade additionally opens the
+        // Out of Stock modal. Add to cart stays disabled in that state;
+        // after closing the modal the unavailable shade remains selected.
+        if (blocked) oodOpenModal();
       });
     });
 
@@ -1720,10 +2016,14 @@
           if (vehicleVariant && vehicleVariant.id) variantId = String(vehicleVariant.id);
         } else if (key === 'front' || key === 'rear') {
           islandEntry = (universalIslandData && universalIslandData[key]) || null;
-          vehicleVariant = matchedUniversalVehicleVariant(islandEntry);
-          // Universal products must never fall back to a different vehicle's
-          // variant. If the selected vehicle is not provisioned yet, leave
-          // the request without a variant so the availability gate rejects it.
+          // Gate by the Admin availability field on the selected Car Model
+          // AND an exact matching vehicle variant - a Front/Rear product must
+          // never fall back to a different vehicle's variant. If the shade is
+          // not enabled (or not provisioned), leave the request without a
+          // variant so the availability gate rejects it.
+          vehicleVariant = frontRearEnabledFor(selectedModel, key)
+            ? matchedUniversalVehicleVariant(islandEntry)
+            : null;
           variantId = vehicleVariant && vehicleVariant.id ? String(vehicleVariant.id) : '';
         }
 

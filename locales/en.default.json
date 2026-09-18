@@ -144,6 +144,9 @@
     "add_to_cart": "Add to cart",
     "available_on_order": "Available on order",
     "available_on_order_note": "Custom-made for your selected vehicle.",
+    "out_of_stock": "Out of Stock",
+    "out_of_stock_for_vehicle": "This Front/Rear windshield shade is currently not available for your vehicle.",
+    "ok": "OK",
     "secure_note": "Secure checkout"
   }
 }
