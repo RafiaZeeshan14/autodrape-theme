@@ -792,10 +792,6 @@ body.template-index .ad-final-cta {
 }
 
 @media screen and (max-width: 749px) {
-  .autodrape-hero__shop-button {
-    display: none !important;
-  }
-
   .autodrape-car-selector__button {
     min-height: 48px !important;
     height: 48px !important;

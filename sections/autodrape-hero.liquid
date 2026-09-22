@@ -8,10 +8,10 @@
       <picture>
         <source
           media="(max-width: 749px)"
-          srcset="{{ 'Autodrapes.png' | asset_url }}"
+          srcset="{{ 'mobilehero.png' | asset_url }}"
         >
         <img
-          src="{{ 'heroimage.png' | asset_url }}"
+          src="{{ 'hero.png' | asset_url }}"
           alt="AutoDrape premium car sunshades"
           class="autodrape-hero__car"
           loading="eager"
@@ -23,29 +23,7 @@
     <!-- =========================
          LEFT CONTENT
          ========================= -->
-    <div class="autodrape-hero__content">
-
-      <div class="autodrape-hero__eyebrow">
-        PREMIUM CAR PROTECTION
-      </div>
-
-      <h1 class="autodrape-hero__title">
-        <span>PERFECT FIT</span>
-        <strong>FOR YOUR CAR</strong>
-      </h1>
-
-      <p class="autodrape-hero__description">
-        Custom-Fit Car Shades &amp; Accessories<br>
-        Engineered for Comfort. Built for Protection.
-      </p>
-
-      <a href="/pages/all-products" class="autodrape-hero__shop-button">
-        SHOP NOW <span aria-hidden="true">&#8594;</span>
-      </a>
-
-
-    </div>
-
+ 
 
     <!-- =========================
          VEHICLE SELECTOR
@@ -74,7 +52,7 @@
 
   width: 100%;
 
-  min-height: 680px;
+  min-height: 100svh;
 
   margin: 0;
   padding: 0;
@@ -90,7 +68,7 @@
 
   width: 100%;
 
-  min-height: 680px;
+  min-height: 100svh;
 
   overflow: visible;
 }
@@ -135,6 +113,7 @@
   object-fit: cover;
 
   object-position: center center;
+
 }
 
 
@@ -275,6 +254,8 @@
 
 .autodrape-hero__finder-slot {
   position: absolute;
+
+  display: none;
 
   z-index: 20;
 
@@ -674,7 +655,7 @@
     min-height: 0;
 
     margin-top: 0;
-    background: #080808;
+    background: #20232a;
     overflow: hidden;
   }
 
@@ -694,12 +675,14 @@
     height: auto;
 
     object-fit: contain;
-    object-position: center top;
+    object-position: center center;
   }
 
 
   .autodrape-hero__finder-slot {
     position: relative;
+
+    display: block;
 
     right: auto;
     bottom: auto;
