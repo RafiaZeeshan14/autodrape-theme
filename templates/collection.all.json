@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "autodrape-all-products",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

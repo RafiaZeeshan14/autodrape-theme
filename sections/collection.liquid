@@ -5,6 +5,9 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
 {% endcomment %}
 
+{% if collection.handle == 'all' %}
+  {% render 'all-products-content' %}
+{% else %}
 <h1>{{ collection.title }}</h1>
 
 <div class="collection-products">
@@ -31,6 +34,7 @@
     {{ paginate | default_pagination }}
   {% endpaginate %}
 </div>
+{% endif %}
 
 {% stylesheet %}
   .collection-products {

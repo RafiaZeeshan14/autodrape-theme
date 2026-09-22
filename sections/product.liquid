@@ -1,52 +1,32 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
-
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
-
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
-
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
-
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
-
-    <input type="text" name="quantity" min="1" value="1">
-
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
-
-{% schema %}
-{
-  "name": "t:general.product",
-  "settings": [],
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  }
-}
-{% endschema %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+<section class="ad-product" data-product-section>
+  <div class="ad-product__inner">
+    <div class="ad-product__gallery">
+      <div class="ad-product__main-media">
+        {% if product.featured_media %}{{ product.featured_media | image_url: width: 1200 | image_tag: class: 'ad-product__main-image', loading: 'eager', alt: product.title }}{% else %}{{ 'product-1' | placeholder_svg_tag: 'ad-product__main-image' }}{% endif %}
+      </div>
+      {% if product.media.size > 1 %}<div class="ad-product__thumbs">{% for media in product.media %}{% if media.preview_image %}<button type="button" class="ad-product__thumb{% if forloop.first %} is-active{% endif %}" data-product-thumb="{{ media.preview_image | image_url: width: 1200 }}" aria-label="View product image {{ forloop.index }}">{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: product.title }}</button>{% endif %}{% endfor %}</div>{% endif %}
+    </div>
+    <div class="ad-product__details">
+      <p class="ad-product__eyebrow">AUTODRAPE PREMIUM COLLECTION</p>
+      <h1 class="ad-product__title">{{ product.title }}</h1>
+      <div class="ad-product__price" data-product-price>{{ current_variant.price | money }}</div>
+      {% if product.description != blank %}<div class="ad-product__description">{{ product.description }}</div>{% endif %}
+      {% form 'product', product, class: 'ad-product__form' %}
+        <label class="ad-product__label" for="ad-product-variant">Select vehicle</label>
+        <select id="ad-product-variant" class="ad-product__select" name="id" data-product-variant>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money }}"{% unless variant.available %} data-unavailable="true"{% endunless %}{% if variant.id == current_variant.id %} selected{% endif %}>{{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}</option>{% endfor %}</select>
+        <div class="ad-product__purchase-row"><label class="ad-product__label" for="ad-product-quantity">Quantity</label><div class="ad-product__quantity"><button type="button" data-quantity-minus aria-label="Decrease quantity">−</button><input id="ad-product-quantity" type="number" name="quantity" min="1" value="1" inputmode="numeric"><button type="button" data-quantity-plus aria-label="Increase quantity">+</button></div></div>
+        <button type="submit" name="add" class="ad-product__add" data-product-add{% unless current_variant.available %} disabled{% endunless %}>{% if current_variant.available %}ADD TO CART{% else %}SOLD OUT{% endif %}</button>
+        <div class="ad-product__buy-now">{{ form | payment_button }}</div>
+      {% endform %}
+      <p class="ad-product__availability" data-product-availability>{% if current_variant.available %}In stock and ready to ship{% else %}Currently unavailable{% endif %}</p>
+    </div>
+  </div>
+</section>
+{% javascript %}
+  (() => { const root = document.querySelector('[data-product-section]'); if (!root) return; const form = root.querySelector('form[action*="/cart/add"]'); const select = root.querySelector('[data-product-variant]'); const price = root.querySelector('[data-product-price]'); const add = root.querySelector('[data-product-add]'); const status = root.querySelector('[data-product-availability]'); const qty = root.querySelector('input[name="quantity"]'); const image = root.querySelector('.ad-product__main-image'); root.querySelectorAll('[data-product-thumb]').forEach((button) => { button.addEventListener('click', () => { if (image) image.src = button.dataset.productThumb; root.querySelectorAll('.ad-product__thumb').forEach((item) => item.classList.remove('is-active')); button.classList.add('is-active'); }); }); select?.addEventListener('change', () => { const option = select.options[select.selectedIndex]; const unavailable = option.dataset.unavailable === 'true'; if (price) price.textContent = option.dataset.price || ''; if (add) { add.disabled = unavailable; add.textContent = unavailable ? 'SOLD OUT' : 'ADD TO CART'; } if (status) status.textContent = unavailable ? 'Currently unavailable' : 'In stock and ready to ship'; }); root.querySelector('[data-quantity-minus]')?.addEventListener('click', () => { qty.value = Math.max(1, Number(qty.value || 1) - 1); }); root.querySelector('[data-quantity-plus]')?.addEventListener('click', () => { qty.value = Math.max(1, Number(qty.value || 1) + 1); }); form?.addEventListener('submit', (event) => { event.preventDefault(); if (!select || !qty || !add || add.disabled) return; add.disabled = true; const properties = {}; new FormData(form).forEach((value, key) => { if (key.indexOf('properties[') === 0) properties[key.slice(11, -1)] = value; }); const item = { id: Number(select.value), quantity: Math.max(1, Number(qty.value || 1)) }; if (Object.keys(properties).length) item.properties = properties; fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items: [item] }) }).then((response) => { if (!response.ok) throw new Error('Add to cart failed'); return response.json(); }).then(() => { if (window.AutoDrapeCart) window.AutoDrapeCart.open(); }).catch(() => { add.disabled = false; }).finally(() => { if (!select.options[select.selectedIndex].dataset.unavailable) add.disabled = false; }); }); })();
+{% endjavascript %}
+{% stylesheet %}
+  .ad-product { background:#f7f7f5; color:#151515; padding:64px 24px 100px; } .ad-product__inner { max-width:1240px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr); gap:72px; align-items:start; } .ad-product__main-media { background:#fff; border-radius:22px; min-height:560px; display:flex; align-items:center; justify-content:center; overflow:hidden; } .ad-product__main-image { width:100%; height:560px; object-fit:contain; display:block; } .ad-product__thumbs { display:flex; gap:12px; margin-top:14px; overflow-x:auto; } .ad-product__thumb { width:78px; height:78px; padding:4px; background:#fff; border:1px solid #ddd; border-radius:10px; cursor:pointer; } .ad-product__thumb.is-active { border-color:#a50000; box-shadow:0 0 0 1px #a50000; } .ad-product__thumb img { width:100%; height:100%; object-fit:contain; } .ad-product__details { padding-top:24px; } .ad-product__eyebrow { color:#a50000; font-size:12px; font-weight:800; letter-spacing:.14em; margin:0 0 14px; } .ad-product__title { font-size:clamp(32px,4vw,58px); line-height:1.02; margin:0 0 18px; font-weight:800; } .ad-product__price { font-size:28px; font-weight:800; color:#a50000; } .ad-product__description { margin:28px 0; line-height:1.7; color:#555; } .ad-product__form { display:grid; gap:12px; } .ad-product__label { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; } .ad-product__select,.ad-product__quantity input { border:1px solid #d5d5d5; border-radius:10px; background:#fff; padding:15px; font:inherit; width:100%; box-sizing:border-box; } .ad-product__purchase-row { display:flex; align-items:center; justify-content:space-between; margin-top:8px; } .ad-product__quantity { display:inline-flex; border:1px solid #d5d5d5; border-radius:10px; background:#fff; overflow:hidden; } .ad-product__quantity button { border:0; background:#fff; font-size:20px; width:42px; cursor:pointer; } .ad-product__quantity input { width:52px; text-align:center; border:0; border-radius:0; padding:12px 4px; } .ad-product__add { border:0; border-radius:999px; background:#a50000; color:#fff; padding:17px 24px; font-weight:800; letter-spacing:.08em; cursor:pointer; } .ad-product__add:hover { background:#760000; } .ad-product__add:disabled { opacity:.5; cursor:not-allowed; } .ad-product__buy-now .shopify-payment-button__button { border-radius:999px !important; min-height:52px; } .ad-product__availability { color:#666; font-size:13px; margin-top:4px; } @media (max-width:749px) { .ad-product { padding:28px 16px 64px; } .ad-product__inner { display:block; } .ad-product__main-media,.ad-product__main-image { min-height:320px; height:320px; border-radius:16px; } .ad-product__details { padding-top:36px; } .ad-product__title { font-size:36px; } .ad-product__purchase-row { align-items:flex-start; flex-direction:column; gap:8px; } .ad-product__quantity { width:100%; } .ad-product__quantity input { flex:1; } .ad-product__add,.ad-product__buy-now { width:100%; } }
+{% endstylesheet %}
+{% schema %}{"name":"t:general.product","settings":[],"disabled_on":{"groups":["header","footer"]}}{% endschema %}
