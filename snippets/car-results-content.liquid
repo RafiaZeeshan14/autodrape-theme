@@ -174,6 +174,7 @@
             <span class="car-results__stock-badge">{{ 'car_results.available_on_order' | t }}</span>
             <span class="car-results__stock-note">{{ 'car_results.available_on_order_note' | t }}</span>
           </p>
+          <p class="car-results__advance-payment" data-cr-advance-payment hidden>Note: Front &amp; Rear Windshield Shades require Rs. 500 advance payment after order confirmation.</p>
           <button type="submit" class="car-results__add" data-cr-add>{{ 'car_results.add_to_cart' | t }}</button>
         </form>
 
@@ -949,6 +950,24 @@
     transform: translateY(-1px);
   }
 
+  .car-results__advance-payment {
+    flex: 1 1 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border-left: 3px solid #a50000;
+    border-radius: 8px;
+    background: #fff7f7;
+    color: #760000;
+    font-family: var(--font-ui--family), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .car-results__advance-payment[hidden] {
+    display: none;
+  }
+
   .car-results__secure {
     display: flex;
     align-items: center;
@@ -1651,6 +1670,7 @@
     //   'unavailable' / 'none' - existing unavailable behavior (gate only)
     var stockModes = {};
     var stockStatus = root.querySelector('[data-cr-stock]');
+    var advancePaymentNote = root.querySelector('[data-cr-advance-payment]');
     var unavailableNote = root.querySelector('[data-cr-unavailable]');
 
     // ------------------------------------------------------------------
@@ -1732,6 +1752,7 @@
       var active = activeShade();
       var key = active ? (active.getAttribute('data-shade-key') || '') : '';
       if (stockStatus) stockStatus.hidden = stockModes[key] !== 'on-order';
+      if (advancePaymentNote) advancePaymentNote.hidden = key !== 'front' && key !== 'rear';
 
       // Front/Rear unavailable for the selected vehicle: show the message and
       // disable Add to Cart. Full/Half shades are never affected.

@@ -1,4 +1,13 @@
 {% assign current_variant = product.selected_or_first_available_variant %}
+{% assign product_title_normalized = product.title | strip | downcase %}
+{% assign requires_windshield_advance_payment = false %}
+{% if product.handle == 'front-windshield-shade' %}
+  {% assign requires_windshield_advance_payment = true %}
+{% elsif product_title_normalized == 'front windshield shade' %}
+  {% assign requires_windshield_advance_payment = true %}
+{% elsif product_title_normalized == 'rear windshield shade' %}
+  {% assign requires_windshield_advance_payment = true %}
+{% endif %}
 <section class="ad-product" data-product-section>
   <div class="ad-product__inner">
     <div class="ad-product__gallery">
@@ -16,6 +25,9 @@
         <label class="ad-product__label" for="ad-product-variant">Select vehicle</label>
         <select id="ad-product-variant" class="ad-product__select" name="id" data-product-variant>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money }}"{% unless variant.available %} data-unavailable="true"{% endunless %}{% if variant.id == current_variant.id %} selected{% endif %}>{{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}</option>{% endfor %}</select>
         <div class="ad-product__purchase-row"><label class="ad-product__label" for="ad-product-quantity">Quantity</label><div class="ad-product__quantity"><button type="button" data-quantity-minus aria-label="Decrease quantity">−</button><input id="ad-product-quantity" type="number" name="quantity" min="1" value="1" inputmode="numeric"><button type="button" data-quantity-plus aria-label="Increase quantity">+</button></div></div>
+        {% if requires_windshield_advance_payment %}
+          <p class="ad-product__payment-note" style="background:#fff7f7;border-left:3px solid #a50000;border-radius:8px;color:#760000;font-size:13px;font-weight:700;line-height:1.45;margin:4px 0 0;padding:10px 12px;">Note: Front &amp; Rear Windshield Shades require Rs. 500 advance payment after order confirmation.</p>
+        {% endif %}
         <button type="submit" name="add" class="ad-product__add" data-product-add{% unless current_variant.available %} disabled{% endunless %}>{% if current_variant.available %}ADD TO CART{% else %}SOLD OUT{% endif %}</button>
         <div class="ad-product__buy-now">{{ form | payment_button }}</div>
       {% endform %}

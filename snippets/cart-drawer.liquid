@@ -49,6 +49,7 @@
     </div>
 
     <div class="ad-cart__foot" data-cart-foot hidden>
+      <p class="ad-cart__advance-payment" data-cart-advance-payment hidden>Advance Payment: Rs. 500 advance payment is required once per order for Front &amp; Rear Windshield Shades, after order confirmation via call.</p>
       <div class="ad-cart__summary">
         <div class="ad-cart__summary-row">
           <span>{{ 'cart.quantity' | t }}</span>
@@ -238,6 +239,20 @@
     margin: 2px 0 0;
     font-size: 14px;
     font-weight: 800;
+  }
+  .ad-cart__advance-payment {
+    margin: 0;
+    padding: 9px 11px;
+    border-left: 3px solid #a50000;
+    border-radius: 7px;
+    background: #fff7f7;
+    color: #760000;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .ad-cart__advance-payment[hidden] {
+    display: none;
   }
   .ad-cart__qty {
     display: inline-flex;
@@ -472,6 +487,7 @@
       var totalNode = root.querySelector('[data-cart-total]');
       var subtotalNode = root.querySelector('[data-cart-subtotal]');
       var countNode = root.querySelector('[data-cart-count]');
+      var advancePaymentNode = root.querySelector('[data-cart-advance-payment]');
       var closeBtn = root.querySelector('[data-cart-close]');
       var iso = root.getAttribute('data-cart-currency') || 'USD';
       var decLabel = root.getAttribute('data-dec-label') || 'Decrease quantity';
@@ -498,6 +514,14 @@
         return div.innerHTML;
       }
 
+      function requiresWindshieldAdvancePayment(item) {
+        var handle = String(item.handle || '').toLowerCase();
+        var title = String(item.product_title || item.title || '').trim().toLowerCase();
+        return handle === 'front-windshield-shade' ||
+          title === 'front windshield shade' ||
+          title === 'rear windshield shade';
+      }
+
       // ------------------------------------------------------------------
       // Car information is NOT guessed from the page URL here. It travels
       // ON each cart line as hidden line item properties (_car_brand,
@@ -517,10 +541,12 @@
         updateCount(cart.item_count);
         var items = cart.items || [];
         var itemCount = items.length;
+        var hasWindshieldAdvancePayment = items.some(requiresWindshieldAdvancePayment);
 
         itemsNode.innerHTML = '';
         emptyNode.hidden = itemCount > 0;
         footNode.hidden = itemCount === 0;
+        if (advancePaymentNode) advancePaymentNode.hidden = !hasWindshieldAdvancePayment;
 
         if (countNode) {
           countNode.textContent = String(cart.item_count || 0);
